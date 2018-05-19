@@ -1,9 +1,11 @@
+import DataTypes.GeneratedMachineDataTypes.Decipher;
 import DataTypes.GeneratedMachineDataTypes.Machine;
 import DataTypes.GeneratedMachineDataTypes.Reflector;
 import DataTypes.GeneratedMachineDataTypes.Rotor;
 import DataTypes.Util.ProcessStringAndTime;
 import InputValidation.Util;
 import InputValidation.XMLParser;
+import Producer.Manager;
 import pukteam.enigma.component.machine.api.Secret;
 import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
 import pukteam.enigma.factory.EnigmaComponentFactory;
@@ -15,6 +17,7 @@ import java.util.*;
 
 public class EnigmaMachineApplication {
     private EnigmaMachineWrapper m_machineWrapper;
+    private Producer.Manager dm;
     private XMLParser m_xmlParser = new XMLParser();
 
     public boolean LoadXMLFile(String path)throws Exception{
@@ -32,6 +35,10 @@ public class EnigmaMachineApplication {
     private void setMachineFromObject() {
         m_xmlParser.machine.getMachine().setABC(m_xmlParser.machine.getMachine().getABC().toUpperCase());
         Machine xmlMachine = m_xmlParser.machine.getMachine();
+        Decipher deciper = new Decipher();
+        deciper.setAgents(m_xmlParser.machine.getDecipher().getAgents());
+        deciper.setDictionary(m_xmlParser.machine.getDecipher().getDictionary());
+        dm = new Manager(deciper);
         EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(xmlMachine.getRotorsCount(),xmlMachine.getABC());
         DefineRotors(machineBuilder,xmlMachine);
         DefineReflectors(machineBuilder,xmlMachine);
@@ -279,13 +286,14 @@ public class EnigmaMachineApplication {
         m_machineWrapper.SetInitialSecretManually(rotorsList,initialLocationString,reflector);
     }
 
-    public boolean IsLegalStringOfDictionaryWords(String unprocessedString) {
-        //TODO:: implement
-        /* DEBBUGING*/
-        if(unprocessedString.equals("1"))
-            return true;
-        else
-            return false;
+    public boolean IsLegalStringOfDictionaryWords(String unprocessedString) throws Exception {
+        String[] words = unprocessedString.split(" ");
+        for(String word: words){
+            if(!(dm.getDecipher().getDictionary().getWords().contains(word))){
+                throw new Exception("The word: "+word+" is not in the dictionary");
+            }
+        }
+        return true;
     }
 
     public void startBruteForce(Integer difficultySelection, Integer missionSizeSelection, Integer numOfAgentsSelection) {
@@ -293,8 +301,6 @@ public class EnigmaMachineApplication {
     }
 
     public Integer getMaxAllowedAgents() {
-        //TODO:: implement
-        /* DEBBUGING*/
-        return 10;
+        return dm.getDecipher().getAgents();
     }
 }

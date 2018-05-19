@@ -3,7 +3,9 @@ package InputValidation;
 import DataTypes.GeneratedMachineDataTypes.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Util {
 
@@ -157,5 +159,20 @@ public class Util {
             return true;
         answer[0] = "The number of agents must be between 2 to 50";
         return false;
+    }
+
+    public static Dictionary removeDoubleWordsAndExcludeChars(Dictionary dictionary) {
+        Dictionary res = new Dictionary();
+        for(String word: dictionary.getWords().split(" ")){
+            for (Character excludeChar: dictionary.getExcludeChars().toCharArray()){
+                word.replaceAll(excludeChar.toString(), "");
+            }
+        }
+        //remove double values
+        dictionary.setWords(Arrays.stream(dictionary.getWords().split(" ")).distinct().collect(Collectors.joining(" ")));
+        res.setWords(dictionary.getWords());
+        res.setExcludeChars(dictionary.getExcludeChars());
+
+        return res;
     }
 }
