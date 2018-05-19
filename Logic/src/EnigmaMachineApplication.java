@@ -296,8 +296,10 @@ public class EnigmaMachineApplication {
         return true;
     }
 
-    public void startBruteForce(Integer difficultySelection, Integer missionSizeSelection, Integer numOfAgentsSelection) {
-        //TODO:: implement
+    public void startBruteForce(String unprocessedString, Integer difficultySelection, Integer missionSizeSelection, Integer numOfAgentsSelection) {
+        dm.set(unprocessedString, m_machineWrapper.getSecret(), difficultySelection, missionSizeSelection, numOfAgentsSelection);
+        Thread thread = new Thread(dm);
+        thread.start();
     }
 
     public Integer getMaxAllowedAgents() {
