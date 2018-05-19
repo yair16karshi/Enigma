@@ -5,35 +5,41 @@ import java.util.*;
 public class UI {
     Scanner scanner = new Scanner(System.in);
     String m_title;
-    List<String> m_menuItems = new ArrayList<>();
-    private static final int numOfMenus = 8;
+    List<String> m_mainMenuItems = new ArrayList<>();
+    List<String> m_statusMenuItems = new ArrayList<>();
+    private static final int numOfMenus = 9;
+    private static final int numOfDifficulties = 4;
 
     private EnigmaMachineApplication m_machineApplication = new EnigmaMachineApplication();
 
     public UI(){
-        m_menuItems.add("1. Load Machine details from XML file.");
-        m_menuItems.add("2. Show Machine details.");
-        m_menuItems.add("3. Define initial machine settings manually.");
-        m_menuItems.add("4. Define initial machine settings automatically.");
-        m_menuItems.add("5. Encrypt input.");
-        m_menuItems.add("6. Reset machine to initial settings.");
-        m_menuItems.add("7. Display history and statistics.");
-        m_menuItems.add("8. Exit");
+        m_mainMenuItems.add("1. Load Machine details from XML file.");
+        m_mainMenuItems.add("2. Show Machine details.");
+        m_mainMenuItems.add("3. Define initial machine settings manually.");
+        m_mainMenuItems.add("4. Define initial machine settings automatically.");
+        m_mainMenuItems.add("5. Encrypt input.");
+        m_mainMenuItems.add("6. Reset machine to initial settings.");
+        m_mainMenuItems.add("7. Display history and statistics.");
+        m_mainMenuItems.add("8. Decrypt input.");
+        m_mainMenuItems.add("9. Exit");
+
+        m_statusMenuItems.add("1. Get encryption status.");
+        m_statusMenuItems.add("2. Pause/Resume.");
+        m_statusMenuItems.add("3. Abort.");
         System.out.println("started");
     }
-    public void DisplayAllItems()
-    {
-        for (String item:m_menuItems) {
+
+    public void DisplayAllItems(List<String> itemsToDisplay) {
+        for (String item : itemsToDisplay) {
             System.out.println(item);
         }
     }
 
-    public void MenuLoop()
-    {
+    public void MenuLoop() {
         String input;
         int selection;
         while(true) {
-            DisplayAllItems();
+            DisplayAllItems(m_mainMenuItems);
             input = scanner.nextLine();
 
             try {
@@ -60,8 +66,8 @@ public class UI {
             }
         }
     }
-    public void HandleSelection(int selection)
-    {
+
+    public void HandleSelection(int selection) {
         switch (selection)
         {
             //load from XML
@@ -242,6 +248,116 @@ public class UI {
                 printHistory(history, avg);
                 break;
             }
+            case 8:
+            {
+                EncryptStringUI();
+                break;
+            }
+        }
+    }
+
+    private void EncryptStringUI() {
+        Integer difficultySelection,missionSizeSelection,numOfAgentsSelection;
+        boolean validInput = false;
+        while(validInput) {
+            try {
+                if (m_machineApplication.commandIsPossible(8)) {
+                    System.out.println("Please Enter string to process:");
+                    String unprocessedString = scanner.next();
+                    if (m_machineApplication.IsLegalStringOfDictionaryWords(unprocessedString)) {
+                        difficultySelection = RequestDifficultyFromUser();
+                        missionSizeSelection = RequestMissionSizeFromUser();
+                        numOfAgentsSelection = RequestNumOfAgentsFromUser();
+                        if (RequestPermissionToStartMission()) {
+                            m_machineApplication.startBruteForce(difficultySelection, missionSizeSelection, numOfAgentsSelection);
+                            RunStatusMenu();
+                            validInput = true;
+                        }
+                    } else {
+                        System.out.println("String Does not contain dictionary words");
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private void RunStatusMenu() {
+        String input;
+        Integer selection;
+        while(true){
+            DisplayAllItems(m_statusMenuItems);
+            input = scanner.next();
+            try {
+                selection = Integer.parseInt(input);
+            }catch (NumberFormatException e){
+                System.out.println("Selection is not a number, Please try again.");
+                continue;
+            }
+            switch (selection){
+                case 1:{
+                    //TODO implement
+                    break;
+                }
+                case 2:{
+                    //TODO implement
+                    break;
+                }
+                case 3:{
+                    //TODO implement
+                    break;
+                }
+                default:{
+                    System.out.println("Selection is not in range, please try again.");
+                    break;
+                }
+            }
+        }
+    }
+
+    private boolean RequestPermissionToStartMission() {
+        String start;
+        System.out.println("Would you like to start the process?");
+        System.out.println("press Y/N");
+        start = scanner.next();
+        while(!start.toUpperCase().equals("Y")){
+            System.out.println("OK, Tell me when you are ready...");
+            start = scanner.next();
+        }
+        return true;
+    }
+
+    private Integer RequestNumOfAgentsFromUser() {
+        Integer res,maxAllowedAgents;
+        maxAllowedAgents = m_machineApplication.getMaxAllowedAgents();
+        while(true){
+            res = RequestAndValidateInt("number of agents");
+            if(res >= 2 && res <= maxAllowedAgents){
+                return res;
+            }else{
+                System.out.println("Number is not in range, Please enter a number between 2 to " + maxAllowedAgents+".");
+            }
+        }
+
+    }
+
+    private Integer RequestMissionSizeFromUser() {
+        //TODO check if max mission size is defined
+        return RequestAndValidateInt("mission size");
+    }
+
+    private Integer RequestDifficultyFromUser() {
+        String difficulty;
+        Integer res;
+        while (true) {
+            res = RequestAndValidateInt("difficulty level from 1 to 4");
+            if(res > 0 && res <= numOfDifficulties)
+            {
+                return res;
+            }else{
+                System.out.println("The selected difficulty is not in range. Please try again");
+            }
         }
     }
 
@@ -259,8 +375,7 @@ public class UI {
         }
     }
 
-    private String getReflectorFromUser()
-    {
+    private String getReflectorFromUser() {
         boolean validInput=false;
         String reflectorInput;
         String res = "";
@@ -284,6 +399,7 @@ public class UI {
 
         return res;
     }
+
     private String getInitialLocationsFromUser() {
         System.out.println("Please choose rotor's initial location:");
         String rotorsInitialLocations = scanner.next();
@@ -342,4 +458,19 @@ public class UI {
         output+=">";
         System.out.println(output);
     }
+
+    private Integer RequestAndValidateInt(String nameOfParam){
+        Integer res;
+
+        while(true){
+            try{
+                System.out.println("Please enter " + nameOfParam+".");
+                res = Integer.parseInt(scanner.next());
+                return res;
+            }catch (Exception e) {
+                System.out.println("Selection is not a number, Please try again.");
+            }
+        }
+    }
 }
+

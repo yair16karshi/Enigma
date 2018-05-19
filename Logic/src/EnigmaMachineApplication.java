@@ -266,11 +266,35 @@ public class EnigmaMachineApplication {
             case 5:{
                 return m_machineWrapper.isSecretHasBeenSet();
             }
+            case 8:{
+                //TODO:: implement
+                /* DEBBUGING*/
+                return true;
+            }
         }
         return false;
     }
 
     public void CreateManualSecret(List<Integer> rotorsList, String initialLocationString, String reflector) {
         m_machineWrapper.SetInitialSecretManually(rotorsList,initialLocationString,reflector);
+    }
+
+    public boolean IsLegalStringOfDictionaryWords(String unprocessedString) {
+        //TODO:: implement
+        /* DEBBUGING*/
+        if(unprocessedString.equals("1"))
+            return true;
+        else
+            return false;
+    }
+
+    public void startBruteForce(Integer difficultySelection, Integer missionSizeSelection, Integer numOfAgentsSelection) {
+        //TODO:: implement
+    }
+
+    public Integer getMaxAllowedAgents() {
+        //TODO:: implement
+        /* DEBBUGING*/
+        return 10;
     }
 }
