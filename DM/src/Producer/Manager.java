@@ -2,6 +2,7 @@ package Producer;
 
 import DataTypes.GeneratedMachineDataTypes.Decipher;
 import DataTypes.GeneratedMachineDataTypes.Machine;
+import DataTypes.SecretWithMissionSize;
 import InputValidation.Util;
 import calc.DificultyCalc;
 import calc.SecretCalc;
@@ -18,7 +19,7 @@ public class Manager implements Runnable {
     private Decipher m_decipher;
     private Machine m_xmlMachine;
     private List<Thread> m_agentList;
-    private BlockingQueue<Secret> m_missionsQueue;
+    private BlockingQueue<SecretWithMissionSize> m_missionsQueue;
     private BlockingQueue<String> m_responeQueue;
     private List<String> m_candidateStrings = new ArrayList<>();
 
@@ -52,18 +53,30 @@ public class Manager implements Runnable {
         switch (m_difficultySelection){
             case 1:
                 int numOfCombinations = DificultyCalc.easy(m_xmlMachine.getRotorsCount(), m_xmlMachine.getABC());
-                m_secret = SecretCalc.resetRotorsPositions(m_xmlMachine.getRotorsCount());
+                m_secret = SecretCalc.resetRotorsPositions(m_secret, m_xmlMachine.getRotorsCount());
+                SecretWithMissionSize missiontoInsert = new SecretWithMissionSize();
 
                 //TODO: start all agents
 
+                //put all missions in queue
                 while(numOfCombinations > 0){
+                    if(numOfCombinations < m_missionSizeSelection){
+                        missiontoInsert.setMissionSize(numOfCombinations);
+                    }
+                    else{
+                        missiontoInsert.setMissionSize(m_missionSizeSelection);
+                    }
+                    missiontoInsert.setSecret(m_secret);
                     try{
-                        m_missionsQueue.put(m_secret);
+                        m_missionsQueue.put(missiontoInsert);
                     }
                     catch (Exception e){}
                     m_secret = SecretCalc.addPositions(m_missionSizeSelection, m_xmlMachine.getRotorsCount(), m_xmlMachine.getABC());
                     numOfCombinations -= m_missionSizeSelection;
                 }
+
+                //take response from queue
+
 
                 break;
         }
