@@ -269,7 +269,7 @@ public class UI {
                         missionSizeSelection = RequestMissionSizeFromUser();
                         numOfAgentsSelection = RequestNumOfAgentsFromUser();
                         if (RequestPermissionToStartMission()) {
-                            m_machineApplication.startBruteForce(difficultySelection, missionSizeSelection, numOfAgentsSelection);
+                            m_machineApplication.startBruteForce(unprocessedString, difficultySelection, missionSizeSelection, numOfAgentsSelection);
                             RunStatusMenu();
                             validInput = true;
                         }
