@@ -24,6 +24,11 @@ public class EnigmaMachineWrapper  {
         m_numOfPreccesedMessages = 0;
         m_history.clear();
     }
+
+    public EnigmaMachine getMachine() {
+        return m_machine;
+    }
+
     public void setSecretHasBeenSet(){
         m_secretHasBeenSet = true;
     }
