@@ -1,12 +1,12 @@
+package machine;
+
 import DataTypes.GeneratedMachineDataTypes.Decipher;
 import DataTypes.GeneratedMachineDataTypes.Machine;
 import DataTypes.GeneratedMachineDataTypes.Reflector;
 import DataTypes.GeneratedMachineDataTypes.Rotor;
-import DataTypes.Util.ProcessStringAndTime;
 import InputValidation.Util;
 import InputValidation.XMLParser;
 import Producer.Manager;
-import pukteam.enigma.component.machine.api.Secret;
 import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
 import pukteam.enigma.factory.EnigmaComponentFactory;
 
@@ -38,7 +38,7 @@ public class EnigmaMachineApplication {
         Decipher deciper = new Decipher();
         deciper.setAgents(m_xmlParser.machine.getDecipher().getAgents());
         deciper.setDictionary(m_xmlParser.machine.getDecipher().getDictionary());
-        dm = new Manager(deciper, xmlMachine);
+        dm = new Manager(m_machineWrapper.getMachine(), deciper, xmlMachine);
         EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(xmlMachine.getRotorsCount(),xmlMachine.getABC());
         DefineRotors(machineBuilder,xmlMachine);
         DefineReflectors(machineBuilder,xmlMachine);

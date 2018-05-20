@@ -1,4 +1,5 @@
 import InputValidation.Util;
+import machine.EnigmaMachineApplication;
 
 import java.util.*;
 
