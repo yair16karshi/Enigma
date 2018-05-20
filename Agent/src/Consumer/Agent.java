@@ -1,3 +1,5 @@
+package Consumer;
+
 import java.util.concurrent.BlockingQueue;
 
 import DataTypes.GeneratedMachineDataTypes.Decipher;
@@ -8,7 +10,6 @@ import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
 import pukteam.enigma.factory.EnigmaComponentFactory;
 
 public class Agent implements Runnable{
-    private int m_missionSize;
     private BlockingQueue<SecretWithMissionSize> m_missionsQueue;
     private BlockingQueue<String> m_decipheredQueue;
     private String m_stringToProcess;
@@ -16,14 +17,12 @@ public class Agent implements Runnable{
 
     public Agent(BlockingQueue<SecretWithMissionSize> missionsQueue,
                  BlockingQueue<String> decipheredQueue,
-                 int missionSize,
                  String stringToProcess,
                  Machine xmlMachine,
                  Decipher decipher){
         xmlMachine.getABC().charAt(xmlMachine.getABC().length());//TODO:: check if length or length-1
         m_missionsQueue = missionsQueue;
         m_decipheredQueue = decipheredQueue;
-        m_missionSize = missionSize;
         m_stringToProcess = stringToProcess;
 
         EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(xmlMachine.getRotorsCount(),xmlMachine.getABC());

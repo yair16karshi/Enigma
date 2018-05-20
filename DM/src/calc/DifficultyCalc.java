@@ -1,6 +1,6 @@
 package calc;
 
-public class DificultyCalc {
+public class DifficultyCalc {
 
     public static int easy(int rotorsCount, String abc) {
         int res = 1;
