@@ -49,7 +49,7 @@ public class EnigmaMachineApplication {
 
     }
 
-    private void DefineReflectors(EnigmaMachineBuilder machineBuilder, Machine xmlMachine) {
+    public static void DefineReflectors(EnigmaMachineBuilder machineBuilder, Machine xmlMachine) {
         for(int i=0 ; i < xmlMachine.getReflectors().getReflector().size() ; i++){
             DataTypes.GeneratedMachineDataTypes.Reflector xmlReflector = xmlMachine.getReflectors().getReflector().get(i);
 
@@ -64,7 +64,7 @@ public class EnigmaMachineApplication {
         }
     }
 
-    private void DefineRotors(EnigmaMachineBuilder machineBuilder, Machine xmlMachine) {
+    public static void DefineRotors(EnigmaMachineBuilder machineBuilder, Machine xmlMachine) {
         for(int i=0 ; i<xmlMachine.getRotors().getRotor().size(); i++){
             DataTypes.GeneratedMachineDataTypes.Rotor xmlRotor = xmlMachine.getRotors().getRotor().get(i);
 

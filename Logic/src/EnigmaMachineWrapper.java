@@ -25,6 +25,7 @@ public class EnigmaMachineWrapper  {
     public void setSecretHasBeenSet(){
         m_secretHasBeenSet = true;
     }
+
     public SecretBuilder createSecret() {
         return m_machine.createSecret();
     }
