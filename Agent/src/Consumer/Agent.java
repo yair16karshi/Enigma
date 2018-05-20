@@ -5,6 +5,8 @@ import java.util.concurrent.BlockingQueue;
 import DataTypes.GeneratedMachineDataTypes.Decipher;
 import DataTypes.GeneratedMachineDataTypes.Machine;
 import DataTypes.SecretWithMissionSize;
+import machine.EnigmaMachineApplication;
+import machine.EnigmaMachineWrapper;
 import pukteam.enigma.component.machine.api.Secret;
 import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
 import pukteam.enigma.factory.EnigmaComponentFactory;

@@ -1,3 +1,5 @@
+package machine;
+
 import DataTypes.GeneratedMachineDataTypes.Machine;
 import DataTypes.GeneratedMachineDataTypes.Rotor;
 import DataTypes.Util.ProcessStringAndTime;

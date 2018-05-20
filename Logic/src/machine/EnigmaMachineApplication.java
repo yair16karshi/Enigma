@@ -1,12 +1,12 @@
+package machine;
+
 import DataTypes.GeneratedMachineDataTypes.Decipher;
 import DataTypes.GeneratedMachineDataTypes.Machine;
 import DataTypes.GeneratedMachineDataTypes.Reflector;
 import DataTypes.GeneratedMachineDataTypes.Rotor;
-import DataTypes.Util.ProcessStringAndTime;
 import InputValidation.Util;
 import InputValidation.XMLParser;
 import Producer.Manager;
-import pukteam.enigma.component.machine.api.Secret;
 import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
 import pukteam.enigma.factory.EnigmaComponentFactory;
 

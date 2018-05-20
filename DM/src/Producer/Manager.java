@@ -57,6 +57,13 @@ public class Manager implements Runnable {
             case 1:
                 difficultyEasy();
                 break;
+            case 2:
+                //TODO
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
         }
     }
 
