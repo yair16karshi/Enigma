@@ -15,8 +15,7 @@ import pukteam.enigma.component.machine.secret.SecretBuilder;
 import pukteam.enigma.factory.EnigmaComponentFactory;
 import sun.management.Agent;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
@@ -62,6 +61,7 @@ public class Manager implements Runnable {
         final int QUEUE_SIZE = 20;
 
         m_missionsQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
+        m_responeQueue = new ArrayBlockingQueue<String>(QUEUE_SIZE);
 
         switch (m_difficultySelection){
             case 1:
@@ -72,10 +72,40 @@ public class Manager implements Runnable {
                 difficultyMedium();
                 break;
             case 3:
+                difficultyHard();
                 break;
             case 4:
                 break;
         }
+    }
+
+    private void difficultyImpossible(){
+
+    }
+
+    private void difficultyHard() {
+        int[] numOfMissions = new int[1];
+        numOfMissions[0] = 0;
+        Set<Integer> rotorsSet = new HashSet<>(m_secret.getSelectedRotorsInOrder());
+        Set<Integer[]> rotorsCombinations = new HashSet<>();
+        DifficultyCalc.getAllCombinations(rotorsSet, new Stack<Integer>(), rotorsSet.size(), rotorsCombinations);
+        int numOfCombinations = DifficultyCalc.easy(m_xmlMachine.getRotorsCount(), m_xmlMachine.getABC());
+
+        startAllAgents();
+
+        for(Integer[] combination: rotorsCombinations){
+            SecretBuilder secretBuilder = m_machine.createSecret();
+            for (Reflector refl : m_xmlMachine.getReflectors().getReflector()) {
+                secretBuilder.selectReflector(Util.romanToInt(refl.getId()));
+                for (Integer rotorID : combination) {
+                    secretBuilder.selectRotor(rotorID, 0);
+                }
+                m_secret = secretBuilder.create();
+                insertMissionsToQueue(numOfCombinations, numOfMissions);
+            }
+        }
+
+        takeResponsesFromAgents(numOfMissions);
     }
 
     private void difficultyMedium() {
@@ -95,7 +125,7 @@ public class Manager implements Runnable {
             m_secret = secretBuilder.create();
             insertMissionsToQueue(numOfCombinations, numOfMissions);
         }
-
+        
         takeResponsesFromAgents(numOfMissions);
     }
 
