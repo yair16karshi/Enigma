@@ -1,5 +1,7 @@
 package calc;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
@@ -13,7 +15,7 @@ public class DifficultyCalc {
         return res;
     }
 
-    public static void getAllCombinations(Set<Integer> items, Stack<Integer> permutation, int size, Set<Integer[]> res) {
+    public static void getAllCombinationsOfList(Set<Integer> items, Stack<Integer> permutation, int size, Set<Integer[]> res) {
 
     /* permutation stack has become equal to size that we require */
         if(permutation.size() == size) {
@@ -31,10 +33,34 @@ public class DifficultyCalc {
             items.remove(i);
 
         /* pass it on for next permutation */
-            getAllCombinations(items, permutation, size, res);
+            getAllCombinationsOfList(items, permutation, size, res);
 
         /* pop and put the removed item back */
             items.add(permutation.pop());
         }
+    }
+
+    private static void combinationUtil(List<Integer> arr, int[] data, int start, int end, int index, int r, Set<List<Integer>> res)
+    {
+        if (index == r)
+        {
+            List<Integer> combination = new ArrayList<>();
+            for (int j=0; j<r; j++)
+                combination.add(data[j]);
+            res.add(combination);
+            return;
+        }
+
+        for (int i=start; i<=end && end-i+1 >= r-index; i++)
+        {
+            data[index] = arr.get(i);
+            combinationUtil(arr, data, i+1, end, index+1, r, res);
+        }
+    }
+
+    public static void allCombinationsWithSizeN(List<Integer> arr, int n, int r, Set<List<Integer>> res)
+    {
+        int data[]=new int[r];
+        combinationUtil(arr, data, 0, n-1, 0, r, res);
     }
 }

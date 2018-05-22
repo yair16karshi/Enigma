@@ -3,6 +3,7 @@ package Producer;
 import DataTypes.GeneratedMachineDataTypes.Decipher;
 import DataTypes.GeneratedMachineDataTypes.Machine;
 import DataTypes.GeneratedMachineDataTypes.Reflector;
+import DataTypes.GeneratedMachineDataTypes.Rotor;
 import DataTypes.SecretWithMissionSize;
 import InputValidation.Util;
 import calc.DifficultyCalc;
@@ -75,12 +76,23 @@ public class Manager implements Runnable {
                 difficultyHard();
                 break;
             case 4:
+                difficultyImpossible();
                 break;
         }
     }
 
     private void difficultyImpossible(){
+        List<Rotor> rotors = m_xmlMachine.getRotors().getRotor();
+        List<Reflector> reflectors = m_xmlMachine.getReflectors().getReflector();
 
+        List<Integer> rotorsIDs = new ArrayList<>();
+        for(int i=0; i<rotors.size(); i++){
+            rotorsIDs.add(i);
+        }
+        Set<List<Integer>> combinationsSet = new HashSet<>();
+        DifficultyCalc.allCombinationsWithSizeN(rotorsIDs, rotorsIDs.size(), m_xmlMachine.getRotorsCount(), combinationsSet);
+
+        //TODO: for loops of all possible combinations
     }
 
     private void difficultyHard() {
@@ -88,14 +100,14 @@ public class Manager implements Runnable {
         numOfMissions[0] = 0;
         Set<Integer> rotorsSet = new HashSet<>(m_secret.getSelectedRotorsInOrder());
         Set<Integer[]> rotorsCombinations = new HashSet<>();
-        DifficultyCalc.getAllCombinations(rotorsSet, new Stack<Integer>(), rotorsSet.size(), rotorsCombinations);
+        DifficultyCalc.getAllCombinationsOfList(rotorsSet, new Stack<Integer>(), rotorsSet.size(), rotorsCombinations);
         int numOfCombinations = DifficultyCalc.easy(m_xmlMachine.getRotorsCount(), m_xmlMachine.getABC());
 
         startAllAgents();
 
         for(Integer[] combination: rotorsCombinations){
-            SecretBuilder secretBuilder = m_machine.createSecret();
             for (Reflector refl : m_xmlMachine.getReflectors().getReflector()) {
+                SecretBuilder secretBuilder = m_machine.createSecret();
                 secretBuilder.selectReflector(Util.romanToInt(refl.getId()));
                 for (Integer rotorID : combination) {
                     secretBuilder.selectRotor(rotorID, 0);
