@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class EnigmaMachineApplication {
     private EnigmaMachineWrapper m_machineWrapper;
-    private Producer.Manager dm;
+    private Producer.Manager m_dm;
     private XMLParser m_xmlParser = new XMLParser();
 
     public boolean LoadXMLFile(String path)throws Exception{
@@ -46,7 +46,7 @@ public class EnigmaMachineApplication {
         //set some extra useful parameters
         m_machineWrapper.setXMLMachine(xmlMachine);
 
-        dm = new Manager(m_machineWrapper.getMachine(), deciper, xmlMachine);
+        m_dm = new Manager(m_machineWrapper.getMachine(), deciper, xmlMachine);
     }
 
     public static void DefineReflectors(EnigmaMachineBuilder machineBuilder, Machine xmlMachine) {
@@ -289,7 +289,7 @@ public class EnigmaMachineApplication {
     public boolean IsLegalStringOfDictionaryWords(String unprocessedString) throws Exception {
         String[] words = unprocessedString.split(" ");
         for(String word: words){
-            if(!(dm.getDecipher().getDictionary().getWords().contains(word))){
+            if(!(m_dm.getDecipher().getDictionary().getWords().contains(word))){
                 throw new Exception("The word: "+word+" is not in the dictionary");
             }
         }
@@ -297,13 +297,21 @@ public class EnigmaMachineApplication {
     }
 
     public void startBruteForce(String unprocessedString, Integer difficultySelection, Integer missionSizeSelection, Integer numOfAgentsSelection) {
-        dm.set(unprocessedString, m_machineWrapper.getSecret(), difficultySelection, missionSizeSelection, numOfAgentsSelection);
-        Thread thread = new Thread(dm);
+        m_dm.set(unprocessedString, m_machineWrapper.getSecret(), difficultySelection, missionSizeSelection, numOfAgentsSelection);
+        Thread thread = new Thread(m_dm);
         thread.setName("DM");
         thread.start();
     }
 
     public Integer getMaxAllowedAgents() {
-        return dm.getDecipher().getAgents();
+        return m_dm.getDecipher().getAgents();
+    }
+
+    public void stopDMandAgents() {
+        m_dm.stopDMandAgents();
+    }
+
+    public void stopAndResumeDMandAgents() {
+        m_dm.stopAndResumeDMandAgents();
     }
 }
