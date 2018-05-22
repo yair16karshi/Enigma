@@ -56,7 +56,7 @@ public class Manager implements Runnable {
     }
 
     public void run() {
-        final int QUEUE_SIZE = 20;
+        final int QUEUE_SIZE = 1000;
 
         m_missionsQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
         m_responeQueue = new ArrayBlockingQueue<String>(QUEUE_SIZE);
@@ -107,7 +107,7 @@ public class Manager implements Runnable {
                 SecretBuilder secretBuilder = m_machine.createSecret();
                 secretBuilder.selectReflector(Util.romanToInt(refl.getId()));
                 for (Integer rotorID : combination) {
-                    secretBuilder.selectRotor(rotorID, 0);
+                    secretBuilder.selectRotor(rotorID, 1);
                 }
                 m_secret = secretBuilder.create();
                 insertMissionsToQueue(numOfCombinations, numOfMissions);
@@ -129,7 +129,7 @@ public class Manager implements Runnable {
             SecretBuilder secretBuilder = m_machine.createSecret();
             secretBuilder.selectReflector(Util.romanToInt(refl.getId()));
             for(int i=0; i<rotorsOrder.size(); i++){
-                secretBuilder.selectRotor(rotorsOrder.get(i), 0);
+                secretBuilder.selectRotor(rotorsOrder.get(i), 1);
             }
             m_secret = secretBuilder.create();
             insertMissionsToQueue(numOfCombinations, numOfMissions);
@@ -146,7 +146,7 @@ public class Manager implements Runnable {
         numOfMissions[0] = 0;
 
         //start agents
-        startAllAgents();
+        //startAllAgents();
 
         //put all missions in queue
         insertMissionsToQueue(numOfCombinations, numOfMissions);
@@ -186,7 +186,8 @@ public class Manager implements Runnable {
             }
             SecretWithMissionSize missionToInsert = new SecretWithMissionSize();
             missionToInsert.setMissionSize(sizeOfCurrMission);
-            missionToInsert.setSecret(m_secret);
+            Secret secretToInsert = createNewSecret(m_secret);
+            missionToInsert.setSecret(secretToInsert);
             try{
                 m_missionsQueue.put(missionToInsert);
                 numOfMissions[0]++;
@@ -197,6 +198,16 @@ public class Manager implements Runnable {
             m_secret = SecretCalc.addPositions(count, m_secret, sizeOfCurrMission, m_xmlMachine.getRotorsCount(), m_xmlMachine.getABC());
             numOfCombinations -= m_missionSizeSelection;
         }
+    }
+
+    private Secret createNewSecret(Secret i_secret) {
+        SecretBuilder secretBuilder = m_machine.createSecret();
+        for(int i = 0; i<i_secret.getSelectedRotorsInOrder().size(); i++){
+            secretBuilder.selectRotor(i_secret.getSelectedRotorsInOrder().get(i), i_secret.getSelectedRotorsPositions().get(i));
+        }
+        secretBuilder.selectReflector(i_secret.getSelectedReflector());
+
+        return secretBuilder.create();
     }
 
     public void set(String i_unprocessedString, Secret i_secret, Integer i_difficultySelection, Integer i_missionSizeSelection, Integer i_numOfAgentsSelection) {
