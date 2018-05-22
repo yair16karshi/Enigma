@@ -260,7 +260,7 @@ public class UI {
     private void EncryptStringUI() {
         Integer difficultySelection,missionSizeSelection,numOfAgentsSelection;
         boolean validInput = false;
-        while(validInput) {
+        while(!validInput) {
             try {
                 if (m_machineApplication.commandIsPossible(8)) {
                     System.out.println("Please Enter string to process:");
