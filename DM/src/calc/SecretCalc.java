@@ -17,7 +17,7 @@ public class SecretCalc {
             pos %= i_abc.length();
             positions.set(positions.size()-1, pos);
             if(pos == 0){
-                for(int j=positions.size()-2; j>0; j--){
+                for(int j=positions.size()-2; j>=0; j--){
                     pos = positions.get(j);
                     pos++;
                     pos %= i_abc.length();
@@ -27,14 +27,17 @@ public class SecretCalc {
                 }
             }
         }
-        m_secret.setInitialPosition(positions);
+        m_secret = m_secret.setInitialPosition(positions);
 
         return m_secret;
     }
 
     public static Secret resetRotorsPositions(Secret m_secret, int rotorsCount) {
-        List<Integer> newPosition = new ArrayList<>(Collections.nCopies(rotorsCount, 0));
-        m_secret.setInitialPosition(newPosition);
+        List<Integer> newPosition = new ArrayList<>();
+        for(int i=0; i<rotorsCount; i++){
+            newPosition.add(0);
+        }
+        m_secret = m_secret.setInitialPosition(newPosition);
         return m_secret;
     }
 }
