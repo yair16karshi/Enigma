@@ -4,13 +4,15 @@ import java.util.List;
 
 public class EncryptionStatus {
     private String m_duration;
-    private Integer m_percentage;
+    private float m_percentage;
     private List<CandidateStringWithEncryptionInfo> m_candidateStringsList;
+    private List<SecretWithCount> m_currentThreadsJobs;
 
-    public EncryptionStatus(String duration, List<CandidateStringWithEncryptionInfo> candidateList,int percentage){
+    public EncryptionStatus(String duration, List<CandidateStringWithEncryptionInfo> candidateList,float percentage,List<SecretWithCount> currentThreadsJobs){
         m_duration = duration;
         m_candidateStringsList = candidateList;
         m_percentage = percentage;
+        this.m_currentThreadsJobs = currentThreadsJobs;
     }
 
     public String getDuration() {
@@ -21,7 +23,11 @@ public class EncryptionStatus {
         return m_candidateStringsList;
     }
 
-    public Integer getPercentage() {
+    public float getPercentage() {
         return m_percentage;
+    }
+
+    public List<SecretWithCount> getCurrentThreadsJobs() {
+        return m_currentThreadsJobs;
     }
 }

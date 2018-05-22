@@ -1,10 +1,12 @@
 package Producer;
 
+import Consumer.Agent;
 import DataTypes.EncryptionStatus;
 import DataTypes.GeneratedMachineDataTypes.Decipher;
 import DataTypes.GeneratedMachineDataTypes.Machine;
 import DataTypes.GeneratedMachineDataTypes.Reflector;
 import DataTypes.GeneratedMachineDataTypes.Rotor;
+import DataTypes.SecretWithCount;
 import DataTypes.SecretWithMissionSize;
 import DataTypes.CandidateStringWithEncryptionInfo;
 import InputValidation.Util;
@@ -32,6 +34,7 @@ public class Manager implements Runnable {
     private List<Thread> m_agentList;
     private BlockingQueue<SecretWithMissionSize> m_missionsQueue;
     private BlockingQueue<CandidateStringWithEncryptionInfo> m_responeQueue;
+    private ArrayList<Agent> m_agentListInstances;
 
     public List<CandidateStringWithEncryptionInfo> getCandidateList() {
         return m_candidateStrings;
@@ -201,16 +204,18 @@ public class Manager implements Runnable {
 
     private void startAllAgents() {
         m_agentList = new ArrayList<>(m_numOfAgentsSelection);
+        m_agentListInstances = new ArrayList<>(m_numOfAgentsSelection);
         for (int i = 0; i < m_numOfAgentsSelection; i++) {
-            Thread agent = new Thread(new Consumer.Agent(count, m_missionsQueue, m_responeQueue, m_unprocessedString, m_xmlMachine, m_decipher));
-            agent.setName("Agent-"+i);
-            m_agentList.add(agent);
+            Agent agentInstance = new Consumer.Agent(count, m_missionsQueue, m_responeQueue, m_unprocessedString, m_xmlMachine, m_decipher);
+            Thread agentThread = new Thread(agentInstance);
+            agentThread.setName("Agent-"+i);
+            m_agentList.add(agentThread);
+            m_agentListInstances.add(agentInstance);
         }
         for(Thread agent: m_agentList){
             agent.start();
         }
         m_agentsStartedTime = Instant.now();
-
     }
 
     private void insertMissionsToQueue(int numOfCombinations, int[] numOfMissions) {
@@ -294,7 +299,7 @@ public class Manager implements Runnable {
         return Duration.between(m_agentsStartedTime, now);
     }
 
-    public void getEncryptionStatus() {
+    public EncryptionStatus getEncryptionStatus() {
         long seconds = getEncryptionDurationUntilNow().getSeconds();
         long absSeconds = Math.abs(seconds);
         String time = String.format(
@@ -308,10 +313,15 @@ public class Manager implements Runnable {
             candidateList.add(getCandidateList().get(i));//TODO:: check if it works
         }
 
-        //int percentage = getProgressPercantage();
+        float percentage = DifficultyCalc.getPrecentageWorkDone(m_currNumOfCombinations,count[0]);
 
-        List<SecretWithMissionSize> currentThreadsJobs = new ArrayList<>();
-        //for(Thread thread : )
-       // EncryptionStatus status = new EncryptionStatus(time,candidateList,percentage);
+        List<SecretWithCount> currentThreadsJobs = new ArrayList<>();
+        for(Agent agent : m_agentListInstances)
+        {
+            currentThreadsJobs.add(agent.getThreadsJob());
+        }
+
+        EncryptionStatus status = new EncryptionStatus(time,candidateList,percentage,currentThreadsJobs);
+        return status;
     }
 }

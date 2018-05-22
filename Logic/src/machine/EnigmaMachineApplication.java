@@ -317,6 +317,11 @@ public class EnigmaMachineApplication {
     }
 
     public void getDecryptionStatus() {
-        dm.getEncryptionStatus();
+        EncryptionStatus status = m_dm.getEncryptionStatus();
+        System.out.println(status.getCandidateStringsList());
+        System.out.println(status.getCurrentThreadsJobs());
+        System.out.println(status.getDuration());
+        System.out.println(status.getPercentage());
+
     }
 }
