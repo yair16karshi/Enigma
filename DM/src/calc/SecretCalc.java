@@ -14,7 +14,8 @@ public class SecretCalc {
         for(int i=0; i<i_missionSizeSelection; i++){
             pos = positions.get(positions.size()-1);
             pos++;
-            pos = Integer.parseInt(Integer.toString(pos, i_abc.length()));
+            pos %= i_abc.length();
+            //pos = Integer.parseInt(Integer.toString(pos, i_abc.length()));
             positions.set(positions.size()-1, pos);
             if(pos == 0){
                 for(int j=positions.size()-2; j>0; j--){
