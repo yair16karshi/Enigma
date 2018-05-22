@@ -1,6 +1,7 @@
 package machine;
 
 import DataTypes.GeneratedMachineDataTypes.Decipher;
+import DataTypes.GeneratedMachineDataTypes.Dictionary;
 import DataTypes.GeneratedMachineDataTypes.Machine;
 import DataTypes.GeneratedMachineDataTypes.Reflector;
 import DataTypes.GeneratedMachineDataTypes.Rotor;
@@ -37,8 +38,10 @@ public class EnigmaMachineApplication {
         Machine xmlMachine = m_xmlParser.machine.getMachine();
         Decipher deciper = new Decipher();
         deciper.setAgents(m_xmlParser.machine.getDecipher().getAgents());
-        deciper.setDictionary(m_xmlParser.machine.getDecipher().getDictionary());
-        dm = new Manager(m_machineWrapper.getMachine(), deciper, xmlMachine);
+        Dictionary dictionary = new Dictionary();
+        dictionary.setExcludeChars(m_xmlParser.machine.getDecipher().getDictionary().getExcludeChars());
+        dictionary.setWords(m_xmlParser.machine.getDecipher().getDictionary().getWords().trim());
+        deciper.setDictionary(dictionary);
         EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(xmlMachine.getRotorsCount(),xmlMachine.getABC());
         DefineRotors(machineBuilder,xmlMachine);
         DefineReflectors(machineBuilder,xmlMachine);
@@ -47,6 +50,7 @@ public class EnigmaMachineApplication {
         //set some extra useful parameters
         m_machineWrapper.setXMLMachine(xmlMachine);
 
+        dm = new Manager(m_machineWrapper.getMachine(), deciper, xmlMachine);
     }
 
     public static void DefineReflectors(EnigmaMachineBuilder machineBuilder, Machine xmlMachine) {

@@ -163,9 +163,10 @@ public class Util {
 
     public static Dictionary removeDoubleWordsAndExcludeChars(Dictionary dictionary) {
         Dictionary res = new Dictionary();
+        String str;
         for(String word: dictionary.getWords().split(" ")){
             for (Character excludeChar: dictionary.getExcludeChars().toCharArray()){
-                word.replaceAll(excludeChar.toString(), "");
+                word = word.replace(excludeChar.toString(), "");
             }
         }
         //remove double values
