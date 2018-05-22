@@ -169,6 +169,7 @@ public class Manager implements Runnable {
     private void startAllAgents() {
         for (int i = 0; i < m_numOfAgentsSelection; i++) {
             Thread agent = new Thread(new Consumer.Agent(m_missionsQueue, m_responeQueue, m_unprocessedString, m_xmlMachine, m_decipher));
+            agent.setName("Agent-"+i);
             agent.start();
         }
     }

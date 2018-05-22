@@ -66,6 +66,10 @@ public class EnigmaMachineWrapper  {
         stringAndTime.setUnprocessedString(s);
         stringAndTime.setProcessedString(processedString);
         stringAndTime.setTime(stopTime - startTime);
+        if(m_history.get(m_machine.getSecret()) == null)
+        {
+            m_history.put(m_machine.getSecret(), new HashSet<ProcessStringAndTime>());
+        }
         m_history.get(m_machine.getSecret()).add(stringAndTime);
 
         return processedString;

@@ -274,7 +274,6 @@ public class EnigmaMachineApplication {
                 return m_machineWrapper.isSecretHasBeenSet();
             }
             case 8:{
-                //TODO:: implement
                 if(m_machineWrapper.getIsXMLLoaded() && m_machineWrapper.isSecretHasBeenSet())
                     return true;
                 return false;
@@ -300,6 +299,7 @@ public class EnigmaMachineApplication {
     public void startBruteForce(String unprocessedString, Integer difficultySelection, Integer missionSizeSelection, Integer numOfAgentsSelection) {
         dm.set(unprocessedString, m_machineWrapper.getSecret(), difficultySelection, missionSizeSelection, numOfAgentsSelection);
         Thread thread = new Thread(dm);
+        thread.setName("DM");
         thread.start();
     }
 

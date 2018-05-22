@@ -36,6 +36,7 @@ public class Agent implements Runnable{
         EnigmaMachineApplication.DefineRotors(machineBuilder,xmlMachine);
         EnigmaMachineApplication.DefineReflectors(machineBuilder,xmlMachine);
         m_machineWrapper = new EnigmaMachineWrapper(machineBuilder.create());
+        m_machineWrapper.setXMLMachine(xmlMachine);
     }
 
     @Override

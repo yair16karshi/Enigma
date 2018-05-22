@@ -260,29 +260,33 @@ public class UI {
     private void EncryptStringUI() {
         Integer difficultySelection,missionSizeSelection,numOfAgentsSelection;
         boolean validInput = false;
-        while(!validInput) {
-            try {
-                if (m_machineApplication.commandIsPossible(8)) {
-                    System.out.println("Please Enter string to process:");
-                    String unprocessedString = scanner.next();
-                    if (m_machineApplication.IsLegalStringOfDictionaryWords(unprocessedString)) {
-                        difficultySelection = RequestDifficultyFromUser();
-                        missionSizeSelection = RequestMissionSizeFromUser();
-                        numOfAgentsSelection = RequestNumOfAgentsFromUser();
-                        if (RequestPermissionToStartMission()) {
-                            m_machineApplication.startBruteForce(unprocessedString, difficultySelection, missionSizeSelection, numOfAgentsSelection);
-                            RunStatusMenu();
-                            validInput = true;
+        try {
+            if (m_machineApplication.commandIsPossible(2)) {
+                if(m_machineApplication.commandIsPossible(5)){
+                    while(!validInput) {
+                        System.out.println("Please Enter string to process:");
+                        String unprocessedString = scanner.next();
+                        if (m_machineApplication.IsLegalStringOfDictionaryWords(unprocessedString)) {
+                            difficultySelection = RequestDifficultyFromUser();
+                            missionSizeSelection = RequestMissionSizeFromUser();
+                            numOfAgentsSelection = RequestNumOfAgentsFromUser();
+                            if (RequestPermissionToStartMission()) {
+                                m_machineApplication.startBruteForce(unprocessedString, difficultySelection, missionSizeSelection, numOfAgentsSelection);
+                                RunStatusMenu();
+                                validInput = true;
+                            }
+                        } else {
+                            System.out.println("String Does not contain dictionary words");
                         }
-                    } else {
-                        System.out.println("String Does not contain dictionary words");
                     }
-                } else{
-
+                }else{
+                    System.out.println("Please enter a secret and try again");
                 }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+            } else{
+                System.out.println("Please load XML file and try again");
             }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
