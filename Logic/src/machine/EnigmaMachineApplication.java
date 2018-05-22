@@ -1,10 +1,6 @@
 package machine;
 
-import DataTypes.GeneratedMachineDataTypes.Decipher;
-import DataTypes.GeneratedMachineDataTypes.Dictionary;
-import DataTypes.GeneratedMachineDataTypes.Machine;
-import DataTypes.GeneratedMachineDataTypes.Reflector;
-import DataTypes.GeneratedMachineDataTypes.Rotor;
+import DataTypes.GeneratedMachineDataTypes.*;
 import InputValidation.Util;
 import InputValidation.XMLParser;
 import Producer.Manager;
@@ -14,7 +10,7 @@ import pukteam.enigma.factory.EnigmaComponentFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.*;
+import java.util.Set;
 
 public class EnigmaMachineApplication {
     private EnigmaMachineWrapper m_machineWrapper;
@@ -76,12 +72,12 @@ public class EnigmaMachineApplication {
             String source = "";
             for(int j=0; j< xmlRotor.getMapping().size() ; j++)
             {
-                source = source.concat(xmlRotor.getMapping().get(j).getFrom());
+                source = source.concat(xmlRotor.getMapping().get(j).getRight());
             }
             String target = "";
             for(int j=0; j< xmlRotor.getMapping().size() ; j++)
             {
-                target = target.concat(xmlRotor.getMapping().get(j).getTo());
+                target = target.concat(xmlRotor.getMapping().get(j).getLeft());
             }
             machineBuilder.defineRotor(xmlRotor.getId(),source,target,xmlRotor.getNotch());
         }
@@ -279,8 +275,9 @@ public class EnigmaMachineApplication {
             }
             case 8:{
                 //TODO:: implement
-                /* DEBBUGING*/
-                return true;
+                if(m_machineWrapper.getIsXMLLoaded() && m_machineWrapper.isSecretHasBeenSet())
+                    return true;
+                return false;
             }
         }
         return false;

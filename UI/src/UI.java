@@ -277,6 +277,8 @@ public class UI {
                     } else {
                         System.out.println("String Does not contain dictionary words");
                     }
+                } else{
+
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());

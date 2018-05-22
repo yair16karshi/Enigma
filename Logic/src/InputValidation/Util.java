@@ -23,12 +23,12 @@ public class Util {
         List<String> from = new ArrayList<>();
         for(Rotor rotor: rotors.getRotor()){
             for(Mapping map: rotor.getMapping()){
-                if(to.contains(map.getTo()) || from.contains(map.getFrom())){
+                if(to.contains(map.getLeft()) || from.contains(map.getRight())){
                     answer[0] = "Rotor id"+rotor.getId()+"have double mapping";
                     return true;
                 }
-                to.add(map.getTo());
-                from.add(map.getFrom());
+                to.add(map.getLeft());
+                from.add(map.getRight());
             }
             to.clear();
             from.clear();

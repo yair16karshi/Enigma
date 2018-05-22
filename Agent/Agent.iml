@@ -25,7 +25,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="Logic" exported="" />
+    <orderEntry type="module" module-name="Logic" />
     <orderEntry type="module" module-name="DM" />
   </component>
 </module>

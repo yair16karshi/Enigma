@@ -8,17 +8,14 @@ import DataTypes.SecretWithMissionSize;
 import InputValidation.Util;
 import calc.DifficultyCalc;
 import calc.SecretCalc;
-import machine.EnigmaMachineWrapper;
 import pukteam.enigma.component.machine.api.EnigmaMachine;
 import pukteam.enigma.component.machine.api.Secret;
 import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
 import pukteam.enigma.component.machine.secret.SecretBuilder;
 import pukteam.enigma.factory.EnigmaComponentFactory;
-import sun.management.Agent;
 
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 
 import static machine.EnigmaMachineApplication.DefineReflectors;
