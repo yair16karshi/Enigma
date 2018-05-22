@@ -14,13 +14,19 @@ public class SecretCalc {
         for(int i=0; i<i_missionSizeSelection; i++){
             pos = positions.get(positions.size()-1);
             pos++;
-            pos %= i_abc.length();
-            positions.set(positions.size()-1, pos);
+            pos = (pos%(i_abc.length()+1));
             if(pos == 0){
+                pos++;
+            }
+            positions.set(positions.size()-1, pos);
+            if(pos == 1){
                 for(int j=positions.size()-2; j>=0; j--){
                     pos = positions.get(j);
                     pos++;
-                    pos %= i_abc.length();
+                    pos = (pos%(i_abc.length()+1)) +1;
+                    if(pos == 0){
+                        pos++;
+                    }
                     positions.set(j, pos);
                     if(pos != 0)
                         break;
