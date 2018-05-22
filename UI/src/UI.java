@@ -304,11 +304,11 @@ public class UI {
             }
             switch (selection){
                 case 1:{
-                    //TODO implement
+                    m_machineApplication.getDecryptionStatus();
                     break;
                 }
                 case 2:{
-                    //TODO implement
+                    //m_machineApplication.PauseResumeDectyption();
                     break;
                 }
                 case 3:{

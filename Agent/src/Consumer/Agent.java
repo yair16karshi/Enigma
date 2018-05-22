@@ -5,7 +5,9 @@ import java.util.concurrent.BlockingQueue;
 import DataTypes.GeneratedMachineDataTypes.Decipher;
 import DataTypes.GeneratedMachineDataTypes.Dictionary;
 import DataTypes.GeneratedMachineDataTypes.Machine;
+import DataTypes.SecretWithCount;
 import DataTypes.SecretWithMissionSize;
+import DataTypes.CandidateStringWithEncryptionInfo;
 import calc.SecretCalc;
 import machine.EnigmaMachineApplication;
 import machine.EnigmaMachineWrapper;
@@ -15,13 +17,18 @@ import pukteam.enigma.factory.EnigmaComponentFactory;
 
 public class Agent implements Runnable{
     private BlockingQueue<SecretWithMissionSize> m_missionsQueue;
-    private BlockingQueue<String> m_decipheredQueue;
+    private BlockingQueue<CandidateStringWithEncryptionInfo> m_decipheredQueue;
     private String m_stringToProcess;
     private EnigmaMachineWrapper m_machineWrapper;
     private Dictionary m_dictionry;
+    private Integer[] m_count;
+    /*FOR STATUS UPDATES*/
+    private Secret m_currentSecret;
+    private int m_jobsLeft;
+    /*FOR STATUS UPDATES*/
 
     public Agent(Integer[] count, BlockingQueue<SecretWithMissionSize> missionsQueue,
-                 BlockingQueue<String> decipheredQueue,
+                 BlockingQueue<CandidateStringWithEncryptionInfo> decipheredQueue,
                  String stringToProcess,
                  Machine xmlMachine,
                  Decipher decipher){
@@ -31,6 +38,7 @@ public class Agent implements Runnable{
         m_decipheredQueue = decipheredQueue;
         m_stringToProcess = stringToProcess;
         m_dictionry = decipher.getDictionary();
+        m_count = count;
 
         EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(xmlMachine.getRotorsCount(),xmlMachine.getABC());
         EnigmaMachineApplication.DefineRotors(machineBuilder,xmlMachine);
@@ -51,10 +59,16 @@ public class Agent implements Runnable{
             }
         }
     }
+
     private void RunMission(SecretWithMissionSize mission){
         Secret localSecret = mission.getSecret();
 
         for(int i = 0 ; i < mission.getMissionSize() ; i++){
+            /*FOR STATUS UPDATES*/
+            m_currentSecret = localSecret;
+            m_jobsLeft = mission.getMissionSize()-i;
+            /*FOR STATUS UPDATES*/
+
             PerformSingleString(localSecret);
             localSecret = SecretCalc.addPositions(
                     localSecret,
@@ -63,16 +77,29 @@ public class Agent implements Runnable{
                     m_machineWrapper.getXMLMachine().getABC());
         }
     }
+
     private void PerformSingleString(Secret secret){
         String[] processedWords;
+        boolean decypered = true;
         m_machineWrapper.initFromSecret(secret);
         String processedString = m_machineWrapper.process(m_stringToProcess);
         processedWords = processedString.split(" ");
         for(String s : processedWords){
             if(!m_dictionry.getWords().contains(s)){
-                return;
+                decypered = false;
+                break;
             }
         }
-        m_decipheredQueue.add(processedString);
+        if(decypered) {
+            m_decipheredQueue.add(new CandidateStringWithEncryptionInfo(processedString,Thread.currentThread().getId(),secret));
+        }
+        synchronized (m_decipheredQueue){
+            m_count[0]++;
+        }
+    }
+
+    public SecretWithCount getThreadsJob(){
+        SecretWithCount res = new SecretWithCount(m_currentSecret,m_jobsLeft);
+        return res;
     }
 }

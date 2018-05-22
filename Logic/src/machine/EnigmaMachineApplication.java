@@ -1,16 +1,17 @@
 package machine;
 
+import DataTypes.CandidateStringWithEncryptionInfo;
+import DataTypes.EncryptionStatus;
 import DataTypes.GeneratedMachineDataTypes.*;
+import DataTypes.GeneratedMachineDataTypes.Dictionary;
 import InputValidation.Util;
 import InputValidation.XMLParser;
 import Producer.Manager;
 import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
 import pukteam.enigma.factory.EnigmaComponentFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.time.Duration;
+import java.util.*;
 
 public class EnigmaMachineApplication {
     private EnigmaMachineWrapper m_machineWrapper;
@@ -305,5 +306,9 @@ public class EnigmaMachineApplication {
 
     public Integer getMaxAllowedAgents() {
         return dm.getDecipher().getAgents();
+    }
+
+    public void getDecryptionStatus() {
+        dm.getEncryptionStatus();
     }
 }

@@ -1,10 +1,12 @@
 package Producer;
 
+import DataTypes.EncryptionStatus;
 import DataTypes.GeneratedMachineDataTypes.Decipher;
 import DataTypes.GeneratedMachineDataTypes.Machine;
 import DataTypes.GeneratedMachineDataTypes.Reflector;
 import DataTypes.GeneratedMachineDataTypes.Rotor;
 import DataTypes.SecretWithMissionSize;
+import DataTypes.CandidateStringWithEncryptionInfo;
 import InputValidation.Util;
 import calc.DifficultyCalc;
 import calc.SecretCalc;
@@ -14,6 +16,8 @@ import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
 import pukteam.enigma.component.machine.secret.SecretBuilder;
 import pukteam.enigma.factory.EnigmaComponentFactory;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -27,8 +31,13 @@ public class Manager implements Runnable {
     private Machine m_xmlMachine;
     private List<Thread> m_agentList;
     private BlockingQueue<SecretWithMissionSize> m_missionsQueue;
-    private BlockingQueue<String> m_responeQueue;
-    private List<String> m_candidateStrings = new ArrayList<>();
+    private BlockingQueue<CandidateStringWithEncryptionInfo> m_responeQueue;
+
+    public List<CandidateStringWithEncryptionInfo> getCandidateList() {
+        return m_candidateStrings;
+    }
+
+    private List<CandidateStringWithEncryptionInfo> m_candidateStrings = new ArrayList<>();
     private Integer[] count = new Integer[1];
 
     private String m_unprocessedString;
@@ -37,6 +46,7 @@ public class Manager implements Runnable {
     private Integer m_missionSizeSelection;
     private Integer m_numOfAgentsSelection;
 
+    Instant m_agentsStartedTime;
 
     public Manager(EnigmaMachine machine, Decipher decipher, Machine xmlMachine){
         m_machine = machine;
@@ -59,7 +69,7 @@ public class Manager implements Runnable {
         final int QUEUE_SIZE = 1000;
 
         m_missionsQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
-        m_responeQueue = new ArrayBlockingQueue<String>(QUEUE_SIZE);
+        m_responeQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
         Thread t1 =
             new Thread(
                     () -> {
@@ -177,6 +187,8 @@ public class Manager implements Runnable {
             agent.setName("Agent-"+i);
             agent.start();
         }
+        m_agentsStartedTime = Instant.now();
+
     }
 
     private void insertMissionsToQueue(int numOfCombinations, int[] numOfMissions) {
@@ -228,5 +240,31 @@ public class Manager implements Runnable {
         DefineRotors(machineBuilder,m_xmlMachine);
         DefineReflectors(machineBuilder,m_xmlMachine);
         m_machine = machineBuilder.create();
+    }
+
+    public Duration getEncryptionDurationUntilNow(){
+        Instant now = Instant.now();
+        return Duration.between(m_agentsStartedTime, now);
+    }
+
+    public void getEncryptionStatus() {
+        long seconds = getEncryptionDurationUntilNow().getSeconds();
+        long absSeconds = Math.abs(seconds);
+        String time = String.format(
+                "%02d:%02d",
+                (absSeconds % 3600) / 60,
+                absSeconds % 60);
+
+        //System.out.println(time);
+        List<CandidateStringWithEncryptionInfo> candidateList = new ArrayList<>();
+        for(int i=0 ; i < 10 && i < getCandidateList().size() ; i++){
+            candidateList.add(getCandidateList().get(i));//TODO:: check if it works
+        }
+
+        //int percentage = getProgressPercantage();
+
+        List<SecretWithMissionSize> currentThreadsJobs = new ArrayList<>();
+        //for(Thread thread : )
+       // EncryptionStatus status = new EncryptionStatus(time,candidateList,percentage);
     }
 }
