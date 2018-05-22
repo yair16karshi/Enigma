@@ -60,22 +60,27 @@ public class Manager implements Runnable {
 
         m_missionsQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
         m_responeQueue = new ArrayBlockingQueue<String>(QUEUE_SIZE);
+        Thread t1 =
+            new Thread(
+                    () -> {
+                      switch (m_difficultySelection) {
+                        case 1:
+                          difficultyEasy();
+                          break;
+                        case 2:
+                          difficultyMedium();
+                          break;
+                        case 3:
+                          difficultyHard();
+                          break;
+                        case 4:
+                          difficultyImpossible();
+                          break;
+                      }
+                    });
+            t1.start();
 
-        switch (m_difficultySelection){
-            case 1:
-                difficultyEasy();
-                break;
-            case 2:
-                //TODO
-                difficultyMedium();
-                break;
-            case 3:
-                difficultyHard();
-                break;
-            case 4:
-                difficultyImpossible();
-                break;
-        }
+
     }
 
     private void difficultyImpossible(){
@@ -168,7 +173,7 @@ public class Manager implements Runnable {
 
     private void startAllAgents() {
         for (int i = 0; i < m_numOfAgentsSelection; i++) {
-            Thread agent = new Thread(new Consumer.Agent(m_missionsQueue, m_responeQueue, m_unprocessedString, m_xmlMachine, m_decipher));
+            Thread agent = new Thread(new Consumer.Agent(count, m_missionsQueue, m_responeQueue, m_unprocessedString, m_xmlMachine, m_decipher));
             agent.setName("Agent-"+i);
             agent.start();
         }
@@ -194,7 +199,7 @@ public class Manager implements Runnable {
             catch (Exception e){
 
             }
-            m_secret = SecretCalc.addPositions(count, m_secret, sizeOfCurrMission, m_xmlMachine.getRotorsCount(), m_xmlMachine.getABC());
+            m_secret = SecretCalc.addPositions(m_secret, sizeOfCurrMission, m_xmlMachine.getRotorsCount(), m_xmlMachine.getABC());
             numOfCombinations -= m_missionSizeSelection;
         }
     }

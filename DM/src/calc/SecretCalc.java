@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class SecretCalc {
-    public static Secret addPositions(Integer[] count, Secret m_secret, Integer i_missionSizeSelection, Integer rotorsCount, String i_abc) {
+    public static Secret addPositions(Secret m_secret, Integer i_missionSizeSelection, Integer rotorsCount, String i_abc) {
         List<Integer> positions = m_secret.getSelectedRotorsPositions();
         Integer pos;
 

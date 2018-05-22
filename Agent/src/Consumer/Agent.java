@@ -20,7 +20,7 @@ public class Agent implements Runnable{
     private EnigmaMachineWrapper m_machineWrapper;
     private Dictionary m_dictionry;
 
-    public Agent(BlockingQueue<SecretWithMissionSize> missionsQueue,
+    public Agent(Integer[] count, BlockingQueue<SecretWithMissionSize> missionsQueue,
                  BlockingQueue<String> decipheredQueue,
                  String stringToProcess,
                  Machine xmlMachine,
@@ -56,7 +56,7 @@ public class Agent implements Runnable{
 
         for(int i = 0 ; i < mission.getMissionSize() ; i++){
             PerformSingleString(localSecret);
-            localSecret = SecretCalc.addPositions(new Integer[]{},
+            localSecret = SecretCalc.addPositions(
                     localSecret,
                     1,
                     m_machineWrapper.getXMLMachine().getRotorsCount(),
