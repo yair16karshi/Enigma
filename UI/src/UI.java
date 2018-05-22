@@ -293,6 +293,7 @@ public class UI {
     private void RunStatusMenu() {
         String input;
         Integer selection;
+        boolean isSuspend = false;
         while(true){
             DisplayAllItems(m_statusMenuItems);
             input = scanner.next();
@@ -308,12 +309,18 @@ public class UI {
                     break;
                 }
                 case 2:{
-                    //m_machineApplication.PauseResumeDectyption();
+                    m_machineApplication.stopAndResumeDMandAgents();
+                    if(isSuspend){
+                        System.out.println("DM and agents resume");
+                    } else{
+                        System.out.println("DM and agents suspend");
+                    }
+                    isSuspend = !isSuspend;
                     break;
                 }
                 case 3:{
-                    //TODO implement
-                    break;
+                    m_machineApplication.stopDMandAgents();
+                    return;
                 }
                 default:{
                     System.out.println("Selection is not in range, please try again.");

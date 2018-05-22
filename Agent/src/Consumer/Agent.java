@@ -48,13 +48,13 @@ public class Agent implements Runnable{
     }
 
     @Override
-    public void run() {
+    public void run(){
         while(true){
             if(!Thread.interrupted()){//TODO:: verify that interrupted works
                 try {
                     RunMission(m_missionsQueue.take());
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    return;
                 }
             }
         }
