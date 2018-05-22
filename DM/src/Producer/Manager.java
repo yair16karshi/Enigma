@@ -146,7 +146,7 @@ public class Manager implements Runnable {
         numOfMissions[0] = 0;
 
         //start agents
-        //startAllAgents();
+        startAllAgents();
 
         //put all missions in queue
         insertMissionsToQueue(numOfCombinations, numOfMissions);
@@ -167,12 +167,11 @@ public class Manager implements Runnable {
     }
 
     private void startAllAgents() {
-        int i=0;
-        //for (int i = 0; i < m_numOfAgentsSelection; i++) {
+        for (int i = 0; i < m_numOfAgentsSelection; i++) {
             Thread agent = new Thread(new Consumer.Agent(m_missionsQueue, m_responeQueue, m_unprocessedString, m_xmlMachine, m_decipher));
             agent.setName("Agent-"+i);
             agent.start();
-        //}
+        }
     }
 
     private void insertMissionsToQueue(int numOfCombinations, int[] numOfMissions) {

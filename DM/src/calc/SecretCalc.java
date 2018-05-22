@@ -23,7 +23,7 @@ public class SecretCalc {
                 for(int j=positions.size()-2; j>=0; j--){
                     pos = positions.get(j);
                     pos++;
-                    pos = (pos%(i_abc.length()+1)) +1;
+                    pos = (pos%(i_abc.length()+1));
                     if(pos == 0){
                         pos++;
                     }
