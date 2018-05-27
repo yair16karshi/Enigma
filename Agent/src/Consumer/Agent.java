@@ -57,7 +57,7 @@ public class Agent implements Runnable{
                     return;
                 }
             } else if(Thread.currentThread().isInterrupted() && m_decipheredQueue.isEmpty()){
-                Thread.currentThread().destroy();
+                return;
             }
         }
     }

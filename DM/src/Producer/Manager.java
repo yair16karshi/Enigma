@@ -42,7 +42,7 @@ public class Manager implements Runnable {
 
     private List<CandidateStringWithEncryptionInfo> m_candidateStrings = new ArrayList<>();
     private Integer[] count = new Integer[1];
-    private boolean m_ism_isSuspend = false;
+    private boolean m_isSuspend = false;
 
     private String m_unprocessedString;
     private Secret m_secret;
@@ -218,7 +218,7 @@ public class Manager implements Runnable {
     private void startAllAgents() {
         m_agentList = new ArrayList<>(m_numOfAgentsSelection);
         m_agentListInstances = new ArrayList<>(m_numOfAgentsSelection);
-        for (int i = 0; i < m_numOfAgentsSelection; i++) {
+        for (int i = 0; i < 1/*m_numOfAgentsSelection*/; i++) {
             Agent agentInstance = new Consumer.Agent(count, m_missionsQueue, m_responeQueue, m_unprocessedString, m_xmlMachine, m_decipher);
             Thread agentThread = new Thread(agentInstance);
             agentThread.setName("Agent-"+i);
@@ -291,19 +291,19 @@ public class Manager implements Runnable {
 
     public void stopAndResumeDMandAgents() {
         for(Thread thread: m_agentList){
-            if(m_ism_isSuspend){
+            if(m_isSuspend){
                 thread.resume();
             } else{
                 thread.suspend();
             }
         }
 
-        if(m_ism_isSuspend){
+        if(m_isSuspend){
             m_missionsThread.resume();
-            m_ism_isSuspend = false;
+            m_isSuspend = false;
         } else{
             m_missionsThread.suspend();
-            m_ism_isSuspend = true;
+            m_isSuspend = true;
         }
     }
 
