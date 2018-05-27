@@ -134,6 +134,9 @@ public class Manager implements Runnable {
                 }
             }
         }
+
+        startAllAgents();
+        takeResponsesFromAgents(numOfMissions);
     }
 
     private void difficultyHard() {
@@ -167,8 +170,6 @@ public class Manager implements Runnable {
         numOfMissions[0] = 0;
         List<Integer> rotorsOrder = m_secret.getSelectedRotorsInOrder();
 
-        startAllAgents();
-
         int numOfCombinations = DifficultyCalc.easy(m_xmlMachine.getRotorsCount(), m_xmlMachine.getABC());
         m_currNumOfCombinations = m_xmlMachine.getReflectors().getReflector().size()* numOfCombinations;
         for (Reflector refl : m_xmlMachine.getReflectors().getReflector()) {
@@ -180,6 +181,8 @@ public class Manager implements Runnable {
             m_secret = secretBuilder.create();
             insertMissionsToQueue(numOfCombinations, numOfMissions);
         }
+
+        startAllAgents();
 
         takeResponsesFromAgents(numOfMissions);
     }
