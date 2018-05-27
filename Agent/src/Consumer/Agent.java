@@ -66,6 +66,7 @@ public class Agent extends Thread{
         Secret localSecret = mission.getSecret();
 
         for(int i = 1 ; i <= mission.getMissionSize() ; i++){
+            System.out.println(m_count[0]);
             /*FOR STATUS UPDATES*/
             m_currentSecret = localSecret;
             m_jobsLeft = mission.getMissionSize()-i;
