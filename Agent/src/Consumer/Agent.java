@@ -65,7 +65,7 @@ public class Agent implements Runnable{
     private void RunMission(SecretWithMissionSize mission){
         Secret localSecret = mission.getSecret();
 
-        for(int i = 0 ; i < mission.getMissionSize() ; i++){
+        for(int i = 1 ; i <= mission.getMissionSize() ; i++){
             /*FOR STATUS UPDATES*/
             m_currentSecret = localSecret;
             m_jobsLeft = mission.getMissionSize()-i;
