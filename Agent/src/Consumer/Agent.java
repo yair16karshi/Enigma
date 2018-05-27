@@ -15,7 +15,7 @@ import pukteam.enigma.component.machine.api.Secret;
 import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
 import pukteam.enigma.factory.EnigmaComponentFactory;
 
-public class Agent implements Runnable{
+public class Agent extends Thread{
     private BlockingQueue<SecretWithMissionSize> m_missionsQueue;
     private BlockingQueue<CandidateStringWithEncryptionInfo> m_decipheredQueue;
     private String m_stringToProcess;
@@ -23,8 +23,8 @@ public class Agent implements Runnable{
     private Dictionary m_dictionry;
     private Integer[] m_count;
     /*FOR STATUS UPDATES*/
-    private Secret m_currentSecret;
-    private int m_jobsLeft;
+    private volatile Secret m_currentSecret;
+    private volatile int m_jobsLeft;
     /*FOR STATUS UPDATES*/
 
     public Agent(Integer[] count, BlockingQueue<SecretWithMissionSize> missionsQueue,
@@ -66,6 +66,7 @@ public class Agent implements Runnable{
         Secret localSecret = mission.getSecret();
 
         for(int i = 1 ; i <= mission.getMissionSize() ; i++){
+            System.out.println(m_count[0]);
             /*FOR STATUS UPDATES*/
             m_currentSecret = localSecret;
             m_jobsLeft = mission.getMissionSize()-i;
