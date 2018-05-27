@@ -13,7 +13,7 @@ public class UI {
 
     private EnigmaMachineApplication m_machineApplication = new EnigmaMachineApplication();
 
-    public UI(){
+    public UI() {
         m_mainMenuItems.add("1. Load Machine details from XML file.");
         m_mainMenuItems.add("2. Show Machine details.");
         m_mainMenuItems.add("3. Define initial machine settings manually.");
@@ -39,18 +39,17 @@ public class UI {
     public void MenuLoop() {
         String input;
         int selection;
-        while(true) {
+        while (true) {
             DisplayAllItems(m_mainMenuItems);
             input = scanner.nextLine();
 
             try {
                 selection = Integer.parseInt(input);
-            }
-            catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.out.println("Selection is not a number, Please try again.");
                 continue;
             }
-            if(selection < 1 || selection > numOfMenus){
+            if (selection < 1 || selection > numOfMenus) {
                 System.out.println("Selection is not in range. please enter a number between 1 to " + numOfMenus + ".");
                 continue;
             }
@@ -60,8 +59,7 @@ public class UI {
             }
             try {
                 HandleSelection(selection);
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
                 continue;
             }
@@ -69,75 +67,69 @@ public class UI {
     }
 
     public void HandleSelection(int selection) {
-        switch (selection)
-        {
+        switch (selection) {
             //load from XML
-            case 1:
-            {
+            case 1: {
                 boolean valid = false;
-                do{
+                do {
                     System.out.println("Please Enter absolute XML path:");
                     String xmlPath = scanner.nextLine();
                     try {
                         m_machineApplication.LoadXMLFile(xmlPath);
                         valid = true;
-                    }
-                    catch(Exception e){
+                    } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
-                }while(!valid);
+                } while (!valid);
             }
             //no break because 1 goes automatically to 2
             //display machine details
-            case 2:
-            {
+            case 2: {
                 try {
                     if (m_machineApplication.commandIsPossible(2)) {
-                      System.out.println(
-                          "Number of Rotors being used: "
-                              + m_machineApplication.getNumOfRotorsBeingUsed()
-                              + ".");
-                      System.out.println(
-                          "Number of Available Rotors: "
-                              + m_machineApplication.getNumOfAvailableRotors()
-                              + ".");
-                      Map<Integer, Integer> rotorsAndLocations =
-                          m_machineApplication.getLocationOfNotchInEachRotor();
-                      for (Map.Entry<Integer, Integer> entry : rotorsAndLocations.entrySet()) {
                         System.out.println(
-                            "Rotor number: " + entry.getKey() + " and Notch location: " + entry.getValue());
-                      }
-                      System.out.println(
-                          "Number of Reflectors: "
-                              + m_machineApplication.getNumOfAvailableReflectors()
-                              + ".");
-                      System.out.println(
-                          "Number of Processed messages: "
-                              + m_machineApplication.getNumOfProcessedMessages()
-                              + ".");
-                      if (m_machineApplication.isSecretLoaded()) {
-                        DisplayCurrentSecret();
-                      } else {
-                        System.out.println("No secret loaded yet.\n");
-                      }
-                    }else{
+                                "Number of Rotors being used: "
+                                        + m_machineApplication.getNumOfRotorsBeingUsed()
+                                        + ".");
+                        System.out.println(
+                                "Number of Available Rotors: "
+                                        + m_machineApplication.getNumOfAvailableRotors()
+                                        + ".");
+                        Map<Integer, Integer> rotorsAndLocations =
+                                m_machineApplication.getLocationOfNotchInEachRotor();
+                        for (Map.Entry<Integer, Integer> entry : rotorsAndLocations.entrySet()) {
+                            System.out.println(
+                                    "Rotor number: " + entry.getKey() + " and Notch location: " + entry.getValue());
+                        }
+                        System.out.println(
+                                "Number of Reflectors: "
+                                        + m_machineApplication.getNumOfAvailableReflectors()
+                                        + ".");
+                        System.out.println(
+                                "Number of Processed messages: "
+                                        + m_machineApplication.getNumOfProcessedMessages()
+                                        + ".");
+                        if (m_machineApplication.isSecretLoaded()) {
+                            DisplayCurrentSecret();
+                        } else {
+                            System.out.println("No secret loaded yet.\n");
+                        }
+                    } else {
                         System.out.println("XML was not loaded, please load XML file and try again.");
                     }
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
                 break;
             }
             //set initial secret
-            case 3:
-            {
+            case 3: {
                 List<Integer> rotorsList = new ArrayList<>();
                 String initialLocationString = "";
                 String reflector = "";
                 boolean inputOK = false;
 
-                if(m_machineApplication.commandIsPossible(3)) {
+                if (m_machineApplication.commandIsPossible(3)) {
                     //getRotors
                     while (!inputOK) {
                         rotorsList = getRotorsFromUser();
@@ -175,55 +167,50 @@ public class UI {
                             System.out.println(" Please try again.");
                         }
                     }
-                    try{
-                        m_machineApplication.CreateManualSecret(rotorsList,initialLocationString,reflector);
+                    try {
+                        m_machineApplication.CreateManualSecret(rotorsList, initialLocationString, reflector);
                         System.out.println("Secret loaded successfully, displaying secret:");
                         DisplayCurrentSecret();
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
-                }else{
+                } else {
                     System.out.println("XML was not loaded, please load XML file and try again.");
                 }
                 break;
             }
             //set initial secret automatically
-            case 4:
-            {
+            case 4: {
 
                 try {
                     if (m_machineApplication.commandIsPossible(4)) {
-                      m_machineApplication.setInitialSecretAutomatically();
-                      System.out.println("Secret loaded successfully, displaying secret:");
-                      DisplayCurrentSecret();
-                    }else{
+                        m_machineApplication.setInitialSecretAutomatically();
+                        System.out.println("Secret loaded successfully, displaying secret:");
+                        DisplayCurrentSecret();
+                    } else {
                         System.out.println("XML was not loaded, please load XML file and try again.");
                     }
-                } catch(Exception e){
+                } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
                 break;
             }
             //process string
-            case 5:
-            {
+            case 5: {
                 boolean validInput = false;
-                while(!validInput)
-                {
-                    try{
-                        if(m_machineApplication.commandIsPossible(5)) {
+                while (!validInput) {
+                    try {
+                        if (m_machineApplication.commandIsPossible(5)) {
                             System.out.println("Please Enter string to process:");
                             String unprocessedString = scanner.next();
                             String processedString = m_machineApplication.processString(unprocessedString);
-                            System.out.println("Encrypted string is: " + processedString +".");
+                            System.out.println("Encrypted string is: " + processedString + ".");
                             validInput = true;
-                        }
-                        else{
+                        } else {
                             System.out.println("Command is not possible because the secret hasn't been loaded yet. Please load a secret and try again");
                             return;
                         }
-                    }
-                    catch(Exception e){
+                    } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
                 }
@@ -231,26 +218,22 @@ public class UI {
                 break;
             }
             //reset machine
-            case 6:
-            {
-                try{
+            case 6: {
+                try {
                     m_machineApplication.resetMachine();
                     System.out.println("Secret was reset successfully.");
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
                 break;
             }
-            case 7:
-            {
+            case 7: {
                 double[] avg = new double[1];
                 Map<String, Set<String>> history = m_machineApplication.getHistory(avg);
                 printHistory(history, avg);
                 break;
             }
-            case 8:
-            {
+            case 8: {
                 EncryptStringUI();
                 break;
             }
@@ -258,12 +241,12 @@ public class UI {
     }
 
     private void EncryptStringUI() {
-        Integer difficultySelection,missionSizeSelection,numOfAgentsSelection;
+        Integer difficultySelection, missionSizeSelection, numOfAgentsSelection;
         boolean validInput = false;
         try {
             if (m_machineApplication.commandIsPossible(2)) {
-                if(m_machineApplication.commandIsPossible(5)){
-                    while(!validInput) {
+                if (m_machineApplication.commandIsPossible(5)) {
+                    while (!validInput) {
                         System.out.println("Please Enter string to process:");
                         String unprocessedString = scanner.next();
                         unprocessedString = unprocessedString.toUpperCase();
@@ -280,10 +263,10 @@ public class UI {
                             System.out.println("String Does not contain dictionary words");
                         }
                     }
-                }else{
+                } else {
                     System.out.println("Please enter a secret and try again");
                 }
-            } else{
+            } else {
                 System.out.println("Please load XML file and try again");
             }
         } catch (Exception e) {
@@ -295,46 +278,47 @@ public class UI {
         String input;
         Integer selection;
         boolean isSuspend = false;
-        while(true){
-            DisplayAllItems(m_statusMenuItems);
-            input = scanner.next();
-            try {
-                selection = Integer.parseInt(input);
-            }catch (NumberFormatException e){
-                System.out.println("Selection is not a number, Please try again.");
-                continue;
-            }
+        while (true) {
             while (!m_machineApplication.DMfinished()) {
+                DisplayAllItems(m_statusMenuItems);
+                input = scanner.next();
+                try {
+                    selection = Integer.parseInt(input);
+                } catch (NumberFormatException e) {
+                    System.out.println("Selection is not a number, Please try again.");
+                    continue;
+                }
                 switch (selection) {
-                    case 1:
-                      {
+                    case 1: {
                         m_machineApplication.getDecryptionStatus();
                         break;
-                      }
-                    case 2:
-                      {
+                    }
+                    case 2: {
                         m_machineApplication.stopAndResumeDMandAgents();
+
                         if (isSuspend) {
-                          System.out.println("DM and agents resume");
+
+                            System.out.println("DM and agents resume");
                         } else {
-                          System.out.println("DM and agents suspend");
+
+                            System.out.println("DM and agents suspend");
                         }
                         isSuspend = !isSuspend;
+
                         break;
-                      }
-                    case 3:
-                      {
+                    }
+                    case 3: {
                         m_machineApplication.stopDMandAgents();
                         return;
-                      }
-                    default:
-                      {
+                    }
+                    default: {
                         System.out.println("Selection is not in range, please try again.");
                         break;
-                      }
+                    }
                 }
             }
-            m_machineApplication.getFinishedStatusFromDM();
+            System.out.println(m_machineApplication.getFinishedStatusFromDM());
+            return;
         }
     }
 
@@ -343,7 +327,7 @@ public class UI {
         System.out.println("Would you like to start the process?");
         System.out.println("press Y/N");
         start = scanner.next();
-        while(!start.toUpperCase().equals("Y")){
+        while (!start.toUpperCase().equals("Y")) {
             System.out.println("OK, Tell me when you are ready...");
             start = scanner.next();
         }
@@ -351,14 +335,14 @@ public class UI {
     }
 
     private Integer RequestNumOfAgentsFromUser() {
-        Integer res,maxAllowedAgents;
+        Integer res, maxAllowedAgents;
         maxAllowedAgents = m_machineApplication.getMaxAllowedAgents();
-        while(true){
+        while (true) {
             res = RequestAndValidateInt("number of agents");
-            if(res >= 2 && res <= maxAllowedAgents){
+            if (res >= 2 && res <= maxAllowedAgents) {
                 return res;
-            }else{
-                System.out.println("Number is not in range, Please enter a number between 2 to " + maxAllowedAgents+".");
+            } else {
+                System.out.println("Number is not in range, Please enter a number between 2 to " + maxAllowedAgents + ".");
             }
         }
 
@@ -374,19 +358,18 @@ public class UI {
         Integer res;
         while (true) {
             res = RequestAndValidateInt("difficulty level from 1 to 4");
-            if(res > 0 && res <= numOfDifficulties)
-            {
+            if (res > 0 && res <= numOfDifficulties) {
                 return res;
-            }else{
+            } else {
                 System.out.println("The selected difficulty is not in range. Please try again");
             }
         }
     }
 
     private void printHistory(Map<String, Set<String>> history, double[] avg) {
-        for(String secret: history.keySet()){
-            System.out.println("The strings that have been processed for secret: "+secret+ " is:");
-            for(String processedStr: history.get(secret)){
+        for (String secret : history.keySet()) {
+            System.out.println("The strings that have been processed for secret: " + secret + " is:");
+            for (String processedStr : history.get(secret)) {
                 System.out.println(processedStr);
             }
         }
@@ -398,23 +381,21 @@ public class UI {
     }
 
     private String getReflectorFromUser() {
-        boolean validInput=false;
+        boolean validInput = false;
         String reflectorInput;
         String res = "";
-        while(!validInput) {
+        while (!validInput) {
             System.out.println("Please enter Reflector num (roman letters)");
             reflectorInput = scanner.next();
-            if(Util.isRoman(reflectorInput)){
+            if (Util.isRoman(reflectorInput)) {
                 if (Util.isValidRomanLetter(reflectorInput)) {
                     res = reflectorInput;
                     //res = Util.romanToInt(reflectorInput);
                     validInput = true;
+                } else {
+                    System.out.println(reflectorInput + " is not in range");
                 }
-                else{
-                    System.out.println(reflectorInput+" is not in range");
-                }
-            }
-            else{
+            } else {
                 System.out.println(reflectorInput + " is not a valid roman letter");
             }
         }
@@ -431,18 +412,18 @@ public class UI {
     private List<Integer> getRotorsFromUser() {
         List<Integer> rotorsList = new ArrayList<>();
         Integer rotorId = -1;
-        for(int i=0 ; i < m_machineApplication.getNumOfRotorsBeingUsed() ; i++){
+        for (int i = 0; i < m_machineApplication.getNumOfRotorsBeingUsed(); i++) {
             System.out.println("Please choose rotor number");
 
-            while(!scanner.hasNextInt()){
+            while (!scanner.hasNextInt()) {
                 scanner.next();
                 System.out.println("input is not a number, please try again.");
             }
             rotorId = scanner.nextInt();
-            if(rotorsList.contains(rotorId)){
+            if (rotorsList.contains(rotorId)) {
                 System.out.println("Rotor number " + rotorId + " is already set. Please try a different one.");
                 i--;
-            }else{
+            } else {
                 rotorsList.add(rotorId);
             }
         }
@@ -450,46 +431,46 @@ public class UI {
     }
 
     private void DisplayCurrentSecret() {
-        int i=0;
+        int i = 0;
         String output = "";
-        output+='<';
-        if(m_machineApplication.hasRotor(i)){
+        output += '<';
+        if (m_machineApplication.hasRotor(i)) {
             //System.out.print(m_machineApplication.getRotorNum(i));
-            output+=m_machineApplication.getRotorNum(i);
+            output += m_machineApplication.getRotorNum(i);
             i++;
         }
-        while(m_machineApplication.hasRotor(i))//rotor index
+        while (m_machineApplication.hasRotor(i))//rotor index
         {
             //System.out.print("," + m_machineApplication.getRotorNum(i));
-            output+=',';
-            output+=m_machineApplication.getRotorNum(i);
+            output += ',';
+            output += m_machineApplication.getRotorNum(i);
             i++;
         }
         //System.out.print("><");
-        output+="><";
-        i=0;
-        while(m_machineApplication.hasRotor(i)){
+        output += "><";
+        i = 0;
+        while (m_machineApplication.hasRotor(i)) {
             //System.out.print(m_machineApplication.getInitialLocationOfRotor(i));
-            output+=m_machineApplication.getInitialLocationOfRotor(i);
+            output += m_machineApplication.getInitialLocationOfRotor(i);
             i++;
         }
         //System.out.print("><");
-        output+="><";
+        output += "><";
         //System.out.println(m_machineApplication.getReflectorLetter()+ ">");
-        output+=Util.fromIntToRoman(m_machineApplication.getReflectorLetter());
-        output+=">";
+        output += Util.fromIntToRoman(m_machineApplication.getReflectorLetter());
+        output += ">";
         System.out.println(output);
     }
 
-    private Integer RequestAndValidateInt(String nameOfParam){
+    private Integer RequestAndValidateInt(String nameOfParam) {
         Integer res;
 
-        while(true){
-            try{
-                System.out.println("Please enter " + nameOfParam+".");
+        while (true) {
+            try {
+                System.out.println("Please enter " + nameOfParam + ".");
                 res = Integer.parseInt(scanner.next());
                 return res;
-            }catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println("Selection is not a number, Please try again.");
             }
         }

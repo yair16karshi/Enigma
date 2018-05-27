@@ -1,14 +1,11 @@
 package Producer;
 
 import Consumer.Agent;
-import DataTypes.EncryptionStatus;
+import DataTypes.*;
 import DataTypes.GeneratedMachineDataTypes.Decipher;
 import DataTypes.GeneratedMachineDataTypes.Machine;
 import DataTypes.GeneratedMachineDataTypes.Reflector;
 import DataTypes.GeneratedMachineDataTypes.Rotor;
-import DataTypes.SecretWithCount;
-import DataTypes.SecretWithMissionSize;
-import DataTypes.CandidateStringWithEncryptionInfo;
 import InputValidation.Util;
 import calc.DifficultyCalc;
 import calc.SecretCalc;
@@ -205,6 +202,7 @@ public class Manager implements Runnable {
             } catch (Exception e){}
         }
         m_isFinished = true;
+        System.out.println("The DM finished feel free to press something...");
     }
 
     private void takeResponsesFromAgents(int[] numOfMissions) {
@@ -212,7 +210,8 @@ public class Manager implements Runnable {
             try{
                 if(numOfMissions[0] == count[0] && m_responeQueue.isEmpty())
                     break;
-                m_candidateStrings.add(m_responeQueue.take());
+                if(!m_responeQueue.isEmpty())
+                    m_candidateStrings.add(m_responeQueue.take());
             }
             catch(Exception e){}
         }
@@ -249,7 +248,7 @@ public class Manager implements Runnable {
             missionToInsert.setSecret(secretToInsert);
             try{
                 m_missionsQueue.put(missionToInsert);
-                numOfMissions[0]++;
+                numOfMissions[0]+=sizeOfCurrMission;
             }
             catch (Exception e){
 
@@ -347,6 +346,13 @@ public class Manager implements Runnable {
         return m_isFinished;
     }
 
-    public void getFinishStatus() {
+    public FinishStatus getFinishStatus() {
+        Instant now = Instant.now();
+
+        return new FinishStatus(
+                Duration.between(m_agentsStartedTime, now).getSeconds(),
+                count[0],
+                m_agentListInstances,
+                m_candidateStrings);
     }
 }

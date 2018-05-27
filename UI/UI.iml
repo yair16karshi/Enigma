@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Logic" />
+    <orderEntry type="module" module-name="DM" />
   </component>
 </module>

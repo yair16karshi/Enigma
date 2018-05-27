@@ -50,9 +50,10 @@ public class Agent extends Thread{
     @Override
     public void run(){      
         while(true){
-            if(!Thread.currentThread().isInterrupted()){//TODO:: verify that interrupted works
+            if(!Thread.currentThread().isInterrupted() ){//TODO:: verify that interrupted works
                 try {
-                    RunMission(m_missionsQueue.take());
+                    if (!m_missionsQueue.isEmpty())
+                        RunMission(m_missionsQueue.take());
                 } catch (InterruptedException e) {
                     return;
                 }
@@ -66,7 +67,7 @@ public class Agent extends Thread{
         Secret localSecret = mission.getSecret();
 
         for(int i = 1 ; i <= mission.getMissionSize() ; i++){
-            System.out.println(m_count[0]);
+ //          System.out.println(m_count[0]);
             /*FOR STATUS UPDATES*/
             m_currentSecret = localSecret;
             m_jobsLeft = mission.getMissionSize()-i;
@@ -104,5 +105,10 @@ public class Agent extends Thread{
     public SecretWithCount getThreadsJob(){
         SecretWithCount res = new SecretWithCount(m_currentSecret,m_jobsLeft);
         return res;
+    }
+
+    @Override
+    public String toString() {
+        return Long.toString(Thread.currentThread().getId());
     }
 }

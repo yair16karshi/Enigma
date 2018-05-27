@@ -2,6 +2,7 @@ package machine;
 
 import DataTypes.CandidateStringWithEncryptionInfo;
 import DataTypes.EncryptionStatus;
+import DataTypes.FinishStatus;
 import DataTypes.GeneratedMachineDataTypes.*;
 import DataTypes.GeneratedMachineDataTypes.Dictionary;
 import InputValidation.Util;
@@ -328,7 +329,7 @@ public class EnigmaMachineApplication {
         return m_dm.isFinished();
     }
 
-    public void getFinishedStatusFromDM() {
+    public FinishStatus getFinishedStatusFromDM() {
         return m_dm.getFinishStatus();
     }
 }
