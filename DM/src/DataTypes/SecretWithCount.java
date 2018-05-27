@@ -15,6 +15,12 @@ public class SecretWithCount {
 
     }
 
+    @Override
+    public String toString() {
+        return m_secret.toString() +", "+ m_count+" Missions left"+'\n';
+        //return super.toString();
+    }
+
     public int getCount() {
         return m_count;
     }
