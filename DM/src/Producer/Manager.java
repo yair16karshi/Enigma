@@ -94,7 +94,8 @@ public class Manager implements Runnable {
                           break;
                       }
                     });
-            m_missionsThread.start();
+        m_missionsThread.start();
+
     }
 
     private void difficultyImpossible(){
@@ -189,6 +190,14 @@ public class Manager implements Runnable {
 
         //take response from queue
         takeResponsesFromAgents(numOfMissions);
+
+        //waitToAllAgentsToFinish();
+    }
+
+    private void waitToAllAgentsToFinish() {
+        for(Thread agent: m_agentList){
+            //TODO: interrupt to all the the agents, and check inside them if interrupt and the queue is empty then stop
+        }
     }
 
     private void takeResponsesFromAgents(int[] numOfMissions) {
@@ -255,6 +264,7 @@ public class Manager implements Runnable {
 
     public void set(String i_unprocessedString, Secret i_secret, Integer i_difficultySelection, Integer i_missionSizeSelection, Integer i_numOfAgentsSelection) {
         m_unprocessedString = i_unprocessedString;
+        //TODO: create new secret and not use the one from ex1
         m_secret = i_secret;
         m_difficultySelection = i_difficultySelection;
         m_missionSizeSelection = i_missionSizeSelection;
