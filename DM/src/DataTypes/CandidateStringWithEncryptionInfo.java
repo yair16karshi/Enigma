@@ -14,6 +14,13 @@ public class CandidateStringWithEncryptionInfo {
         m_secret = secret;
     }
 
+    @Override
+    public String toString() {
+        return "candidate: " + m_string +
+                " discovered by thread: " + m_threadId +
+                " discovered in secret: " + m_secret.toString()+'\n';
+    }
+
     public long getThreadId() {
         return m_threadId;
     }
