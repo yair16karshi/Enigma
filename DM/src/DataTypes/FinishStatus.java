@@ -29,6 +29,6 @@ public class FinishStatus {
                 "Total Time is: " + time +'\n'+
                 "Total Number of missions: " + m_totalNumOfMissions+'\n'+
                 "Agent id's are: " + m_agentIds + '\n'+
-                "Canditates for encryption are: " + m_allCandidatesForEncryption;
+                "Canditates for encryption are: \n" + m_allCandidatesForEncryption;
     }
 }

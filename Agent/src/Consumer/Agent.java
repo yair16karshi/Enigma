@@ -8,6 +8,7 @@ import DataTypes.GeneratedMachineDataTypes.Machine;
 import DataTypes.SecretWithCount;
 import DataTypes.SecretWithMissionSize;
 import DataTypes.CandidateStringWithEncryptionInfo;
+import InputValidation.Util;
 import calc.SecretCalc;
 import machine.EnigmaMachineApplication;
 import machine.EnigmaMachineWrapper;
@@ -84,16 +85,11 @@ public class Agent extends Thread{
 
     private void PerformSingleString(Secret secret){
         String[] processedWords;
-        boolean decypered = true;
+        boolean decypered = false;
         m_machineWrapper.initFromSecret(secret);
         String processedString = m_machineWrapper.process(m_stringToProcess);
-        processedWords = processedString.split(" ");
-        for(String s : processedWords){
-            if(!m_dictionry.getWords().contains(" "+s+" ")){
-                decypered = false;
-                break;
-            }
-        }
+        processedString = Util.removeExcludeCharsFromString(m_dictionry.getExcludeChars(), processedString);
+        decypered = Util.checkIfAllProcessedStringInDictionry(processedString, m_dictionry.getWords());
         if(decypered) {
             m_decipheredQueue.add(new CandidateStringWithEncryptionInfo(processedString,Thread.currentThread().getId(),secret));
         }

@@ -176,4 +176,32 @@ public class Util {
 
         return res;
     }
+
+    public static String removeExcludeCharsFromString(String excludeChars, String i_unprocessedString) {
+        for (Character excludeChar: excludeChars.toCharArray()){
+            i_unprocessedString = i_unprocessedString.replace(excludeChar.toString(), "");
+        }
+
+        return i_unprocessedString;
+    }
+
+    public static boolean checkIfAllProcessedStringInDictionry(String processedString, String words) {
+        for(String str: processedString.split(" ")){
+            if(!isInDictionry(str, words)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static boolean isInDictionry(String str, String words) {
+        for(String word: words.split(" ")){
+            if(word.equals(str)){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

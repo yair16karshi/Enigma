@@ -291,7 +291,7 @@ public class EnigmaMachineApplication {
     public boolean IsLegalStringOfDictionaryWords(String unprocessedString) throws Exception {
         String[] words = unprocessedString.split(" ");
         for(String word: words){
-            if(!(m_dm.getDecipher().getDictionary().getWords().contains(word))){
+            if(!Util.checkIfAllProcessedStringInDictionry(word, m_dm.getDecipher().getDictionary().getWords())){
                 throw new Exception("The word: "+word+" is not in the dictionary");
             }
         }

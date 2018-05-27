@@ -248,7 +248,7 @@ public class UI {
                 if (m_machineApplication.commandIsPossible(5)) {
                     while (!validInput) {
                         System.out.println("Please Enter string to process:");
-                        String unprocessedString = scanner.next();
+                        String unprocessedString = scanner.nextLine();
                         unprocessedString = unprocessedString.toUpperCase();
                         if (m_machineApplication.IsLegalStringOfDictionaryWords(unprocessedString)) {
                             difficultySelection = RequestDifficultyFromUser();
