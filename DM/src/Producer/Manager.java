@@ -100,6 +100,7 @@ public class Manager implements Runnable {
                           difficultyImpossible();
                           break;
                       }
+                        waitToAllAgentsToFinish();
                     });
         m_missionsThread.start();
 
@@ -198,7 +199,6 @@ public class Manager implements Runnable {
         //take response from queue
         takeResponsesFromAgents(numOfMissions);
 
-        waitToAllAgentsToFinish();
     }
 
     private void waitToAllAgentsToFinish() {

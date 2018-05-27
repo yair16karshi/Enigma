@@ -41,7 +41,7 @@ public class UI {
         int selection;
         while (true) {
             DisplayAllItems(m_mainMenuItems);
-            input = scanner.nextLine();
+            input = new Scanner(System.in).nextLine();//scanner.nextLine();
 
             try {
                 selection = Integer.parseInt(input);
@@ -73,7 +73,7 @@ public class UI {
                 boolean valid = false;
                 do {
                     System.out.println("Please Enter absolute XML path:");
-                    String xmlPath = scanner.nextLine();
+                    String xmlPath = new Scanner(System.in).nextLine();//scanner.nextLine();
                     try {
                         m_machineApplication.LoadXMLFile(xmlPath);
                         valid = true;
@@ -248,7 +248,7 @@ public class UI {
                 if (m_machineApplication.commandIsPossible(5)) {
                     while (!validInput) {
                         System.out.println("Please Enter string to process:");
-                        String unprocessedString = scanner.nextLine();
+                        String unprocessedString =new Scanner(System.in).nextLine();// scanner.nextLine();
                         unprocessedString = unprocessedString.toUpperCase();
                         if (m_machineApplication.IsLegalStringOfDictionaryWords(unprocessedString)) {
                             difficultySelection = RequestDifficultyFromUser();
@@ -281,7 +281,7 @@ public class UI {
         while (true) {
             while (!m_machineApplication.DMfinished()) {
                 DisplayAllItems(m_statusMenuItems);
-                input = scanner.next();
+                input = new Scanner(System.in).nextLine();
                 try {
                     selection = Integer.parseInt(input);
                 } catch (NumberFormatException e) {
@@ -326,10 +326,10 @@ public class UI {
         String start;
         System.out.println("Would you like to start the process?");
         System.out.println("press Y/N");
-        start = scanner.next();
+        start = new Scanner(System.in).nextLine();//scanner.next();
         while (!start.toUpperCase().equals("Y")) {
             System.out.println("OK, Tell me when you are ready...");
-            start = scanner.next();
+            start = new Scanner(System.in).nextLine();//scanner.next();
         }
         return true;
     }
