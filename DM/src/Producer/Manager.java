@@ -36,6 +36,7 @@ public class Manager implements Runnable {
     private BlockingQueue<CandidateStringWithEncryptionInfo> m_responeQueue;
     private ArrayList<Agent> m_agentListInstances;
     private boolean m_isFinished = false;
+    private String m_totalTime;
 
     public List<CandidateStringWithEncryptionInfo> getCandidateList() {
         return m_candidateStrings;
@@ -289,6 +290,7 @@ public class Manager implements Runnable {
             agent.interrupt();
         }
         m_missionsThread.stop();
+        m_isFinished = true;
     }
 
     public void stopAndResumeDMandAgents() {
