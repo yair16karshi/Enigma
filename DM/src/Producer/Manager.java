@@ -12,8 +12,6 @@ import DataTypes.CandidateStringWithEncryptionInfo;
 import InputValidation.Util;
 import calc.DifficultyCalc;
 import calc.SecretCalc;
-import machine.EnigmaMachineApplication;
-import machine.EnigmaMachineWrapper;
 import pukteam.enigma.component.machine.api.EnigmaMachine;
 import pukteam.enigma.component.machine.api.Secret;
 import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
@@ -30,10 +28,10 @@ import static machine.EnigmaMachineApplication.DefineReflectors;
 import static machine.EnigmaMachineApplication.DefineRotors;
 
 public class Manager implements Runnable {
-    private EnigmaMachineWrapper m_machineWrapper;
+    private EnigmaMachine m_machine;
     private Decipher m_decipher;
     private Machine m_xmlMachine;
-    private List<Thread> m_agentList;
+   //private List<Thread> m_agentList;
     private BlockingQueue<SecretWithMissionSize> m_missionsQueue;
     private BlockingQueue<CandidateStringWithEncryptionInfo> m_responeQueue;
     private ArrayList<Agent> m_agentListInstances;
@@ -46,7 +44,7 @@ public class Manager implements Runnable {
     private Integer[] count = new Integer[1];
     private boolean m_isSuspend = false;
 
-    private String m_processedString;
+    private String m_unprocessedString;
     private Secret m_secret;
     private Integer m_difficultySelection;
     private Integer m_missionSizeSelection;
@@ -57,11 +55,7 @@ public class Manager implements Runnable {
     Instant m_agentsStartedTime;
 
     public Manager(EnigmaMachine machine, Decipher decipher, Machine xmlMachine){
-        EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(xmlMachine.getRotorsCount(),xmlMachine.getABC());
-        EnigmaMachineApplication.DefineRotors(machineBuilder,xmlMachine);
-        EnigmaMachineApplication.DefineReflectors(machineBuilder,xmlMachine);
-        m_machineWrapper = new EnigmaMachineWrapper(machineBuilder.create());
-        m_machineWrapper.setXMLMachine(xmlMachine);
+        m_machine = machine;
         m_decipher = new Decipher();
         m_decipher.setDictionary(Util.removeDoubleWordsAndExcludeChars(decipher.getDictionary()));
         m_decipher.setAgents(decipher.getAgents());
@@ -122,7 +116,7 @@ public class Manager implements Runnable {
             DifficultyCalc.getAllCombinationsOfList(combination, new Stack<Integer>(), combination.size(), rotorsCombinations);
             for(Integer[] combination2: rotorsCombinations){
                 for (Reflector refl : m_xmlMachine.getReflectors().getReflector()) {
-                    SecretBuilder secretBuilder = m_machineWrapper.getMachine().createSecret();
+                    SecretBuilder secretBuilder = m_machine.createSecret();
                     secretBuilder.selectReflector(Util.romanToInt(refl.getId()));
                     for (Integer rotorID : combination2) {
                         secretBuilder.selectRotor(rotorID, 1);
@@ -147,7 +141,7 @@ public class Manager implements Runnable {
 
         for(Integer[] combination: rotorsCombinations){
             for (Reflector refl : m_xmlMachine.getReflectors().getReflector()) {
-                SecretBuilder secretBuilder = m_machineWrapper.getMachine().createSecret();
+                SecretBuilder secretBuilder = m_machine.createSecret();
                 secretBuilder.selectReflector(Util.romanToInt(refl.getId()));
                 for (Integer rotorID : combination) {
                     secretBuilder.selectRotor(rotorID, 1);
@@ -170,7 +164,7 @@ public class Manager implements Runnable {
         int numOfCombinations = DifficultyCalc.easy(m_xmlMachine.getRotorsCount(), m_xmlMachine.getABC());
         m_currNumOfCombinations = m_xmlMachine.getReflectors().getReflector().size()* numOfCombinations;
         for (Reflector refl : m_xmlMachine.getReflectors().getReflector()) {
-            SecretBuilder secretBuilder = m_machineWrapper.getMachine().createSecret();
+            SecretBuilder secretBuilder = m_machine.createSecret();
             secretBuilder.selectReflector(Util.romanToInt(refl.getId()));
             for(int i=0; i<rotorsOrder.size(); i++){
                 secretBuilder.selectRotor(rotorsOrder.get(i), 1);
@@ -178,7 +172,7 @@ public class Manager implements Runnable {
             m_secret = secretBuilder.create();
             insertMissionsToQueue(numOfCombinations, numOfMissions);
         }
-        
+
         takeResponsesFromAgents(numOfMissions);
     }
 
@@ -201,7 +195,7 @@ public class Manager implements Runnable {
     }
 
     private void waitToAllAgentsToFinish() {
-        for(Thread agent: m_agentList){
+        for(Thread agent: m_agentListInstances){
             //TODO: interrupt to all the the agents, and check inside them if interrupt and the queue is empty then stop
             agent.interrupt();
             try{
@@ -222,16 +216,16 @@ public class Manager implements Runnable {
     }
 
     private void startAllAgents() {
-        m_agentList = new ArrayList<>(m_numOfAgentsSelection);
+        //m_agentList = new ArrayList<>(m_numOfAgentsSelection);
         m_agentListInstances = new ArrayList<>(m_numOfAgentsSelection);
         for (int i = 0; i < 1/*m_numOfAgentsSelection*/; i++) {
-            Agent agentInstance = new Consumer.Agent(count, m_missionsQueue, m_responeQueue, m_processedString, m_xmlMachine, m_decipher);
-            Thread agentThread = new Thread(agentInstance);
-            agentThread.setName("Agent-"+i);
-            m_agentList.add(agentThread);
+            Agent agentInstance = new Consumer.Agent(count, m_missionsQueue, m_responeQueue, m_unprocessedString, m_xmlMachine, m_decipher);
+            //Thread agentThread = new Thread(agentInstance);
+            agentInstance.setName("Agent-"+i);
+           // m_agentList.add(agentThread);
             m_agentListInstances.add(agentInstance);
         }
-        for(Thread agent: m_agentList){
+        for(Thread agent: m_agentListInstances){
             agent.start();
         }
         m_agentsStartedTime = Instant.now();
@@ -263,7 +257,7 @@ public class Manager implements Runnable {
     }
 
     private Secret createNewSecret(Secret i_secret) {
-        SecretBuilder secretBuilder = m_machineWrapper.getMachine().createSecret();
+        SecretBuilder secretBuilder = m_machine.createSecret();
         for(int i = 0; i<i_secret.getSelectedRotorsInOrder().size(); i++){
             secretBuilder.selectRotor(i_secret.getSelectedRotorsInOrder().get(i), i_secret.getSelectedRotorsPositions().get(i));
         }
@@ -273,31 +267,30 @@ public class Manager implements Runnable {
     }
 
     public void set(String i_unprocessedString, Secret i_secret, Integer i_difficultySelection, Integer i_missionSizeSelection, Integer i_numOfAgentsSelection) {
+        m_unprocessedString = i_unprocessedString;
         m_secret = createNewSecret(i_secret);
-        m_machineWrapper.getMachine().initFromSecret(m_secret);
-        m_processedString = m_machineWrapper.process(i_unprocessedString);
         m_difficultySelection = i_difficultySelection;
         m_missionSizeSelection = i_missionSizeSelection;
         m_numOfAgentsSelection = i_numOfAgentsSelection;
     }
 
-//    private void createMachineFromXML(){
-//        m_xmlMachine.setABC(m_xmlMachine.getABC().toUpperCase());
-//        EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(m_xmlMachine.getRotorsCount(),m_xmlMachine.getABC());
-//        DefineRotors(machineBuilder,m_xmlMachine);
-//        DefineReflectors(machineBuilder,m_xmlMachine);
-//        m_machineWrapper.getMachine() = machineBuilder.create();
-//    }
+    private void createMachineFromXML(){
+        m_xmlMachine.setABC(m_xmlMachine.getABC().toUpperCase());
+        EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(m_xmlMachine.getRotorsCount(),m_xmlMachine.getABC());
+        DefineRotors(machineBuilder,m_xmlMachine);
+        DefineReflectors(machineBuilder,m_xmlMachine);
+        m_machine = machineBuilder.create();
+    }
 
     public void stopDMandAgents() {
-        for(Thread agent: m_agentList){
+        for(Thread agent: m_agentListInstances){
             agent.interrupt();
         }
         m_missionsThread.stop();
     }
 
     public void stopAndResumeDMandAgents() {
-        for(Thread thread: m_agentList){
+        for(Thread thread: m_agentListInstances){
             if(m_isSuspend){
                 thread.resume();
             } else{
@@ -341,7 +334,8 @@ public class Manager implements Runnable {
             currentThreadsJobs.add(agent.getThreadsJob());
         }
 
-        EncryptionStatus status = new EncryptionStatus(time,candidateList,percentage,currentThreadsJobs);
+        EncryptionStatus status = new EncryptionStatus(time,candidateList,1
+                ,currentThreadsJobs);
         return status;
     }
 }
