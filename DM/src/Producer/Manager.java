@@ -34,7 +34,7 @@ public class Manager implements Runnable {
     private BlockingQueue<SecretWithMissionSize> m_missionsQueue;
     private BlockingQueue<CandidateStringWithEncryptionInfo> m_responeQueue;
     private ArrayList<Agent> m_agentListInstances;
-    private boolean m_isFinished = false;
+    private boolean m_isFinished;
     private String m_totalTime;
 
     public List<CandidateStringWithEncryptionInfo> getCandidateList() {
@@ -64,6 +64,7 @@ public class Manager implements Runnable {
         m_decipher.setDictionary(Util.removeDoubleWordsAndExcludeChars(decipher.getDictionary()));
         m_decipher.setAgents(decipher.getAgents());
         m_xmlMachine = xmlMachine;
+        m_isFinished = false;
         count[0] = 0;
     }
 
@@ -213,12 +214,16 @@ public class Manager implements Runnable {
     }
 
     private void takeResponsesFromAgents(int[] numOfMissions) {
+        CandidateStringWithEncryptionInfo response = new CandidateStringWithEncryptionInfo(null, 0, null);
         while(numOfMissions[0] >= count[0]){
             try{
                 if(numOfMissions[0] == count[0] && m_responeQueue.isEmpty())
                     break;
                 if(!m_responeQueue.isEmpty())
-                    m_candidateStrings.add(m_responeQueue.take());
+                    response = m_responeQueue.take();
+                    if((!response.getString().equals(" "))){
+                        m_candidateStrings.add(response);
+                    }
             }
             catch(Exception e){}
         }

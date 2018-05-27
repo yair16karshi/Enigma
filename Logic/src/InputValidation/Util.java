@@ -1,5 +1,6 @@
 package InputValidation;
 
+import DataTypes.CandidateStringWithEncryptionInfo;
 import DataTypes.GeneratedMachineDataTypes.*;
 
 import java.util.ArrayList;
@@ -186,6 +187,10 @@ public class Util {
     }
 
     public static boolean checkIfAllProcessedStringInDictionry(String processedString, String words) {
+        String[] wordsSplited = words.split(" ");
+        if (wordsSplited.length == 0){
+            return false;
+        }
         for(String str: processedString.split(" ")){
             if(!isInDictionry(str, words)){
                 return false;
@@ -198,6 +203,16 @@ public class Util {
     private static boolean isInDictionry(String str, String words) {
         for(String word: words.split(" ")){
             if(word.equals(str)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean isInTheList(String string, List<CandidateStringWithEncryptionInfo> m_candidateStrings) {
+        for(CandidateStringWithEncryptionInfo candidate: m_candidateStrings){
+            if(candidate.getString().equals(string)){
                 return true;
             }
         }

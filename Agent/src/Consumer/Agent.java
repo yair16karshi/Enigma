@@ -85,7 +85,7 @@ public class Agent extends Thread{
 
     private void PerformSingleString(Secret secret){
         String[] processedWords;
-        boolean decypered = false;
+        boolean decypered;
         m_machineWrapper.initFromSecret(secret);
         String processedString = m_machineWrapper.process(m_stringToProcess);
         processedString = Util.removeExcludeCharsFromString(m_dictionry.getExcludeChars(), processedString);
