@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static machine.EnigmaMachineApplication.DefineReflectors;
 import static machine.EnigmaMachineApplication.DefineRotors;
@@ -71,10 +72,12 @@ public class Manager implements Runnable {
     }
 
     public void run() {
-        final int QUEUE_SIZE = 5000;
+        final int QUEUE_SIZE = 15000;
 
-        m_missionsQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
-        m_responeQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
+        //m_missionsQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
+        //m_responeQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
+        m_missionsQueue = new LinkedBlockingQueue<>();
+        m_responeQueue = new LinkedBlockingQueue<>();
         m_missionsThread =
             new Thread(
                     () -> {
@@ -220,7 +223,7 @@ public class Manager implements Runnable {
     private void startAllAgents() {
         //m_agentList = new ArrayList<>(m_numOfAgentsSelection);
         m_agentListInstances = new ArrayList<>(m_numOfAgentsSelection);
-        for (int i = 0; i < 1/*m_numOfAgentsSelection*/; i++) {
+        for (int i = 0; i < m_numOfAgentsSelection; i++) {
             Agent agentInstance = new Consumer.Agent(count, m_missionsQueue, m_responeQueue, m_unprocessedString, m_xmlMachine, m_decipher);
             //Thread agentThread = new Thread(agentInstance);
             agentInstance.setName("Agent-"+i);

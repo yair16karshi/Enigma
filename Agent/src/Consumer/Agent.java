@@ -109,6 +109,6 @@ public class Agent extends Thread{
 
     @Override
     public String toString() {
-        return Long.toString(Thread.currentThread().getId());
+        return Long.toString(this.getId());
     }
 }
