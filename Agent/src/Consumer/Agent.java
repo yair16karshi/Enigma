@@ -48,7 +48,7 @@ public class Agent extends Thread{
     }
 
     @Override
-    public void run(){
+    public void run(){      
         while(true){
             if(!Thread.currentThread().isInterrupted()){//TODO:: verify that interrupted works
                 try {
@@ -65,7 +65,7 @@ public class Agent extends Thread{
     private void RunMission(SecretWithMissionSize mission){
         Secret localSecret = mission.getSecret();
 
-        for(int i = 0 ; i < mission.getMissionSize() ; i++){
+        for(int i = 1 ; i <= mission.getMissionSize() ; i++){
             /*FOR STATUS UPDATES*/
             m_currentSecret = localSecret;
             m_jobsLeft = mission.getMissionSize()-i;
@@ -87,7 +87,7 @@ public class Agent extends Thread{
         String processedString = m_machineWrapper.process(m_stringToProcess);
         processedWords = processedString.split(" ");
         for(String s : processedWords){
-            if(!m_dictionry.getWords().contains(s)){
+            if(!m_dictionry.getWords().contains(" "+s+" ")){
                 decypered = false;
                 break;
             }

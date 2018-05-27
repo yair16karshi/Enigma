@@ -72,7 +72,7 @@ public class Manager implements Runnable {
     }
 
     public void run() {
-        final int QUEUE_SIZE = 1000;
+        final int QUEUE_SIZE = 5000;
 
         m_missionsQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
         m_responeQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
