@@ -214,18 +214,20 @@ public class Manager implements Runnable {
     }
 
     private void takeResponsesFromAgents(int[] numOfMissions) {
-        CandidateStringWithEncryptionInfo response = new CandidateStringWithEncryptionInfo(null, 0, null);
+        CandidateStringWithEncryptionInfo response = null;
         while(numOfMissions[0] >= count[0]){
-            try{
-                if(numOfMissions[0] == count[0] && m_responeQueue.isEmpty())
-                    break;
-                if(!m_responeQueue.isEmpty())
-                    response = m_responeQueue.take();
-                    if((!response.getString().equals(" "))){
-                        m_candidateStrings.add(response);
-                    }
+//            try{
+            if(numOfMissions[0] == count[0] && m_responeQueue.isEmpty())
+                break;
+            if(!m_responeQueue.isEmpty()){
+//                 m_candidateStrings.add(m_responeQueue.take());
+                response = m_responeQueue.poll();
+                if (response != null) {
+                    if ((!response.getString().equals(" ")))
+                    m_candidateStrings.add(response);
+                }
             }
-            catch(Exception e){}
+//            catch(Exception e){}
         }
     }
 
