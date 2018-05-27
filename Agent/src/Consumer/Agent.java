@@ -48,7 +48,7 @@ public class Agent implements Runnable{
     }
 
     @Override
-    public void run(){
+    public void run(){      
         while(true){
             if(!Thread.currentThread().isInterrupted()){//TODO:: verify that interrupted works
                 try {
