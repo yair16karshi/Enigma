@@ -87,7 +87,7 @@ public class Agent implements Runnable{
         String processedString = m_machineWrapper.process(m_stringToProcess);
         processedWords = processedString.split(" ");
         for(String s : processedWords){
-            if(!m_dictionry.getWords().contains(s)){
+            if(!m_dictionry.getWords().contains(" "+s+" ")){
                 decypered = false;
                 break;
             }
