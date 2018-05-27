@@ -191,12 +191,16 @@ public class Manager implements Runnable {
         //take response from queue
         takeResponsesFromAgents(numOfMissions);
 
-        //waitToAllAgentsToFinish();
+        waitToAllAgentsToFinish();
     }
 
     private void waitToAllAgentsToFinish() {
         for(Thread agent: m_agentList){
             //TODO: interrupt to all the the agents, and check inside them if interrupt and the queue is empty then stop
+            agent.interrupt();
+            try{
+                agent.join();
+            } catch (Exception e){}
         }
     }
 
@@ -264,8 +268,7 @@ public class Manager implements Runnable {
 
     public void set(String i_unprocessedString, Secret i_secret, Integer i_difficultySelection, Integer i_missionSizeSelection, Integer i_numOfAgentsSelection) {
         m_unprocessedString = i_unprocessedString;
-        //TODO: create new secret and not use the one from ex1
-        m_secret = i_secret;
+        m_secret = createNewSecret(i_secret);
         m_difficultySelection = i_difficultySelection;
         m_missionSizeSelection = i_missionSizeSelection;
         m_numOfAgentsSelection = i_numOfAgentsSelection;

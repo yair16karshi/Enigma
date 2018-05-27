@@ -50,12 +50,14 @@ public class Agent implements Runnable{
     @Override
     public void run(){
         while(true){
-            if(!Thread.interrupted()){//TODO:: verify that interrupted works
+            if(!Thread.currentThread().isInterrupted()){//TODO:: verify that interrupted works
                 try {
                     RunMission(m_missionsQueue.take());
                 } catch (InterruptedException e) {
                     return;
                 }
+            } else if(Thread.currentThread().isInterrupted() && m_decipheredQueue.isEmpty()){
+                Thread.currentThread().destroy();
             }
         }
     }
