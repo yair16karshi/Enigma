@@ -103,7 +103,11 @@ public class Manager implements Runnable {
                         waitToAllAgentsToFinish();
                     });
         m_missionsThread.start();
-
+        try {
+            m_missionsThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void difficultyImpossible(){
@@ -244,6 +248,7 @@ public class Manager implements Runnable {
         for(Thread agent: m_agentListInstances){
             agent.start();
         }
+        m_agentsStartedTime = null;
         m_agentsStartedTime = Instant.now();
     }
 
