@@ -266,6 +266,7 @@ public class UI {
                     while(!validInput) {
                         System.out.println("Please Enter string to process:");
                         String unprocessedString = scanner.next();
+                        unprocessedString = unprocessedString.toUpperCase();
                         if (m_machineApplication.IsLegalStringOfDictionaryWords(unprocessedString)) {
                             difficultySelection = RequestDifficultyFromUser();
                             missionSizeSelection = RequestMissionSizeFromUser();

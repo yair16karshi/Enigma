@@ -37,7 +37,7 @@ public class EnigmaMachineApplication {
         deciper.setAgents(m_xmlParser.machine.getDecipher().getAgents());
         Dictionary dictionary = new Dictionary();
         dictionary.setExcludeChars(m_xmlParser.machine.getDecipher().getDictionary().getExcludeChars());
-        dictionary.setWords(m_xmlParser.machine.getDecipher().getDictionary().getWords().trim());
+        dictionary.setWords(m_xmlParser.machine.getDecipher().getDictionary().getWords().toUpperCase().trim());
         deciper.setDictionary(dictionary);
         EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(xmlMachine.getRotorsCount(),xmlMachine.getABC());
         DefineRotors(machineBuilder,xmlMachine);
