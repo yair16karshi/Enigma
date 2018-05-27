@@ -207,9 +207,9 @@ public class Manager implements Runnable {
     private void takeResponsesFromAgents(int[] numOfMissions) {
         while(numOfMissions[0] >= count[0]){
             try{
-                m_candidateStrings.add(m_responeQueue.take());
-                if(numOfMissions[0] == count[0])
+                if(numOfMissions[0] == count[0] && m_responeQueue.isEmpty())
                     break;
+                m_candidateStrings.add(m_responeQueue.take());
             }
             catch(Exception e){}
         }

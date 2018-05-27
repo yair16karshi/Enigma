@@ -28,7 +28,7 @@ public class SecretCalc {
                         pos++;
                     }
                     positions.set(j, pos);
-                    if(pos != 0)
+                    if(pos != 1)
                         break;
                 }
             }
