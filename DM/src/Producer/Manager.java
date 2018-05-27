@@ -37,6 +37,7 @@ public class Manager implements Runnable {
     private BlockingQueue<SecretWithMissionSize> m_missionsQueue;
     private BlockingQueue<CandidateStringWithEncryptionInfo> m_responeQueue;
     private ArrayList<Agent> m_agentListInstances;
+    private boolean m_isFinished = false;
 
     public List<CandidateStringWithEncryptionInfo> getCandidateList() {
         return m_candidateStrings;
@@ -208,6 +209,7 @@ public class Manager implements Runnable {
                 agent.join();
             } catch (Exception e){}
         }
+        m_isFinished = true;
     }
 
     private void takeResponsesFromAgents(int[] numOfMissions) {
@@ -343,5 +345,12 @@ public class Manager implements Runnable {
 
         EncryptionStatus status = new EncryptionStatus(time,candidateList,percentage,currentThreadsJobs);
         return status;
+    }
+
+    public boolean isFinished() {
+        return m_isFinished;
+    }
+
+    public void getFinishStatus() {
     }
 }

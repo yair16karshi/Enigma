@@ -304,30 +304,37 @@ public class UI {
                 System.out.println("Selection is not a number, Please try again.");
                 continue;
             }
-            switch (selection){
-                case 1:{
-                    m_machineApplication.getDecryptionStatus();
-                    break;
-                }
-                case 2:{
-                    m_machineApplication.stopAndResumeDMandAgents();
-                    if(isSuspend){
-                        System.out.println("DM and agents resume");
-                    } else{
-                        System.out.println("DM and agents suspend");
-                    }
-                    isSuspend = !isSuspend;
-                    break;
-                }
-                case 3:{
-                    m_machineApplication.stopDMandAgents();
-                    return;
-                }
-                default:{
-                    System.out.println("Selection is not in range, please try again.");
-                    break;
+            while (!m_machineApplication.DMfinished()) {
+                switch (selection) {
+                    case 1:
+                      {
+                        m_machineApplication.getDecryptionStatus();
+                        break;
+                      }
+                    case 2:
+                      {
+                        m_machineApplication.stopAndResumeDMandAgents();
+                        if (isSuspend) {
+                          System.out.println("DM and agents resume");
+                        } else {
+                          System.out.println("DM and agents suspend");
+                        }
+                        isSuspend = !isSuspend;
+                        break;
+                      }
+                    case 3:
+                      {
+                        m_machineApplication.stopDMandAgents();
+                        return;
+                      }
+                    default:
+                      {
+                        System.out.println("Selection is not in range, please try again.");
+                        break;
+                      }
                 }
             }
+            m_machineApplication.getFinishedStatusFromDM();
         }
     }
 

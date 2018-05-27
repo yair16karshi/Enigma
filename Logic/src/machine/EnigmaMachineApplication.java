@@ -322,6 +322,13 @@ public class EnigmaMachineApplication {
         System.out.println(status.getCurrentThreadsJobs());
         System.out.println(status.getDuration());
         System.out.println(status.getPercentage());
+    }
 
+    public boolean DMfinished(){
+        return m_dm.isFinished();
+    }
+
+    public void getFinishedStatusFromDM() {
+        return m_dm.getFinishStatus();
     }
 }
