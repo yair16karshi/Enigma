@@ -53,15 +53,11 @@ public class Agent extends Thread{
         SecretWithMissionSize secretWithMissionSize = null;
         while(true){
             if(!Thread.currentThread().isInterrupted() ){//TODO:: verify that interrupted works
-//                try {
-                    if (!m_missionsQueue.isEmpty()){
-                        secretWithMissionSize = m_missionsQueue.poll();
-                        if(secretWithMissionSize != null)
+                if (!m_missionsQueue.isEmpty()){
+                    secretWithMissionSize = m_missionsQueue.poll();
+                    if(secretWithMissionSize != null)
                         RunMission(secretWithMissionSize);
-//                } catch (InterruptedException e) {
-//                    return;
-//                }
-                    }
+                }
             } else if(Thread.currentThread().isInterrupted() && m_decipheredQueue.isEmpty()){
                 return;
             }
