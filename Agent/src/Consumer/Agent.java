@@ -22,13 +22,13 @@ public class Agent extends Thread{
     private String m_stringToProcess;
     private EnigmaMachineWrapper m_machineWrapper;
     private Dictionary m_dictionry;
-    private Integer[] m_count;
+    private int m_count;
     /*FOR STATUS UPDATES*/
     private volatile Secret m_currentSecret;
     private volatile int m_jobsLeft;
     /*FOR STATUS UPDATES*/
 
-    public Agent(Integer[] count, BlockingQueue<SecretWithMissionSize> missionsQueue,
+    public Agent(int count, BlockingQueue<SecretWithMissionSize> missionsQueue,
                  BlockingQueue<CandidateStringWithEncryptionInfo> decipheredQueue,
                  String stringToProcess,
                  Machine xmlMachine,
@@ -94,7 +94,7 @@ public class Agent extends Thread{
             m_decipheredQueue.add(new CandidateStringWithEncryptionInfo(processedString,Thread.currentThread().getId(),secret));
         }
         synchronized (m_decipheredQueue){
-            m_count[0]++;
+            m_count--;
         }
     }
 
