@@ -13,9 +13,11 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class AgentAdapter {
-    private static String READY = "READY";
-    private static String DONE = "DONE";
-    private static String END_OF_SESSION = "END_OF_SESSION";
+    private static final String LOGOUT = "LOGOUT";
+    private static final String READY = "READY";
+    private static final String DONE = "DONE";
+    private static final String END_OF_SESSION = "END_OF_SESSION";
+
     private String host;
     private int port;
     private BlockingQueue<CandidateStringWithEncryptionInfo> responseQueue;
@@ -23,6 +25,7 @@ public class AgentAdapter {
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private boolean logOut = false;
 
     public AgentAdapter(String host, int port) {
         this.host = host;
@@ -40,10 +43,10 @@ public class AgentAdapter {
             Decipher decipher = (Decipher) in.readObject();
             out.writeBytes(READY);
 
-            while (true) {
+            while (!logOut) {
                 // The queue arrive full from the DM
                 List<SecretWithMissionSize> missionQueue = (List<SecretWithMissionSize>) in.readObject();
-                String encryptedString = (String) in.readUTF(); // Or readObject
+                String encryptedString = in.readUTF(); // Or readObject
 
                 agent =
                         new Agent(
@@ -56,6 +59,9 @@ public class AgentAdapter {
                 Thread thread = new Thread(agent);
                 thread.start();
                 sendResponsesToSocket();
+                if(thread.isAlive()){
+                    thread.stop();
+                }
             }
 
             in.close();
@@ -70,12 +76,26 @@ public class AgentAdapter {
             while(true){
                 if(!responseQueue.isEmpty()){
                     CandidateStringWithEncryptionInfo candidate = responseQueue.poll();
-                    if(candidate.getString().equals(DONE) || in.readUTF().equals(END_OF_SESSION)){
-                        //the agent finish to process all the queue
+                    if (candidate != null){
+                        if(candidate.getString().equals(DONE)){
+                            //the agent finish to process all the queue
+                            break;
+                        }
+                        else{
+                            out.writeObject(candidate);
+                        }
+                    }
+                }
+                else if(in.available() > 0){
+                    String msgFromDm = in.readUTF();
+                    //some alie win the round
+                    if(msgFromDm.equals(END_OF_SESSION)){
                         break;
                     }
-                    if (candidate != null) {
-                        out.writeObject(candidate);
+                    //alie log out
+                    else if(msgFromDm.equals(LOGOUT)){
+                        logOut = true;
+                        break;
                     }
                 }
             }

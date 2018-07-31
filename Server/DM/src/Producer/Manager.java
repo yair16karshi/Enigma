@@ -17,6 +17,9 @@ import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
 import pukteam.enigma.component.machine.secret.SecretBuilder;
 import pukteam.enigma.factory.EnigmaComponentFactory;
 
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -27,6 +30,8 @@ import static machine.EnigmaMachineApplication.DefineReflectors;
 import static machine.EnigmaMachineApplication.DefineRotors;
 
 public class Manager implements Runnable {
+    private static final String READY = "READY";
+
     private EnigmaMachineWrapper m_machineWrapper;
     private Decipher m_decipher;
     private Machine m_xmlMachine;
@@ -79,8 +84,44 @@ public class Manager implements Runnable {
     public void run() {
         final int QUEUE_SIZE = 15000;
 
-        //m_missionsQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
-        //m_responeQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
+        //yair changes
+        ServerSocket serverSocket = null;
+        try {
+            serverSocket = new ServerSocket(0);
+            int port = serverSocket.getLocalPort();
+
+
+            Socket socket = serverSocket.accept();
+            new Thread(() -> {
+                try (ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+                        ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream())){
+                    outputStream.writeObject(m_xmlMachine);
+                    outputStream.writeObject(m_decipher);
+                    if(inputStream.readUTF().equals(READY)){
+
+                    }
+
+
+
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }).start();
+
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //yair changes
+
+
+
+
         m_missionsQueue = new LinkedBlockingQueue<>();
         m_responeQueue = new LinkedBlockingQueue<>();
         m_missionsThread =
@@ -242,7 +283,7 @@ public class Manager implements Runnable {
         //m_agentList = new ArrayList<>(m_numOfAgentsSelection);
         m_agentListInstances = new ArrayList<>(m_numOfAgentsSelection);
         for (int i = 0; i < m_numOfAgentsSelection; i++) {
-            Agent agentInstance = new Consumer.Agent(count, m_missionsQueue, m_responeQueue, m_processedString, m_xmlMachine, m_decipher);
+            Agent agentInstance = new Consumer.Agent(count[0], m_missionsQueue, m_responeQueue, m_processedString, m_xmlMachine, m_decipher);
             //Thread agentThread = new Thread(agentInstance);
             agentInstance.setName("Agent-"+i);
            // m_agentList.add(agentThread);

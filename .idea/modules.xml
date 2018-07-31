@@ -3,8 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Agent/Agent.iml" filepath="$PROJECT_DIR$/Agent/Agent.iml" />
-      <module fileurl="file://$PROJECT_DIR$/DM/DM.iml" filepath="$PROJECT_DIR$/DM/DM.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Logic/Logic.iml" filepath="$PROJECT_DIR$/Logic/Logic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Server/DM/DM.iml" filepath="$PROJECT_DIR$/Server/DM/DM.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Server/Logic/Logic.iml" filepath="$PROJECT_DIR$/Server/Logic/Logic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Server/Server.iml" filepath="$PROJECT_DIR$/Server/Server.iml" />
       <module fileurl="file://$PROJECT_DIR$/UI/UI.iml" filepath="$PROJECT_DIR$/UI/UI.iml" />
     </modules>
   </component>
