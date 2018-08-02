@@ -11,6 +11,11 @@ import java.util.List;
  */
 public class Competition {
     private UBoat uBoat;
+
+    public List<Ally> getAlies() {
+        return alies;
+    }
+
     private List<Ally> alies;
     private boolean isActive;
     private boolean competitionFinish;

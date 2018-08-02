@@ -20,5 +20,18 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Tomcat 8.5.23" level="application_server_libraries" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Desktop/Enigma 3/EnigmaWeb/out/artifacts/EnigmaWeb_war_exploded/WEB-INF/lib/gson-2.1.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$USER_HOME$/Desktop/Enigma 3/EnigmaWeb/out/artifacts/EnigmaWeb_war_exploded/WEB-INF/lib/gson-2.1-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$USER_HOME$/Desktop/Enigma 3/EnigmaWeb/out/artifacts/EnigmaWeb_war_exploded/WEB-INF/lib/gson-2.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>

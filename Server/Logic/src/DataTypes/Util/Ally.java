@@ -19,11 +19,19 @@ public class Ally {
     private boolean isReady;
     private Round currentRound;
 
-    private Ally(String name, Decipher decipher, Machine machine){
+    public Ally(String name){
         this.name = name;
-        isReady = false;
-        dm = new Manager(null, decipher, machine);
-        port = dm.getPort();
+        //isReady = false;
+        //dm = new Manager(null, decipher, machine);
+        //port = dm.getPort();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setReady(boolean ready) {
