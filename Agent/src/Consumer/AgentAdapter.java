@@ -64,8 +64,8 @@ public class AgentAdapter {
                 }
             }
 
-            in.close();
-            socket.close();
+            //in.close();
+            //socket.close();
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }

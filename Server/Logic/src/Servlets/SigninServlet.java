@@ -39,8 +39,8 @@ public class SigninServlet extends HttpServlet {
             if(userType.equals("Uboat")){
                 Cookie cookie = new Cookie("userName",userName);
                 response.addCookie(cookie);
-                addUser(gM,userName);
-                gM.createNewUboat(userName);
+
+
                 res = new SigningResponse(true, "uboatRegister.html");
             }
             else if(userType.equals("Ally")){
@@ -54,6 +54,7 @@ public class SigninServlet extends HttpServlet {
             {
                 res = new SigningResponse(false, "You Must Choose User Type.");
             }
+        }
     }
 
     private String findOptionalName(List<Competition> game, String userName) {
