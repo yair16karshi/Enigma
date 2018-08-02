@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" language="javascript">
+        // let's start the jQuery while I wait.
+        // step 1: onload - capture the submit event on the form.
+        $(function() { // onload...do
+            $("#signForm").submit(function() {
+                var parameters = $(this).serialize();
+                $.ajax({
+                    data: parameters,
+                    url: this.action,
+                    timeout: 2000,
+                    error: function() {
+                        console.error("Failed to submit");
+                        $("#errorMsg").text("Failed in ajax Signing");
+                    },
+                    success: function(func) {
+                        if(func.successSign){
+                            window.location.href = func.msg;
+                        }
+                        else{
+                            $("#errorMsg").text(func.msg);
+                        }
+                    }
+                });
+
+                // return value of the submit operation
+                // by default - we'll always return false so it doesn't redirect the user.
+                return false;
+            })
+        })
+    </script>
+    <script type="text/javascript" src="basic.js"></script>
+    <link rel="stylesheet" href="basic.css">
+    <link rel="stylesheet" href="form.css">
+
+    <title>Register</title>
+</head>
+<body>
+<div id="title" class="center" >
+    <h1 class="title"><b>Registering</b></h1>
+</div>
+<div class="centerLeft" id="signingDiv">
+    <form id="signForm" action="/signing" method="get" >
+        <p> user name:
+            <span><input type="text" name="username"></span>
+        </p>
+        <p> type:
+            <select name="userType" id="userYype" class="selectUserType">
+                <option value="">None</option>
+                <option value="Uboat">Uboat</option>
+                <option value="Ally">Ally</option>
+            </select>
+        </p>
+
+        <input type="submit" value="Register"/>
+    </form>
+
+    <div><h1 id="errorMsg"> </h1></div>
+
+</div>
+</body>
+</html>

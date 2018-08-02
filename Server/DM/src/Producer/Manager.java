@@ -39,8 +39,22 @@ public class Manager implements Runnable {
     private BlockingQueue<SecretWithMissionSize> m_missionsQueue;
     private BlockingQueue<CandidateStringWithEncryptionInfo> m_responeQueue;
     private ArrayList<Agent> m_agentListInstances;
-    private boolean m_isFinished;
+    private boolean m_isFinished = false;
+
+    public boolean isRoundFinished() {
+        return m_roundFinished;
+    }
+
+    public void setIsRoundFinished(boolean m_roundFinished) {
+        this.m_roundFinished = m_roundFinished;
+    }
+
+    private boolean m_roundFinished = false;
     private String m_totalTime;
+    private boolean m_stayConnected = true;
+    private List<Socket> m_agentSockets;
+    private List<ObjectOutputStream> m_agentsOutputStreams;
+    private List<ObjectInputStream> m_agentsInputStreams;
 
     public List<CandidateStringWithEncryptionInfo> getCandidateList() {
         return m_candidateStrings;
@@ -57,8 +71,13 @@ public class Manager implements Runnable {
     private Integer m_numOfAgentsSelection;
     private Thread m_missionsThread;
     private int m_currNumOfCombinations;
+    private int m_numOfAgents = 0;
+    private int m_port;
+    private ServerSocket serverSocket;
 
     Instant m_agentsStartedTime;
+
+    public Manager(){}
 
     public Manager(EnigmaMachine machine, Decipher decipher, Machine xmlMachine){
         EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(xmlMachine.getRotorsCount(),xmlMachine.getABC());
@@ -71,6 +90,13 @@ public class Manager implements Runnable {
         m_xmlMachine = xmlMachine;
         m_isFinished = false;
         count[0] = 0;
+        m_agentSockets = new LinkedList<>();
+        try {
+            serverSocket = new ServerSocket(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        m_port = serverSocket.getLocalPort();
     }
 
     public Decipher getDecipher() {
@@ -82,72 +108,113 @@ public class Manager implements Runnable {
     }
 
     public void run() {
-        final int QUEUE_SIZE = 15000;
-
         //yair changes
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = new ServerSocket(0);
-            int port = serverSocket.getLocalPort();
-
-
-            Socket socket = serverSocket.accept();
-            new Thread(() -> {
-                try (ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-                        ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream())){
-                    outputStream.writeObject(m_xmlMachine);
-                    outputStream.writeObject(m_decipher);
-                    if(inputStream.readUTF().equals(READY)){
+        try{
+            m_port = serverSocket.getLocalPort();
+            Thread thread = new Thread(()->{
+                Socket socket;
+                while(m_stayConnected){
+                    try{
+                        socket = serverSocket.accept();
+                        m_agentSockets.add(socket);
+                        ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+                        ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+                        m_agentsOutputStreams.add(outputStream);
+                        m_agentsInputStreams.add(inputStream);
+                        outputStream.writeObject(m_xmlMachine);
+                        outputStream.writeObject(m_decipher);
+                        outputStream.flush();
+                        m_numOfAgents++;
+                    }catch (Exception e){
 
                     }
-
-
-
-
-
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
+            });
+            thread.start();
+        }catch (Exception e){
 
-            }).start();
-
-
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        //yair changes
 
+        allocateMissionsAndWaitForCandidates();
+    }
 
-
-
+    private void allocateMissionsAndWaitForCandidates() {
         m_missionsQueue = new LinkedBlockingQueue<>();
-        m_responeQueue = new LinkedBlockingQueue<>();
-        m_missionsThread =
-            new Thread(
-                    () -> {
-                      switch (m_difficultySelection) {
-                        case 1:
-                          difficultyEasy();
-                          break;
-                        case 2:
-                          difficultyMedium();
-                          break;
-                        case 3:
-                          difficultyHard();
-                          break;
-                        case 4:
-                          difficultyImpossible();
-                          break;
-                      }
-                        waitToAllAgentsToFinish();
-                    });
-        m_missionsThread.start();
         try {
-            m_missionsThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            switch (m_difficultySelection){
+                case 1:
+                    allocateMissionsToAgentsEasy();
+                    break;
+                case 2:
+
+                    break;
+                case 3:
+
+                    break;
+                case 4:
+
+                    break;
+            }
+
+            receiveResponseFromAgents();
+
+        } catch (Exception ex){
+
+        }
+    }
+
+    private void receiveResponseFromAgents() throws IOException, ClassNotFoundException {
+        while(!m_isFinished && !m_roundFinished){
+            for(ObjectInputStream inputStream : m_agentsInputStreams){
+                CandidateStringWithEncryptionInfo candidate = (CandidateStringWithEncryptionInfo)inputStream.readObject();
+                if(!candidate.getString().equals("DONE")){
+                    m_responeQueue.add(candidate);
+                    m_candidateStrings.add(candidate);
+                }
+            }
+        }
+        if(m_roundFinished){
+            m_roundFinished = false;
+            sendMassageToAgents("END_OF_SESSION");
+            allocateMissionsAndWaitForCandidates();
+        }
+        if(m_isFinished){
+            sendMassageToAgents("LOGOUT");
+        }
+    }
+
+    private void sendMassageToAgents(String msg) throws IOException {
+        for(ObjectOutputStream objectOutputStream : m_agentsOutputStreams){
+            objectOutputStream.writeUTF(msg);
+        }
+        if(msg.equals("LOGOUT")){
+            for(Socket socket : m_agentSockets){
+                socket.close();
+            }
+        }
+    }
+
+    private void allocateMissionsToAgentsEasy() throws InterruptedException, IOException {
+        m_currNumOfCombinations = DifficultyCalc.easy(m_xmlMachine.getRotorsCount(), m_xmlMachine.getABC());
+        m_secret = SecretCalc.resetRotorsPositions(m_secret, m_xmlMachine.getRotorsCount());
+        int[] numOfMissions = new int[1];
+        numOfMissions[0] = 0;
+
+        //put missions in queues
+        insertMissionsToQueue(m_currNumOfCombinations, numOfMissions);
+        int numMissionsToEachAgent = m_missionsQueue.size() / m_numOfAgents;
+        List<SecretWithMissionSize> agentMissions;
+        while(!m_missionsQueue.isEmpty()){
+            for (ObjectOutputStream outputStream : m_agentsOutputStreams) {
+                agentMissions = new LinkedList<>();
+                for (int i = 0; i < numMissionsToEachAgent; i++) {
+                    agentMissions.add(m_missionsQueue.poll());
+                    if (m_missionsQueue.isEmpty()) {
+                        break;
+                }
+                outputStream.writeObject(agentMissions);
+              }
+            }
         }
     }
 
@@ -420,5 +487,9 @@ public class Manager implements Runnable {
                 count[0],
                 m_agentListInstances,
                 m_candidateStrings);
+    }
+
+    public int getPort() {
+        return m_port;
     }
 }
