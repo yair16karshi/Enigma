@@ -24,6 +24,10 @@ import java.util.Random;
 @WebServlet(name = "SigningServlet" ,urlPatterns = "/signing")
 public class SigninServlet extends HttpServlet {
 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request,response);
+    }
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
         String userName = request.getParameter("username");

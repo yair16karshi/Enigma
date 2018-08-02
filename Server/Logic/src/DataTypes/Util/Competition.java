@@ -11,19 +11,11 @@ import java.util.List;
  */
 public class Competition {
     private UBoat uBoat;
-
-    public List<Ally> getAlies() {
-        return alies;
-    }
-
     private List<Ally> alies;
     private boolean isActive;
     private boolean competitionFinish;
     private EnigmaMachineWrapper machine;
-    private Battlefield battlefield;
-    private List<Round> rounds;
-    private Round currentRound;
-
+    private BattlefieldWrapper battlefield;
 
     public Competition(UBoat uBoat) {
         this.uBoat = uBoat;
@@ -35,9 +27,15 @@ public class Competition {
         }
     }
 
-    public void addWinner(String winnerName) {
-        currentRound.addWinner(winnerName);
+    public List<Ally> getAlies() {
+        return alies;
     }
 
+    public BattlefieldWrapper getBattlefield() {
+        return battlefield;
+    }
 
+    public void setBattlefield(BattlefieldWrapper battlefield) {
+        this.battlefield = battlefield;
+    }
 }

@@ -5,6 +5,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,19 +18,18 @@ public class XMLParser {
 //        parser.XMLIsValid("hello");
 //    }
 
-    public boolean XMLIsValid(String path) throws Exception {
+    public boolean XMLIsValid(String fileContent) throws Exception {
         //path = "C:\\WS\\Enigma\\Logic\\src\\Resources\\master.xml";
-        Path xmlPath = Paths.get(path);
         String[] answer = new String[1];
 
-        if (!Files.exists(xmlPath)) {
-            throw new Exception("File does not exist");
-        }
-
-        if (!getFileExtension(xmlPath.toString()).equals("xml")) {
-            throw new Exception("The file given is not in XML format");
-        }
-        machine = fromXmlFileToObject(path);
+//        if (!Files.exists(xmlPath)) {
+//            throw new Exception("File does not exist");
+//        }
+//
+//        if (!getFileExtension(xmlPath.toString()).equals("xml")) {
+//            throw new Exception("The file given is not in XML format");
+//        }
+        machine = fromXmlFileToObject(fileContent);
 
         if(!Util.isAlphabetEven(machine.getMachine().getABC())){
             throw new Exception("The ABC is not even");
@@ -70,14 +70,14 @@ public class XMLParser {
         return true;
     }
 
-    private static Enigma fromXmlFileToObject(String fileName) {
+    private static Enigma fromXmlFileToObject(String fileContent) {
         try {
 
-            File file = new File(fileName);
+            StringReader stringReader = new StringReader(fileContent);
             JAXBContext jaxbContext = JAXBContext.newInstance(Enigma.class);
 
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            Enigma res = (Enigma) jaxbUnmarshaller.unmarshal(file);
+            Enigma res = (Enigma) jaxbUnmarshaller.unmarshal(stringReader);
             res.getMachine().setABC(res.getMachine().getABC().trim());
             return res;
 

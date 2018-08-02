@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" language="javascript">
+        $(function() {
+            $("#uploadForm").submit(function() {
+                var parameters = new FormData($(this)[0]);
+
+                $.ajax({
+                    type:"post",
+                    data: parameters,
+                    url: "uploadFile",
+                    contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+                    processData: false,
+                    timeout: 4000,
+                    error: function() {
+                        console.log("Failed to load the file");
+                        $("#errorMsg").text("Failed in Ajax of upload");
+                    },
+                    success: function(res) {
+                        if(res.isUrl){
+                            window.location.href = res.msg;
+                        }
+                        else {
+                            $("#errorMsg").text(res.msg);
+                        }
+                    }
+                });
+
+                // return value of the submit operation
+                // by default - we'll always return false so it doesn't redirect the user.
+                return false;
+            })
+            $("#fileInput").change(function () {
+                $("#fileName").text("Choosen File:" + $("#fileInput").val())
+            })
+        });
+    </script>
+    <script type="text/javascript" src="basic.js"></script>
+    <link rel="stylesheet" href="basic.css">
+    <link rel="stylesheet" href="form.css">
+
+    <title>UBoat Register</title>
+</head>
+<body>
+<div id="title" class="center" >
+    <h1 class="title"><b>File Uploading</b></h1>
+</div>
+<div><p id="UserName"></p></div>
+
+<div class="centerLeft">
+    <h3 id = "fileName">Select a File to upload:</h3>
+    <form id="uploadForm" method="post" enctype="multipart/form-data">
+        <input id="fileInput" type="file" name="file1" accept="text/xml">
+        <div class="file-upload">
+            <label for="fileInput">
+                <img id="imgFileUpload" src="upload.png"/>
+            </label>
+
+        </div>
+        <input type="submit" value="Upload File"><br>
+    </form>
+    <div id="idDiv">
+        <h1 id="errorMsg">
+        </h1>
+    </div>
+</div>
+
+</body>
+</html>
