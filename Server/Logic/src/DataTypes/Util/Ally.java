@@ -17,7 +17,6 @@ public class Ally {
     private Manager dm;
     private int port;
     private boolean isReady;
-    private Round currentRound;
 
     public Ally(String name){
         this.name = name;
@@ -36,6 +35,10 @@ public class Ally {
 
     public void setReady(boolean ready) {
         isReady = ready;
+    }
+
+    public boolean isReady() {
+        return isReady;
     }
 
     public void setDM(String i_unprocessedString, Secret i_secret, Integer i_difficultySelection, Integer i_missionSizeSelection, Integer i_numOfAgentsSelection){

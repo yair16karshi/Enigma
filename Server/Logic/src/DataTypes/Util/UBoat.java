@@ -30,7 +30,7 @@ public class UBoat {
 
     }
 
-    private String EncryptWord(String word,Secret secretSettings){
+    public String EncryptWord(String word){//maybe ,Secret secretSettings needed as parameter
 
     }
     private EnigmaMachineWrapper CreateMachine(){
