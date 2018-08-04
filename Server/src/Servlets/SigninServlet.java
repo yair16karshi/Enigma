@@ -65,7 +65,7 @@ public class SigninServlet extends HttpServlet {
                 response.addCookie(cookie);
                 Ally ally = new Ally(userName);
                 pendingAllies.add(ally);
-                res = new SigningResponse(true, "aliesRegister.html");
+                res = new SigningResponse(true, "allyRegister.html");
             }
             else
             {

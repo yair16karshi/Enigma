@@ -15,16 +15,17 @@ import java.util.Set;
 public class Ally {
     private String name;
     private Manager dm;
-    private int port;
+    private int m_port;
     private boolean isReady;
 
     public Ally(String name){
         this.name = name;
-        //isReady = false;
-        //dm = new Manager(null, decipher, machine);
-        //port = dm.getPort();
+        isReady = false;
+        dm = new Manager();
+        m_port = dm.getPort();
     }
 
+    public int GetPort(){return m_port;}
     public String getName() {
         return name;
     }

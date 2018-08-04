@@ -77,7 +77,15 @@ public class Manager implements Runnable {
 
     Instant m_agentsStartedTime;
 
-    public Manager(){}
+    public Manager(){
+        m_agentSockets = new LinkedList<>();
+        try {
+            serverSocket = new ServerSocket(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        m_port = serverSocket.getLocalPort();
+    }
 
     public Manager(EnigmaMachine machine, Decipher decipher, Machine xmlMachine){
         EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(xmlMachine.getRotorsCount(),xmlMachine.getABC());
@@ -90,13 +98,7 @@ public class Manager implements Runnable {
         m_xmlMachine = xmlMachine;
         m_isFinished = false;
         count[0] = 0;
-        m_agentSockets = new LinkedList<>();
-        try {
-            serverSocket = new ServerSocket(0);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        m_port = serverSocket.getLocalPort();
+
     }
 
     public Decipher getDecipher() {

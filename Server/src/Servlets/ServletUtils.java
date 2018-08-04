@@ -76,4 +76,9 @@ public class ServletUtils {
     public void SetCompetitionList(List<Competition> competitions){
         m_servletContext.setAttribute(COMPETITIONSLIST, competitions);
     }
+
+    public Ally CreateNewAlly(String userName){
+        List<Ally> allyList = (List<Ally> )m_servletContext.getAttribute(PENDINGALLIES);
+        return new Ally(userName);
+    }
 }

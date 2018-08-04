@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alies Register</title>
+    <script type="text/javascript" src="jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        var showCompetitionsInterval;
+
+        function showCompetitions() {
+            $.ajax({
+                data: "",
+                url: "GetCompetitions",
+                timeout: 2000,
+                error: function() {
+                    console.error("Failed to submit");
+                    $("#errorMsg").text("Unable to get competitions");
+                },
+                success: function(r) {
+                    $('#viewCompetition').children().remove();
+                    $.each(r || [], createCompetition);
+                }
+            });
+        }
+
+        function registerToCompetition() {
+            var pOwner = $(this).parent().children("p")[0];
+            console.log(pOwner);
+            var owner = pOwner.getAttribute("name");
+            console.log("owner name: " + owner);
+            $.ajax({
+                data: "name=" + owner,
+                url: "RegisterToCompetition",
+                timeout: 2000,
+                error: function() {
+                    console.error("Failed to submit");
+                },
+                success: function(r) {
+                    alert("Success signing to " + r.nameC);
+                    clearInterval(showCompetitionsInterval);
+                    window.location.href="allyCompetition.html";
+                }
+            });
+
+        }
+
+        //dataJson = {userName: "" ; battlefield: "" ; howManyLeft:"" ;isActive:"" }
+        //battlefield = {gameName: "" ;numOfAllies: "" ;numOfRounds: "" ;difficulty: "" }
+        function createCompetition(index, dataJson) {
+            var howManySign = dataJson.battlefield.numOfAllies - dataJson.howManyLeft;
+
+            var newBox = $("<div>")
+                .addClass("competition");
+
+            var pOwner = document.createElement("P");
+            pOwner.setAttribute("id", "owner");
+            pOwner.setAttribute("name", dataJson.userName);
+            pOwner.innerText="Owner: " + dataJson.userName;
+
+            var pGameName = document.createElement("p");
+            pGameName.setAttribute("id", "gameName");
+            pGameName.innerText="Game name: "+dataJson.battlefield.gameName;
+
+            var pNumRounds = document.createElement("p");
+            pNumRounds.setAttribute("id", "numOfRounds");
+            pNumRounds.innerText="Num of Rounds : "+dataJson.battlefield.numOfRounds;
+
+            var pLevel = document.createElement("p");
+            pLevel.setAttribute("id", "level");
+            pLevel.innerText= "Level of competition : "+dataJson.battlefield.difficulty;
+
+            var pAlies = document.createElement("p");
+            pAlies.setAttribute("id", "alies");
+            pAlies.innerText= "Num of alies signing: "+howManySign+"/" + dataJson.battlefield.numOfAllies;
+
+            var pStatus = document.createElement("p");
+            pStatus.setAttribute("id", "status");
+            pStatus.innerText= "Status Game: waiting ";
+
+            var button = document.createElement("BUTTON");
+            button.setAttribute("id", "choose");
+            button.innerText = "register";
+            button.onclick = registerToCompetition;
+
+            newBox.append(pOwner)
+                .append(pGameName)
+                .append(pNumRounds)
+                .append(pLevel)
+                .append(pAlies)
+                .append(pStatus)
+                .append(button);
+
+            $('#viewCompetition').append(newBox);
+        }
+
+        $(function() {
+            $.ajax({
+                data: "",
+                url: "GetPort",
+                timeout: 2000,
+                error: function() {
+                    console.error("Failed to submit");
+                    $("#errorMsg").text("Unable to get port");
+                },
+                success: function(r) {
+                    document.getElementById("port").innerText = "Your Port: " + r;
+                }
+            });
+            showCompetitionsInterval = setInterval(showCompetitions,2000);
+        })
+    </script>
+    <script type="text/javascript" src="basic.js"></script>
+    <link rel="stylesheet" href="basic.css">
+    <link rel="stylesheet" href="form.css">
+    <link rel="stylesheet" href="allyView.css">
+</head>
+<body>
+<div id="title" class="center">
+    <h1 class="title"><b>Competitions</b></h1>
+</div>
+<div><p id="UserName"></p></div>
+<div id = "portDiv"><h1 id="port"></h1></div>
+<h1 id = "errorMsg" ></h1>
+<div id = "viewCompetition"></div>
+</body>
+</html>

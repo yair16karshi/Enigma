@@ -6,6 +6,9 @@
       <element id="module-output" name="Logic" />
       <element id="module-output" name="DM" />
       <element id="extracted-dir" path="$PROJECT_DIR$/Server/Logic/src/Resources/EnigmaMachine.jar" path-in-jar="/" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/Agent/META-INF/MANIFEST.MF" />
+      </element>
     </root>
   </artifact>
 </component>

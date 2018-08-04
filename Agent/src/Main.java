@@ -16,7 +16,7 @@ public class Main{
     }
 
     private static AgentAdapter initAgentAdapter(String[] args) {
-        String[] input = args[1].split(":");
+        String[] input = args[0].split(":");
         String host = input[0];
         int port = Integer.parseInt(input[1]);
 
