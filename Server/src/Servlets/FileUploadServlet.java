@@ -63,7 +63,7 @@ public class FileUploadServlet extends HttpServlet {
 
         if(success){
             if(errorMsg == null){
-                res = new FileUploadDetails(true, "competitionSettings.html");
+                res = new FileUploadDetails(true, "SecretSetting.html");
             }
             else {
                 res = new FileUploadDetails(false, errorMsg);
