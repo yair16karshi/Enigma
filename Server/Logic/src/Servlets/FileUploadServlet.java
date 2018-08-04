@@ -50,16 +50,14 @@ public class FileUploadServlet extends HttpServlet {
             try {
                 if(xmlParser.XMLIsValid(fileContent.toString())){
                     if (!isFileExist(xmlParser.machine.getBattlefield().getBattleName())) {
-                        gameManager.addFile(userName,fileName);
-                        InputStream inputStream = part.getInputStream();
-                        errorMsg = gameManager.checkFileCorrectness(userName,inputStream);
+                        addXMLMachineToMatchCompetition(xmlParser.machine, userName);
                     }
                     else {
-                        errorMsg = " The File : " + fileName + ". Already exists";
+                        errorMsg = " The Battlefield : " + xmlParser.machine.getBattlefield().getBattleName() + ". Already exists";
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                errorMsg = e.getMessage();
             }
         }
 
@@ -78,6 +76,18 @@ public class FileUploadServlet extends HttpServlet {
             System.out.println(json);
             out.print(json);
         }
+    }
+
+    private void addXMLMachineToMatchCompetition(Enigma machine, String userName) {
+        ServletUtils utils = new ServletUtils(getServletContext());
+        List<Competition> competitions = utils.GetCompetitionListFromContext();
+        for(Competition competition: competitions){
+            if(competition.getuBoat().getUserName().equals(userName)){
+                competition.getuBoat().createMachineWrapper(machine);
+                break;
+            }
+        }
+        utils.SetCompetitionList(competitions);
     }
 
     private boolean isFileExist(String battleName) {

@@ -3,6 +3,7 @@ package Servlets;
 import DataTypes.Util.Ally;
 import DataTypes.Util.Competition;
 import DataTypes.Util.UBoat;
+import com.sun.prism.image.CompoundTexture;
 
 import javax.servlet.ServletContext;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 public class ServletUtils {
     private ServletContext m_servletContext;
     private final String COMPETITIONSLIST = "competitions";
+    private final String PENDINGALLIES = "PendingAllies";
     private final String USERNAME = "userName";
 
     public ServletUtils(ServletContext context){
@@ -69,5 +71,9 @@ public class ServletUtils {
             }
         }
         return null;
+    }
+
+    public void SetCompetitionList(List<Competition> competitions){
+        m_servletContext.setAttribute(COMPETITIONSLIST, competitions);
     }
 }

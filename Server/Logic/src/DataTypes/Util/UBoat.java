@@ -1,7 +1,11 @@
 package DataTypes.Util;
 
+import DataTypes.GeneratedMachineDataTypes.Enigma;
+import machine.EnigmaMachineApplication;
 import machine.EnigmaMachineWrapper;
 import pukteam.enigma.component.machine.api.Secret;
+import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
+import pukteam.enigma.factory.EnigmaComponentFactory;
 
 public class UBoat {
 
@@ -31,9 +35,19 @@ public class UBoat {
     }
 
     public String EncryptWord(String word){//maybe ,Secret secretSettings needed as parameter
-
+        //TODO
+        return word;
     }
     private EnigmaMachineWrapper CreateMachine(){
+        //TODO
+        return null;
+    }
 
+    public void createMachineWrapper(Enigma machine) {
+        EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(machine.getMachine().getRotorsCount(),machine.getMachine().getABC());
+        EnigmaMachineApplication.DefineRotors(machineBuilder,machine.getMachine());
+        EnigmaMachineApplication.DefineReflectors(machineBuilder,machine.getMachine());
+        m_machine = new EnigmaMachineWrapper(machineBuilder.create());
+        m_machine.setXMLMachine(machine.getMachine());
     }
 }
