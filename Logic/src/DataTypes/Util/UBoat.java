@@ -1,6 +1,7 @@
 package DataTypes.Util;
 
 import DataTypes.GeneratedMachineDataTypes.Decipher;
+import DataTypes.GeneratedMachineDataTypes.Dictionary;
 import DataTypes.GeneratedMachineDataTypes.Enigma;
 import machine.EnigmaMachineApplication;
 import machine.EnigmaMachineWrapper;
@@ -47,9 +48,14 @@ public class UBoat {
         return m_decipher;
     }
 
-    public void setDecipher(Decipher m_decipher) {
-
-        this.m_decipher = m_decipher;
+    public void setDecipher(Decipher i_decipher) {
+        Decipher decipher = new Decipher();
+        Dictionary dictionary = new Dictionary();
+        dictionary.setWords(i_decipher.getDictionary().getWords().trim().toUpperCase());
+        dictionary.setExcludeChars(i_decipher.getDictionary().getExcludeChars().trim().toUpperCase());
+        decipher.setDictionary(dictionary);
+        decipher.setAgents(i_decipher.getAgents());
+        this.m_decipher = decipher;
     }
 
     public String getUserName() {
