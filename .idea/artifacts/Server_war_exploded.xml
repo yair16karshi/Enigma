@@ -6,6 +6,15 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="Server" />
+          <element id="module-output" name="Logic" />
+          <element id="module-output" name="DM" />
+          <element id="module-output" name="Agent" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="file-copy" path="$PROJECT_DIR$/Logic/src/Resources/EnigmaMachine.jar" />
+          <element id="library" level="application_server_libraries" name="Tomcat 8.5.23" />
+          <element id="file-copy" path="$USER_HOME$/Desktop/Enigma 3/EnigmaWeb/out/artifacts/EnigmaWeb_war_exploded/WEB-INF/lib/gson-2.1.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/gson-2.1.jar" />
         </element>
       </element>
     </root>

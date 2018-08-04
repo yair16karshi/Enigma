@@ -7,15 +7,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../Logic/src/Resources/EnigmaMachine.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="DM" />
     <orderEntry type="module-library">
       <library>
@@ -43,7 +34,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../gson-2.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../gson-2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
