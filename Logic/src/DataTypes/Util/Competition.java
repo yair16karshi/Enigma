@@ -18,11 +18,10 @@ import java.util.List;
  */
 public class Competition {
     private UBoat uBoat;
-    private List<Ally> alies;
+    private List<Ally> alies = new ArrayList<>();
     private boolean isActive;
     private boolean competitionFinish;
     private BattlefieldWrapper battlefield;
-    private String compName;
 
     public boolean isReadyToRegister() {
         return isReadyToRegister;

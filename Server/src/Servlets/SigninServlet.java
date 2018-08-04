@@ -115,20 +115,25 @@ public class SigninServlet extends HttpServlet {
     private boolean isUserExist(String userName) {
         List<Competition> competitions = getCompetitions();
         List<Ally> pendingAllies = getPendingAllies();
-
-        for(Competition comp: competitions){
-            for(Ally ally: comp.getAlies()){
+        if(competitions != null) {
+            for (Competition comp : competitions) {
+                if(comp.getuBoat().getUserName().equals(userName))
+                    return true;
+                for (Ally ally : comp.getAlies()) {
+                    if (ally.getName().equals(userName)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        if(pendingAllies != null){
+            for (Ally ally: pendingAllies){
                 if(ally.getName().equals(userName)){
                     return true;
                 }
             }
         }
 
-        for (Ally ally: pendingAllies){
-            if(ally.getName().equals(userName)){
-                return true;
-            }
-        }
 
         return false;
     }

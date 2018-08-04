@@ -1,0 +1,51 @@
+.competition{
+    float: left;
+    margin: 5px;
+    text-align: center;
+    width: 300px;
+    height: 300px;
+    border-radius: 70px;
+    border-style: double;
+    border-width: 5px;
+    background-color: dimgray;
+    color: white;
+}
+
+.competition:hover{
+    background-color: black;
+}
+
+.competition p{
+    text-align: center;
+    font-size: 120%;
+}
+
+.competition button{
+    position: center;
+    width: 90px;
+    height: 30px;
+    font-weight: bold;
+    font-family: David;
+    font-size: 18px;
+}
+
+.competition button:hover{
+    cursor: pointer;
+    box-shadow: 0 12px 16px rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+#viewCompetition{
+    height: 300px;
+}
+
+#portDiv{
+    margin: auto;
+    text-align: center;
+    border: black dotted 5px;
+    width: 250px;
+}
+
+#portDiv:hover{
+    color: white;
+    background: black;
+}

@@ -20,6 +20,9 @@
                 success: function(r) {
                     $('#viewCompetition').children().remove();
                     $.each(r || [], createCompetition);
+                    if(r.empty()){
+                        $("#errorMsg").text("There are no competitions available");
+                    }
                 }
             });
         }
@@ -48,31 +51,26 @@
         //dataJson = {userName: "" ; battlefield: "" ; howManyLeft:"" ;isActive:"" }
         //battlefield = {gameName: "" ;numOfAllies: "" ;numOfRounds: "" ;difficulty: "" }
         function createCompetition(index, dataJson) {
-            var howManySign = dataJson.battlefield.numOfAllies - dataJson.howManyLeft;
 
             var newBox = $("<div>")
                 .addClass("competition");
 
             var pOwner = document.createElement("P");
             pOwner.setAttribute("id", "owner");
-            pOwner.setAttribute("name", dataJson.userName);
-            pOwner.innerText="Owner: " + dataJson.userName;
+            pOwner.setAttribute("name", dataJson.ownerName);
+            pOwner.innerText="Owner: " + dataJson.ownerName;
 
             var pGameName = document.createElement("p");
             pGameName.setAttribute("id", "gameName");
-            pGameName.innerText="Game name: "+dataJson.battlefield.gameName;
-
-            var pNumRounds = document.createElement("p");
-            pNumRounds.setAttribute("id", "numOfRounds");
-            pNumRounds.innerText="Num of Rounds : "+dataJson.battlefield.numOfRounds;
+            pGameName.innerText="Game name: "+dataJson.compName;
 
             var pLevel = document.createElement("p");
             pLevel.setAttribute("id", "level");
-            pLevel.innerText= "Level of competition : "+dataJson.battlefield.difficulty;
+            pLevel.innerText= "Level of competition : "+dataJson.level;
 
             var pAlies = document.createElement("p");
             pAlies.setAttribute("id", "alies");
-            pAlies.innerText= "Num of alies signing: "+howManySign+"/" + dataJson.battlefield.numOfAllies;
+            pAlies.innerText= "Num of alies signing: "+dataJson.numOfAlliesInComp+"/" + dataJson.maxAllowed;
 
             var pStatus = document.createElement("p");
             pStatus.setAttribute("id", "status");
@@ -85,7 +83,6 @@
 
             newBox.append(pOwner)
                 .append(pGameName)
-                .append(pNumRounds)
                 .append(pLevel)
                 .append(pAlies)
                 .append(pStatus)
