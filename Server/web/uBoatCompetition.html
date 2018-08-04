@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" language="javascript">
+        var showAlliesInterval;
+        var waitingForAlliesToRegisterInterval;
+        var showResultsInterval;
+        var msgH1;
+        var version=0;
+
+        $(function() {
+            $("#logoutButton").click(function() {
+                $.ajax({
+                    data: "",
+                    url: "uboatLogout",
+                    timeout: 2000,
+                    error: function() {
+                        console.error("Failed to submit");
+                        $("#errorMsg").text("Failed in ajax uboatLogout");
+                    },
+                    success: function() {
+                        window.location.href = "index.html";
+                    }
+                });
+
+                return false;
+            });
+            $("#readyButton").click(function () {
+                $("#Status").text("Waiting For Allies to Start");
+                waitingForAlliesToRegisterInterval = setInterval(waitingForAlliesToRegister,2000);
+                $("#readyButton").remove();
+            })
+            $("#startNewGameButton").click(function () {
+                $.ajax({
+                    data: "",
+                    url: "startNewGameInUboat",
+                    timeout: 2000,
+                    error: function() {
+                        console.error("Failed to submit");
+                        $("#errorMsg").text("Failed in ajax startNewGameInUboat");
+                    },
+                    success: function() {
+                        window.location.href = "competitionSettings.html";
+                    }
+                });
+                return false;
+            })
+            $("#msgEntered").click(function(){
+                $.ajax({
+                    data: "msg=" + $("#msg").val(),
+                    url: "ValidateStringServlet",
+                    timeout: 2000,
+                    error: function() {
+                        console.error("Failed to submit");
+                        $("#errorMsg").text("Failed in ajax ValidateStringServlet");
+                    },
+                    success: function(response) {
+                        if(response){
+                            document.getElementById("readyButton").disabled = false;
+                            var newH1 = document.createElement("h1");
+
+                            newH1.setAttribute("id","viewStatus");
+                            newH1.innerText = "Press Ready To Start";
+                            var newH2 = document.createElement("h1");
+
+                            newH2.innerText = "The message you choose is: " + $("#msg").val();
+                            $("#Status").append(newH2).append(newH1);
+                            msgH1 = newH2;
+
+                            $("#EnterMsgDiv").remove();
+                        }
+                        else{
+                            console.log("3");
+                            $("#errorMsg").text("Not In Dictionary");
+                        }
+                    }
+                });
+
+                return false;
+            });
+            showAlliesInterval = setInterval(showAllies,2000);
+        });
+
+        function waitingForAlliesToRegister() {
+            console.log("waitingForAlliesToRegister start");
+            $.ajax({
+                data: "",
+                url: "NumOfReadyAlliesServlet",
+                timeout: 2000,
+                error: function() {
+                    console.error("Failed to submit");
+                    $("#errorMsgWaitToAllies").text("Failed in ajax NumOfReadyAlliesServlet");
+                },
+                //boolean obj
+                success: function(obj) {
+                    console.log("waitingForAlliesToRegister success in ajax");
+                    if(obj){
+                        console.log("waitingForAlliesToRegister going to clear interval");
+                        clearInterval(waitingForAlliesToRegisterInterval);
+                        $("#Status").children().remove();
+
+                        var newH2 = document.createElement("h1");
+                        newH2.innerText = "Competition Start";
+
+                        $("#Status").append(newH2).append(msgH1);
+                        $("#competitionView").removeClass("hidden");
+                        showResultsInterval = setInterval(showResults,2000);
+                    }
+                }
+            })
+
+        }
+
+        function createWinner(index,dataJson) {
+            var pResult = document.createElement("P");
+            pResult.setAttribute("id", "winnerName");
+            pResult.innerText="Winner Name: " + dataJson;
+            $("#winners").append(pResult);
+        }
+
+        function showWinners(obj) {
+            if(obj.winnersName.length > 0){
+                var newH1 = document.createElement("h1");
+                newH1.setAttribute("id","winners");
+                newH1.innerText = "The Winners are: ";
+                $("#winners").append(newH1);
+                $.each(obj.winnersName || [], createWinner);
+                $("#winners").removeClass("hidden");
+            }
+            else{
+                var newH1 = document.createElement("h1");
+                newH1.setAttribute("id","winners");
+                newH1.innerText = "Nobody wins...";
+                $("#winners").append(newH1);
+                $("#winners").removeClass("hidden");
+            }
+
+        }
+
+        function showResults() {
+            $.ajax({
+                data: "",
+                url: "GetOptionalResults",
+                timeout: 2000,
+                error: function() {
+                    console.error("Failed to submit");
+                    $("#errorMsgWaitToAllies").text("Failed in ajax GetOptionalResults");
+                },
+                //obj = {winnersName: "" ; results: "" }
+                success: function(obj) {
+                    $('#results').children().remove();
+                    $.each(obj.results || [], createResult);
+
+                    if(obj.roundFinished){
+                        clearInterval(showResultsInterval);
+                        clearInterval(showAlliesInterval);
+                        showWinners(obj);
+
+                        $("#Status").text("Round End !!");
+
+                        if(obj.competitionDone){
+                            $("#Status").text("Competition End!!");
+                            $("#logoutButton").removeClass("hidden");
+                            $("#startNewGameButton").removeClass("hidden");
+                            clearInterval(chatInterval);
+                        }else {
+                            $("#startNewRoundButton").removeClass("hidden");
+                        }
+                    }
+                }
+            })
+        }
+
+        //dataJson = {allyName: "" ; result: "" }
+        function createResult(index,dataJson) {
+            var pResult = document.createElement("P");
+            pResult.setAttribute("id", "resultDetails");
+            pResult.innerText="allyName: " + dataJson.allyName + ". result: " + dataJson.result;
+
+            $("#results").append(pResult);
+        }
+
+        //dataJson = {allyName: "" ; numOfAgents: "" }
+        function createAlly(index, dataJson) {
+            var newBox = $("<div>")
+                .addClass("square");
+
+            var pAllyName = document.createElement("P");
+            pAllyName.setAttribute("id", "allyName");
+            pAllyName.innerText="allyName: " + dataJson.allyName;
+
+            var pnumOfAgents = document.createElement("p");
+            pnumOfAgents.setAttribute("id", "numOfAgents");
+            pnumOfAgents.innerText="Num Of Agents: "+ dataJson.numOfAgents;
+
+            newBox.append(pAllyName)
+                .append(pnumOfAgents);
+
+            $('#viewAllies').append(newBox);
+        }
+
+        function showAllies() {
+            $.ajax({
+                data: "",
+                url: "GetSignedAllies",
+                timeout: 2000,
+                error: function() {
+                    console.error("Failed to submit");
+                    $("#errorMsgWaitToAllies").text("Failed in ajax GetSignedAllies");
+                },
+                //obj = {isFull: "" ; allyDetails: "" }
+                success: function(obj) {
+                    $('#viewAllies').children().remove();
+                    $.each(obj.allyDetails || [], createAlly);
+                }
+            })
+        }
+
+    </script>
+    <link rel="stylesheet" href="basic.css">
+    <link rel="stylesheet" href="form.css">
+    <link rel="stylesheet" href="chat.css">
+
+    <title>Uboat Competition</title>
+</head>
+<body>
+<div id="Bodiv">
+    <div id="title" class="center" >
+        <h1 class="title"><b>Competition</b></h1>
+    </div>
+    <P id="Status"></P>
+    <div id="EnterMsgDiv">
+        <h1>Enter Your Message To Decrypt:</h1>
+        <input type="text" id = "msg">
+        <button id="msgEntered">
+            Enter
+        </button>
+        <h1 id="errorMsg"></h1>
+    </div>
+    <button id="readyButton" disabled>ready</button>
+    <h1 id="errorMsgWaitToAllies"></h1>
+    <div id="viewAllies"></div>
+    <div id="competitionView" class="hidden">
+        <div id="round" >
+            <h1>Results: </h1>
+            <div id="results" class="ex1"></div>
+            <div id="winners" class="hidden"></div>
+        </div>
+        <button id="logoutButton" class="hidden">  Logout </button>
+        <button id="startNewGameButton" class="hidden">Start New Game</button>
+    </div>
+</div>
+</body>
+</html>

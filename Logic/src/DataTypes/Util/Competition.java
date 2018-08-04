@@ -9,6 +9,7 @@ import pukteam.enigma.component.machine.api.Secret;
 import pukteam.enigma.component.machine.secret.SecretBuilder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -130,5 +131,25 @@ public class Competition {
         uBoat.getMachineWrapper().setSecretHasBeenSet();
 
         return null;
+    }
+
+    public boolean checkInDictionary(String stringToProcess) {
+        String[] splitMsg = stringToProcess.split(" ");
+
+        return Arrays.stream(splitMsg).allMatch(word -> uBoat.getDecipher().getDictionary().getWords().contains(word));
+    }
+
+    public boolean isAllAlliesReady() {
+        return (alies.size() == battlefield.getAllies())
+                && alies.stream().allMatch(Ally::isReady);
+    }
+
+    public void startCompetition() {
+        uBoat.EncryptWord();
+        alies.forEach(Ally::startCompetition);
+    }
+
+    public boolean isCompetitionFull() {
+        return battlefield.getAllies() == alies.size() ? true :false;
     }
 }

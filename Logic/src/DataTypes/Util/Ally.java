@@ -46,4 +46,12 @@ public class Ally {
         dm.set(i_unprocessedString, i_secret, i_difficultySelection, i_missionSizeSelection, i_numOfAgentsSelection);
     }
 
+    public void startCompetition() {
+        //TODO
+        dm.run();
+    }
+
+    public int getNumOfAgents() {
+        return dm.getNumOfAgents();
+    }
 }

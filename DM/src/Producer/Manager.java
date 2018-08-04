@@ -494,4 +494,8 @@ public class Manager implements Runnable {
     public int getPort() {
         return m_port;
     }
+
+    public int getNumOfAgents(){
+        return m_numOfAgents;
+    }
 }

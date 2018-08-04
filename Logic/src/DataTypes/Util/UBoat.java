@@ -1,5 +1,6 @@
 package DataTypes.Util;
 
+import DataTypes.GeneratedMachineDataTypes.Decipher;
 import DataTypes.GeneratedMachineDataTypes.Enigma;
 import machine.EnigmaMachineApplication;
 import machine.EnigmaMachineWrapper;
@@ -9,9 +10,45 @@ import pukteam.enigma.factory.EnigmaComponentFactory;
 
 public class UBoat {
     EnigmaMachineWrapper    m_machine;
+    Decipher                m_decipher;
     String                  m_userName;
+    String                  m_msgBeforeEnc;
+    String                  m_encryptedMsg;
+    boolean                 m_isReady;
 
     public UBoat(){
+    }
+
+    public String getEncryptedMsg() {
+        return m_encryptedMsg;
+    }
+
+    public void setEncryptedMsg(String m_encryptedMsg) {
+        this.m_encryptedMsg = m_encryptedMsg;
+    }
+
+    public String getMsgBeforeEnc() {
+        return m_msgBeforeEnc;
+    }
+
+    public void setMsgBeforeEnc(String m_msgBeforeEnc) {
+        this.m_msgBeforeEnc = m_msgBeforeEnc;
+    }
+
+    public boolean isReady() {
+        return m_isReady;
+    }
+
+    public void setReady(boolean m_isReady) {
+        this.m_isReady = m_isReady;
+    }
+
+    public Decipher getDecipher() {
+        return m_decipher;
+    }
+
+    public void setDecipher(Decipher m_decipher) {
+        this.m_decipher = m_decipher;
     }
 
     public String getUserName() {
@@ -37,9 +74,8 @@ public class UBoat {
 
     }
 
-    public String EncryptWord(String word){//maybe ,Secret secretSettings needed as parameter
+    public void EncryptWord(){//maybe ,Secret secretSettings needed as parameter
         //TODO
-        return word;
     }
     private EnigmaMachineWrapper CreateMachine(){
         //TODO
