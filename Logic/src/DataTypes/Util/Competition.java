@@ -2,9 +2,14 @@ package DataTypes.Util;
 
 import DataTypes.GeneratedMachineDataTypes.Battlefield;
 import DataTypes.GeneratedMachineDataTypes.Machine;
+import DataTypes.GeneratedMachineDataTypes.Reflector;
+import InputValidation.Util;
 import machine.EnigmaMachineWrapper;
+import pukteam.enigma.component.machine.api.Secret;
+import pukteam.enigma.component.machine.secret.SecretBuilder;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -15,9 +20,18 @@ public class Competition {
     private List<Ally> alies;
     private boolean isActive;
     private boolean competitionFinish;
-    private EnigmaMachineWrapper machine;
     private BattlefieldWrapper battlefield;
     private String compName;
+
+    public boolean isReadyToRegister() {
+        return isReadyToRegister;
+    }
+
+    public void setReadyToRegister(boolean readyToRegister) {
+        isReadyToRegister = readyToRegister;
+    }
+
+    private boolean isReadyToRegister;
 
     private List<String> candidatesList = new ArrayList<>();
     private String m_encryptedWord;
@@ -30,13 +44,6 @@ public class Competition {
         this.uBoat = uBoat;
     }
 
-    public String getCompName() {
-        return compName;
-    }
-
-    public void setCompName(String compName) {
-        this.compName = compName;
-    }
     public boolean isActive() {
         return isActive;
     }
@@ -78,5 +85,50 @@ public class Competition {
 
     public void SetEncryptedWord(String encryptedWord) {
         m_encryptedWord = encryptedWord;
+    }
+
+    public ArrayList<Integer> getReflectorsIDs() {
+        ArrayList<Integer> res = new ArrayList<>();
+        List<Reflector> reflectors = uBoat.getMachineWrapper().getXMLMachine().getReflectors().getReflector();
+        for(Reflector reflector: reflectors){
+            res.add(Util.romanToInt(reflector.getId()));
+        }
+
+        return res;
+    }
+
+    public int getRotorsCount() {
+        return uBoat.getMachineWrapper().getXMLMachine().getRotorsCount();
+    }
+
+    public int getNumOfRotors() {
+        return uBoat.getMachineWrapper().getXMLMachine().getRotors().getRotor().size();
+    }
+
+    public ArrayList<Character> getABC() {
+        ArrayList<Character> res = new ArrayList<>();
+        for(char c: uBoat.getMachineWrapper().getXMLMachine().getABC().toCharArray()){
+            res.add(c);
+        }
+
+        return res;
+    }
+
+    public String checkInputAndInitSecret(String rotors, String positions, String reflector) {
+        for (int i=0; i<rotors.length(); i++)
+            for (int j=i+1; j<rotors.length(); j++)
+                if (rotors.charAt(i) == rotors.charAt(j))
+                    return "Don't choose same rotor more then once";
+
+        SecretBuilder secretBuilder = uBoat.getMachineWrapper().createSecret();
+        secretBuilder.selectReflector(Integer.parseInt(reflector));
+        for(int i=0; i<rotors.length(); i++){
+            secretBuilder.selectRotor(Integer.parseInt(rotors.substring(i, i+1)), positions.toCharArray()[i]);
+        }
+        Secret secret = secretBuilder.create();
+        uBoat.getMachineWrapper().initFromSecret(secret);
+        uBoat.getMachineWrapper().setSecretHasBeenSet();
+
+        return null;
     }
 }

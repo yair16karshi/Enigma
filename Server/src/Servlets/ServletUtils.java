@@ -26,7 +26,7 @@ public class ServletUtils {
         List<Competition> competitionList = GetCompetitionListFromContext();
 
         for(Competition competition : competitionList){
-            if(competition.getuBoat().getUserName() == userName){
+            if(competition.getuBoat().getUserName().equals(userName)){
                 return competition;
             }
         }
@@ -47,7 +47,7 @@ public class ServletUtils {
         List<Competition> competitionList = GetCompetitionListFromContext();
 
         for(Competition competition : competitionList){
-            if(competition.getCompName() == compName){
+            if(competition.getBattlefield().getBattleName().equals(compName)){
                 return competition;
             }
         }

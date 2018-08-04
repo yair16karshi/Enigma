@@ -2,6 +2,7 @@ package Servlets;
 
 import DataTypes.GeneratedMachineDataTypes.Enigma;
 import DataTypes.GeneratedMachineDataTypes.Machine;
+import DataTypes.Util.BattlefieldWrapper;
 import DataTypes.Util.Competition;
 import InputValidation.XMLParser;
 import com.google.gson.Gson;
@@ -80,21 +81,19 @@ public class FileUploadServlet extends HttpServlet {
 
     private void addXMLMachineToMatchCompetition(Enigma machine, String userName) {
         ServletUtils utils = new ServletUtils(getServletContext());
-        List<Competition> competitions = utils.GetCompetitionListFromContext();
-        for(Competition competition: competitions){
-            if(competition.getuBoat().getUserName().equals(userName)){
-                competition.getuBoat().createMachineWrapper(machine);
-                break;
-            }
-        }
-        utils.SetCompetitionList(competitions);
+        Competition competition = utils.GetCompetitionByUBoatUserName(userName);
+        competition.getuBoat().createMachineWrapper(machine);
+        competition.setBattlefield(new BattlefieldWrapper(machine.getBattlefield()));
+        competition.getuBoat().getMachineWrapper().setIsXMLLoaded(true);
     }
 
     private boolean isFileExist(String battleName) {
         List<Competition> competitions = (List<Competition>) getServletContext().getAttribute("competitions");
         for(Competition competition: competitions){
-            if(competition.getBattlefield().getBattleName().equals(battleName)){
-                return true;
+            if(competition.getBattlefield() != null){
+                if(competition.getBattlefield().getBattleName().equals(battleName)){
+                    return true;
+                }
             }
         }
 

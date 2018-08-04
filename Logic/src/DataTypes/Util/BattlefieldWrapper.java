@@ -5,6 +5,13 @@ import DataTypes.GeneratedMachineDataTypes.Battlefield;
 public class BattlefieldWrapper {
     private Battlefield m_battlefield;
 
+    public BattlefieldWrapper() {
+    }
+
+    public BattlefieldWrapper(Battlefield m_battlefield) {
+        this.m_battlefield = m_battlefield;
+    }
+
     /****************************************
      *       XML BATTLEFIELD FUNCTIONS
      *****************************************/

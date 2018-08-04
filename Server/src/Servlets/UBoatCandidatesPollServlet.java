@@ -39,7 +39,7 @@ public class UBoatCandidatesPollServlet extends HttpServlet  {
 
     private List<String> FindCandidatesList(List<Competition> competitionList,String userName) {
         for(Competition competition : competitionList){
-            if(competition.getuBoat().getUserName() == userName){
+            if(competition.getuBoat().getUserName().equals(userName)){
                 return competition.getCandidatesList();
             }
         }

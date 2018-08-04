@@ -8,9 +8,11 @@ import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
 import pukteam.enigma.factory.EnigmaComponentFactory;
 
 public class UBoat {
-
     EnigmaMachineWrapper    m_machine;
     String                  m_userName;
+
+    public UBoat(){
+    }
 
     public String getUserName() {
         return m_userName;
@@ -20,7 +22,8 @@ public class UBoat {
         this.m_userName = userName;
     }
 
-    public UBoat(){
+    public EnigmaMachineWrapper getMachineWrapper() {
+        return m_machine;
     }
 
     public BattlefieldWrapper CreateBattlefield(String wordToEncrypt) {
