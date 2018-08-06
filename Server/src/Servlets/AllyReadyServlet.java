@@ -41,8 +41,24 @@ public class AllyReadyServlet extends HttpServlet {
         synchronized (competition){
             competition.setActive(everyoneReady);
         }
+        int difficulty = parseToDifficulty(competition.getBattlefield().getLevel());
         synchronized (ally){
-            ally.setDM(competition.getuBoat().getEncryptedMsg(),competition.getuBoat().getMachineWrapper().getSecret(),Integer.parseInt(competition.getBattlefield().getLevel()), ally.getManager().getMissionSize(),0);
+            ally.setDM(competition.getuBoat().getEncryptedMsg(),competition.getuBoat().getMachineWrapper().getSecret(),difficulty, ally.getManager().getMissionSize(),0);
+        }
+    }
+
+    private int parseToDifficulty(String level) {
+        switch (level){
+            case "EASY":
+                return 1;
+            case "MEDIUM":
+                return 2;
+            case "HARD":
+                return 3;
+            case "UNPOSSIBLE":
+                return 4;
+            default:
+                return 1;
         }
     }
 }

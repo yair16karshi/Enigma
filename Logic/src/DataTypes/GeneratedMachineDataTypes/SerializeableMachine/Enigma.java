@@ -1,8 +1,6 @@
 
 package DataTypes.GeneratedMachineDataTypes.SerializeableMachine;
 
-import DataTypes.GeneratedMachineDataTypes.Battlefield;
-
 import java.io.Serializable;
 
 public class Enigma implements Serializable {
