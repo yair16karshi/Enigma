@@ -405,11 +405,11 @@ public class Manager implements Runnable {
         return secretBuilder.create();
     }
 
-    public void set(String i_unprocessedString, Secret i_secret, Integer i_difficultySelection, Integer i_missionSizeSelection, Integer i_numOfAgentsSelection) {
+    public void set(String i_processedString, Secret i_secret, Integer i_difficultySelection, Integer i_missionSizeSelection, Integer i_numOfAgentsSelection) {
         m_secret = createNewSecret(i_secret);
         m_machineWrapper.initFromSecret(m_secret);
-        i_unprocessedString = Util.removeExcludeCharsFromString(m_decipher.getDictionary().getExcludeChars(), i_unprocessedString);
-        m_processedString = m_machineWrapper.process(i_unprocessedString);
+        //i_processedString = Util.removeExcludeCharsFromString(m_decipher.getDictionary().getExcludeChars(), i_processedString);
+        m_processedString = i_processedString;
         m_difficultySelection = i_difficultySelection;
         m_missionSizeSelection = i_missionSizeSelection;
         m_numOfAgentsSelection = i_numOfAgentsSelection;
