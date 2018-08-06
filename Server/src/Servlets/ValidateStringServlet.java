@@ -38,8 +38,10 @@ public class ValidateStringServlet extends HttpServlet {
 
         boolean res = competition.checkInDictionary(msg.toUpperCase());
         if(res){
+            String encString = competition.getuBoat().getMachineWrapper().process(msg);
             synchronized (competition){
                 competition.getuBoat().setMsgBeforeEnc(msg);
+                competition.getuBoat().setMsgBeforeEnc(encString);
             }
         }
 
