@@ -64,4 +64,8 @@ public class Ally {
     public List<CandidateStringWithEncryptionInfo> getCandidates() {
         return dm.getCandidateList();
     }
+
+    public void setMissionSize(int missionSize) {
+        dm.setMissionSize(missionSize);
+    }
 }

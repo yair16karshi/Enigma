@@ -102,7 +102,7 @@
         function waitForSettings() {
             $.ajax({
                 data: "",
-                url: "waitForSettings",
+                url: "WaitForSecretSetting",
                 //timeout: 2000,
                 error: function() {
                     console.error("Failed to submit");
@@ -124,15 +124,15 @@
             })
         }
 
-        function checkMissionSize() {
+        function SetMissionSize() {
             $.ajax({
                 data: "missionSize="+$("#mstext").val(),
-                url: "checkMissionSize",
+                url: "SetMissionSize",
                 //timeout: 2000,
                 error: function() {
                     console.error("Failed to submit");
                     var newError = document.createElement("h1");
-                    newError.innerText = "Failed in ajax checkMissionSize";
+                    newError.innerText = "Failed in ajax SetMissionSize";
                     $("#status").children().remove();
                     $("#status").append(newError);
                 },
@@ -341,7 +341,7 @@
                     document.getElementById("port").innerText = "Your Port : " + r;
                 }
             });
-            $("#missionSizeForm").submit(checkMissionSize);
+            $("#missionSizeForm").submit(SetMissionSize);
             $("#ready").click(function () {
                 $.ajax({
                     data: "",
@@ -349,7 +349,7 @@
              //       timeout: 2000,
                     error: function() {
                         var newError =  document.createElement("h1");
-                        newError.innerText = "Failed in ajax checkMissionSize";
+                        newError.innerText = "Failed in ajax SetMissionSize";
                         $("#status").children().remove();
                         $("#status").append(newError);
                     },

@@ -500,4 +500,12 @@ public class Manager implements Runnable {
     public int getNumOfAgents(){
         return m_numOfAgents;
     }
+
+    public void setMissionSize(int missionSize){
+        m_missionSizeSelection = missionSize;
+    }
+
+    public int getMissionSize(){
+        return m_missionSizeSelection;
+    }
 }

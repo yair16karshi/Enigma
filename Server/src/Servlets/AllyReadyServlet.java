@@ -2,13 +2,16 @@ package Servlets;
 
 import DataTypes.Util.Ally;
 import DataTypes.Util.Competition;
+import pukteam.enigma.component.machine.api.Secret;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+@WebServlet(name = "AllyReadyServlet", urlPatterns = "/allyReadyToStart")
 public class AllyReadyServlet extends HttpServlet {
     @Override
     //searches for the ally and sets that he is ready
@@ -16,16 +19,30 @@ public class AllyReadyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletUtils servletUtils = new ServletUtils(getServletContext());
 
-        String userName = req.getParameter("userName");
+        String userName = null;
+        Cookie cookies [] = req.getCookies();
+        for (Cookie c : cookies) {
+            if(c.getName().equals("userName"))
+                userName = c.getValue();
+        }
+
         Ally ally = servletUtils.GetAllyByUserName(userName);
-        ally.setReady(true);
-        //todo maybe send back the response(boolean)
+        synchronized (ally){
+            ally.setReady(true);
+        }
+
         Competition competition = servletUtils.GetCompetitionByAllyUserName(userName);
         boolean everyoneReady = true;
         for(Ally allyfromList : competition.getAlies()){
             if(!allyfromList.isReady())
                 everyoneReady = false;
         }
-        competition.setActive(everyoneReady);
+
+        synchronized (competition){
+            competition.setActive(everyoneReady);
+        }
+        synchronized (ally){
+            ally.setDM(competition.getuBoat().getEncryptedMsg(),competition.getuBoat().getMachineWrapper().getSecret(),Integer.parseInt(competition.getBattlefield().getLevel()), ally.getManager().getMissionSize(),0);
+        }
     }
 }

@@ -164,4 +164,14 @@ public class Competition {
     public void addWinner(String allyName) {
         winners.add(allyName);
     }
+
+    public boolean isEveryBodyReady() {
+        if(isAllAlliesReady()){
+            if(uBoat.isReady()){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
