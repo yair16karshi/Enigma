@@ -43,10 +43,10 @@ public class GetRivalsServlet extends HttpServlet {
 
 
     private class rivalAlly {
-        String userName;
+        String allyName;
         int numOfAgents;
         public rivalAlly(String userName, int numOfAgents) {
-            this.userName = userName;
+            this.allyName = userName;
             this.numOfAgents = numOfAgents;
         }
     }

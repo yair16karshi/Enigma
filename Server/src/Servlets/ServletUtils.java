@@ -67,7 +67,7 @@ public class ServletUtils {
         List<Competition> competitionList = GetCompetitionListFromContext();
         for(Competition competition : competitionList){
             for(Ally ally : competition.getAlies()){
-                if(ally.getName() == userName)
+                if(ally.getName().equals(userName))
                     return ally;
             }
         }

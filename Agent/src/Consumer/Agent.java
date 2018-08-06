@@ -26,6 +26,7 @@ public class Agent extends Thread{
     /*FOR STATUS UPDATES*/
     private volatile Secret m_currentSecret;
     private volatile int m_jobsLeft;
+    private int m_possibleDeciphered = 0;
     /*FOR STATUS UPDATES*/
 
     public Agent(int count, BlockingQueue<SecretWithMissionSize> missionsQueue,
@@ -95,6 +96,7 @@ public class Agent extends Thread{
         decypered = Util.checkIfAllProcessedStringInDictionry(processedString, m_dictionry.getWords());
         if(decypered) {
             m_decipheredQueue.add(new CandidateStringWithEncryptionInfo(processedString,Thread.currentThread().getId(),secret));
+            m_possibleDeciphered++;
         }
         synchronized (m_decipheredQueue){
             m_count--;
@@ -109,5 +111,13 @@ public class Agent extends Thread{
     @Override
     public String toString() {
         return Long.toString(this.getId());
+    }
+
+    public int getNumOfLeftMissions() {
+        return m_jobsLeft;
+    }
+
+    public int numOfOptionalResults() {
+        return m_possibleDeciphered;
     }
 }

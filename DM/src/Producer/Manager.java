@@ -2,10 +2,8 @@ package Producer;
 
 import Consumer.Agent;
 import DataTypes.*;
-import DataTypes.GeneratedMachineDataTypes.Decipher;
-import DataTypes.GeneratedMachineDataTypes.Machine;
-import DataTypes.GeneratedMachineDataTypes.Reflector;
-import DataTypes.GeneratedMachineDataTypes.Rotor;
+import DataTypes.GeneratedMachineDataTypes.*;
+import DataTypes.Util.XMLToSerializableEnigmaConverter;
 import InputValidation.Util;
 import calc.DifficultyCalc;
 import calc.SecretCalc;
@@ -26,6 +24,7 @@ import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static DataTypes.Util.XMLToSerializableEnigmaConverter.CreateEnigmaFromXML;
 import static machine.EnigmaMachineApplication.DefineReflectors;
 import static machine.EnigmaMachineApplication.DefineRotors;
 
@@ -116,8 +115,12 @@ public class Manager implements Runnable {
                         ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
                         m_agentsOutputStreams.add(outputStream);
                         m_agentsInputStreams.add(inputStream);
-                        outputStream.writeObject(m_xmlMachine);
-                        outputStream.writeObject(m_decipher);
+                        Enigma beforeConversion = new Enigma();
+                        beforeConversion.setMachine(m_xmlMachine);
+                        beforeConversion.setDecipher(m_decipher);
+                        DataTypes.GeneratedMachineDataTypes.SerializeableMachine.Enigma serializeableEnigma =  XMLToSerializableEnigmaConverter.CreateEnigmaFromXML(beforeConversion);
+                        outputStream.writeObject(serializeableEnigma);
+                        //outputStream.writeObject(m_decipher);
                         outputStream.flush();
                         m_numOfAgents++;
                     }catch (Exception e){
@@ -499,6 +502,10 @@ public class Manager implements Runnable {
 
     public int getNumOfAgents(){
         return m_numOfAgents;
+    }
+
+    public List<Agent> getAgents() {
+        return m_agentListInstances;
     }
 
     public void setMissionSize(int missionSize){

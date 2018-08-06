@@ -5,6 +5,7 @@ import DataTypes.GeneratedMachineDataTypes.Decipher;
 import DataTypes.GeneratedMachineDataTypes.Machine;
 import Producer.Manager;
 import pukteam.enigma.component.machine.api.Secret;
+import Consumer.Agent;
 
 import java.lang.management.ManagementFactory;
 import java.util.List;
@@ -67,5 +68,9 @@ public class Ally {
 
     public void setMissionSize(int missionSize) {
         dm.setMissionSize(missionSize);
+    }
+
+    public List<Agent> getAgents() {
+        return dm.getAgents();
     }
 }

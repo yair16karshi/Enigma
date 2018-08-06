@@ -1,9 +1,9 @@
 package Consumer;
 
 import DataTypes.CandidateStringWithEncryptionInfo;
-import DataTypes.GeneratedMachineDataTypes.Decipher;
-import DataTypes.GeneratedMachineDataTypes.Machine;
+import DataTypes.GeneratedMachineDataTypes.SerializeableMachine.Enigma;
 import DataTypes.SecretWithMissionSize;
+import DataTypes.Util.SerializableToXMLEnigmaConverter;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -39,8 +39,9 @@ public class AgentAdapter {
             in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
 
-            Machine xmlMachine = (Machine) in.readObject();
-            Decipher decipher = (Decipher) in.readObject();
+            Enigma serializeableEnigma = (Enigma) in.readObject();
+            DataTypes.GeneratedMachineDataTypes.Enigma xmlEnigma = SerializableToXMLEnigmaConverter.CreateEnigmaFromSerializeable(serializeableEnigma);
+
             out.writeBytes(READY);
 
             while (!logOut) {
@@ -54,8 +55,8 @@ public class AgentAdapter {
                                 fromListToBlockingQueue(missionQueue),
                                 responseQueue,
                                 encryptedString,
-                                xmlMachine,
-                                decipher);
+                                xmlEnigma.getMachine(),
+                                xmlEnigma.getDecipher());
                 Thread thread = new Thread(agent);
                 thread.start();
                 sendResponsesToSocket();
@@ -70,6 +71,16 @@ public class AgentAdapter {
             System.err.println("Error: " + e.getMessage());
         }
     }
+
+
+
+
+
+
+
+
+
+
 
     private void sendResponsesToSocket() {
         try{
