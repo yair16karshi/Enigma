@@ -32,7 +32,7 @@ public class GetCompetitionsServlet extends HttpServlet {
             }
         }
         System.out.println(res.get(0));
-        // resp.getWriter().print(new Gson().toJson(res));
+
         try (PrintWriter out = resp.getWriter()) {
             Gson gson = new Gson();
             String json = gson.toJson(res);

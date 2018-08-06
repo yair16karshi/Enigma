@@ -1,0 +1,14 @@
+
+#portDiv:hover{
+    color: white;
+    background: black;
+}
+
+.floating{
+    height: 100px;
+    width: 50%;
+    float: left;
+    margin: 10px;
+    text-align: center;
+    border: black dotted 5px;
+}

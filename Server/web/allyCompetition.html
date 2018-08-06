@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" language="javascript">
+        var version=0;
+        var showRivalsInterval;
+        var showAgentsInterval;
+        var waitForCompetitionStartInterval;
+        var showCompetitionInAllyInterval;
+        var waitForSettingsInterval;
+        var winnersH1;
+
+        //dataJson = {allyName: "" ; numOfAgents: "" }
+        function createNAlly(index, dataJson) {
+            var newBox = $("<div>")
+                .addClass("square");
+
+            var pAllyName = document.createElement("P");
+            pAllyName.setAttribute("id", "allyName");
+            pAllyName.innerText="allyName: " + dataJson.allyName;
+
+            var pnumOfAgents = document.createElement("p");
+            pnumOfAgents.setAttribute("id", "numOfAgents");
+            pnumOfAgents.innerText="Num Of Agents: "+ dataJson.numOfAgents;
+
+            newBox.append(pAllyName)
+                .append(pnumOfAgents);
+
+            $('#otherAllies').append(newBox);
+        }
+
+        function showRivals() {
+            $.ajax({
+                data: "",
+                url: "GetRivals",
+                //timeout: 2000,
+                error: function() {
+                    console.error("Failed to submit");
+                    var newError = document.createElement("h1");
+                    newError.innerText = "Failed in ajax GetRivals";
+                    $("#status").children().remove();
+                    $("#status").append(newError);
+                },
+                success: function(r) {
+                    $('#otherAllies').children().remove();
+                    $.each(r || [], createNAlly);
+                }
+            });
+        }
+
+        function createNewAgent(index , datajson) {
+            console.log("create agent");
+            var newBox = $("<div>")
+                .addClass("square");
+
+            var pAgentId = document.createElement("P");
+            pAgentId.setAttribute("id", "AgentId");
+            pAgentId.innerText = "Agent Id: " + datajson.agentId;
+
+            var pNumOfMissions = document.createElement("p");
+            pNumOfMissions.setAttribute("id", "numOfMissions");
+            if(datajson.numOfLeftMissions===0)
+                pNumOfMissions.innerText = "Agent Didn't Got Missions Yet.";
+            else
+                pNumOfMissions.innerText = "Num Of Left Missions: "+ datajson.numOfLeftMissions;
+
+            var pNumOfOptionalResults = document.createElement("p");
+            pNumOfOptionalResults.setAttribute("id", "numOfOptionalResults");
+
+            if(datajson.numOfOptionalResults===0)
+                pNumOfOptionalResults.innerText="There Are No Results Yet.";
+            else
+                pNumOfOptionalResults.innerText="Num Of Optional Results: "+ datajson.numOfOptionalResults;
+
+            newBox.append(pAgentId)
+                .append(pNumOfMissions)
+                .append(pNumOfOptionalResults);
+
+            $('#agents').append(newBox);
+        }
+
+        function showAgents(){
+            $.ajax({
+                data: "",
+                url: "GetAgentsDetails",
+                //timeout: 2000,
+                error: function() {
+                    console.error("Failed to submit");
+                    var newError = document.createElement("h1");
+                    newError.innerText = "Failed in ajax GetAgentsDetails";
+                    $("#status").children().remove();
+                    $("#status").append(newError);
+                },
+                success: function(r) {
+                    $('#agents').children().remove();
+                    $.each(r || [], createNewAgent);
+                }});
+        }
+
+        function waitForSettings() {
+            $.ajax({
+                data: "",
+                url: "waitForSettings",
+                //timeout: 2000,
+                error: function() {
+                    console.error("Failed to submit");
+                    var newError = document.createElement("h1");
+                    newError.innerText = "Failed in ajax waitForCompetitionStart";
+                    $("#status").children().remove();
+                    $("#status").append(newError);
+                },
+                success: function(r) {
+                    if(r){
+                        var newStatus = document.createElement("h1");
+                        newStatus.innerText = "Ubout finish set new settings. Press ready to start";
+                        $("#status").children().remove();
+                        $("#status").append(newStatus);
+                        $("#ready").removeClass("hidden");
+                        clearInterval(waitForSettingsInterval);
+                    }
+                }
+            })
+        }
+
+        function checkMissionSize() {
+            $.ajax({
+                data: "missionSize="+$("#mstext").val(),
+                url: "checkMissionSize",
+                //timeout: 2000,
+                error: function() {
+                    console.error("Failed to submit");
+                    var newError = document.createElement("h1");
+                    newError.innerText = "Failed in ajax checkMissionSize";
+                    $("#status").children().remove();
+                    $("#status").append(newError);
+                },
+                success: function(r) {
+                    if (!r.successParse) {
+                        var newError = document.createElement("h1");
+                        newError.innerText = r.msg;
+                        $("#status").children().remove();
+                        $("#status").append(newError);
+                    }
+                    else {
+                        var newError = document.createElement("h1");
+                        newError.innerText = "Size Of Mission Enter. Wait For Ubout for new settings";
+                        $("#status").children().remove();
+                        $("#status").append(newError);
+
+                        $("#missionSizeForm").addClass("hidden");
+                        waitForSettingsInterval = setInterval(waitForSettings, 1000);
+                    }
+                }
+            });
+            return false;
+        }
+
+        function createNewWinner(index, data) {
+            var winnerName = document.createElement("h1");
+            winnerName .innerText = "Name : " + data;
+            $("#status").append(winnerName);
+        }
+
+        //dataJson = string
+        function createNewResultForAlly(index,dataJson) {
+            var pResult = document.createElement("P");
+            pResult.setAttribute("id", "resultDetails");
+            pResult.innerText= dataJson;
+
+            $("#results").append(pResult);
+        }
+
+        function showResultsInAlly(results) {
+            $.each(results || [], createNewResultForAlly);
+        }
+
+        function showWinnersInAlly(r) {
+            winnersH1 = document.createElement("h1");
+
+            if(r.winners.length > 0){
+                winnersH1.innerText = "The Winners are : ";
+            } else {
+                winnersH1.innerText = "Nobody wins...";
+            }
+
+        }
+
+        // data = allyName , winsStatus , numOfWins;
+        function createNewAllyStatistics(index, data) {
+            var newRow = $("<tr>");
+
+            var tdName = document.createElement("td");
+            tdName.innerText = data.allyName;
+            newRow.append(tdName);
+
+            for (var i = 0; i < data.winsStatus.length; i++){
+                var tdWin = document.createElement("td");
+                if(data.winsStatus[i]){
+
+                    tdWin.innerText = "win";
+                } else {
+                    tdWin.innerText = "lose";
+                }
+                newRow.append(tdWin);
+            }
+
+            var tdNumOfWins = document.createElement("td");
+            tdNumOfWins.innerText = data.numOfWins;
+            newRow.append(tdNumOfWins);
+
+            $("#EndStatus").append(newRow);
+        }
+
+        function createFirstRowInTable(r) {
+            var firstRow = $("<tr>");
+            var td1 = document.createElement("td");
+            td1.innerText = "Names";
+            firstRow.append(td1);
+
+            for(var i = 1; i <= r.allyStatistics[0].winsStatus.length; i++){
+                var td = document.createElement("td");
+                td.innerText = "Round No."+i;
+                firstRow.append(td);
+            }
+
+            var td2 = document.createElement("td");
+            td2.innerText = "Num of wins";
+            firstRow.append(td2);
+
+            $("#EndStatus").append(firstRow);
+        }
+
+        function showCompetitionStatusInAlly() {
+            $.ajax({
+                data: "",
+                url: "GetCompetitionStatisticsInAlly",
+                //timeout: 2000,
+                error: function() {
+                    console.error("Failed to submit");
+                    var newError = document.createElement("h1");
+                    newError.innerText = "Failed in GetCompetitionStatisticsInAlly";
+                    $("#status").children().remove();
+                    $("#status").append(newError);
+                },
+                success: function(r) {
+                    createFirstRowInTable(r);
+                    $.each(r.allyStatistics || [], createNewAllyStatistics);
+                }
+            })
+
+        }
+
+        function showCompetitionInAlly() {
+            $.ajax({
+                data: "",
+                url: "ShowCompetitionInAlly",
+               //timeout: 2000,
+                error: function() {
+                    console.error("Failed to submit");
+                    var newError = document.createElement("h1");
+                    newError.innerText = "Failed in ajax showCompetitionInAlly";
+                    $("#status").children().remove();
+                    $("#status").append(newError);
+                },
+                success: function(r) {
+                    showResultsInAlly(r.results);
+
+                    if(r.roundFinished){
+                        clearInterval(showCompetitionInAllyInterval);
+                        clearInterval(showRivalsInterval);
+                        clearInterval(showAgentsInterval);
+
+                        if(r.competitionFinished){
+                            var newStatus = document.createElement("h1");
+                            newStatus.innerText = "Competition End!!";
+                            $("#status").children().remove();
+                            $("#status").append(newStatus);
+                            showCompetitionStatusInAlly();
+                            $("#EndCompetitionDiv").removeClass("hidden");
+                        }
+                        else {
+                            var newStatus = document.createElement("h1");
+                            newStatus.innerText = "Round End!!";
+                            $("#status").children().remove();
+                            $("#status").append(newStatus);
+                            showWinnersInAlly(r);
+                            $("#status").children().remove();
+                            $("#status").append(newStatus).append(winnersH1);
+                            $.each(r.winners || [], createNewWinner);
+
+                            $("#newRoundButton").removeClass("hidden");
+                        }
+                    }
+                }
+            })
+        }
+
+        function waitForCompetitionStart() {
+            $.ajax({
+                data: "",
+                url: "waitForCompetitionStart",
+                //timeout: 2000,
+                error: function() {
+                    console.error("Failed to submit");
+                    var newError = document.createElement("h1");
+                    newError.innerText = "Failed in ajax waitForCompetitionStart";
+                    $("#status").children().remove();
+                    $("#status").append(newError);
+                },
+                success: function(r) {
+
+                    if(r.isCompetitionStrats){
+                        var newStatus = document.createElement("h1");
+                        newStatus.innerText = "Competition Start!! The message is : " + r.msgAfterDecipher ;
+                        $("#status").children().remove();
+                        $("#status").append(newStatus);
+                        clearInterval(waitForCompetitionStartInterval);
+                        $("#competition").removeClass("hidden");
+                        showCompetitionInAllyInterval = setInterval(showCompetitionInAlly,2000);
+                    }
+
+                }
+            })
+        }
+
+        $(function() {
+            $.ajax({
+                data: "",
+                url: "GetPort",
+               // timeout: 2000,
+                error: function() {
+                    console.error("Failed to submit");
+                    var newError = document.createElement("h1");
+                    newError.innerText = "Failed in ajax GetPort";
+                    $("#status").children().remove();
+                    $("#status").append(newError);
+                },
+                success: function(r) {
+                    document.getElementById("port").innerText = "Your Port : " + r;
+                }
+            });
+            $("#missionSizeForm").submit(checkMissionSize);
+            $("#ready").click(function () {
+                $.ajax({
+                    data: "",
+                    url: "allyReadyToStart",
+             //       timeout: 2000,
+                    error: function() {
+                        var newError =  document.createElement("h1");
+                        newError.innerText = "Failed in ajax checkMissionSize";
+                        $("#status").children().remove();
+                        $("#status").append(newError);
+                    },
+                    success: function(r) {
+                        var newError =  document.createElement("h1");
+                        newError.innerText = "READY.. Wait for others";
+                        $("#status").children().remove();
+                        $("#status").append(newError);
+                        document.getElementById("ready").disabled = true;
+                        waitForCompetitionStartInterval = setInterval(waitForCompetitionStart,2000);
+                    }
+                });
+                return false;
+            });
+            $("#backButton").click(function () {
+                window.location.href = "aliesRegister.html";
+            })
+
+
+            showRivalsInterval = setInterval(showRivals,2000);
+            showAgentsInterval = setInterval(showAgents,2000);
+        })
+    </script>
+    <script type="text/javascript" src="basic.js"></script>
+    <link rel="stylesheet" href="basic.css">
+    <link rel="stylesheet" href="form.css">
+    <link rel="stylesheet" href="allyCompetition.css">
+
+    <title>allyCompetition</title>
+</head>
+<body>
+<div id="title" class="center">
+    <h1 class="title"><b>Competition</b></h1>
+</div>
+<div>
+    <div><p id="UserName"></p></div>
+    <div id = "portDiv" class="floating"><h1 id="port"> </h1></div>
+</div>
+<div id = "status" class="floating"></div>
+<div id = "otherAllies">
+    <h1 id="otherAlliesTitle">Rivals</h1>
+</div>
+<div id = "missionSizeDiv">
+    <form id ="missionSizeForm">
+        Enter size of mission:<input type="text" id="mstext" name="missionSize"/><br>
+        <input id="mssubmit" type="submit" value="Enter"/>
+    </form>
+    <button id="ready" name="buttonReady" class="hidden">ready</button>
+</div>
+<div id = "agents">
+    <h1 id="yourCrewTitle">Your Crew</h1>
+</div>
+<div id = "competition" class="hidden">
+    <div id = "results" class="ex1"></div>
+
+    <div id = "EndCompetitionDiv" class="hidden">
+        <table id = "EndStatus"></table>
+        <button id = "backButton">Back to Competitions</button>
+    </div>
+
+    <button id = "newRoundButton" class="hidden">Start New Round</button>
+</div>
+
+</body>
+</html>

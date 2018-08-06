@@ -83,11 +83,11 @@ public class SigninServlet extends HttpServlet {
 
     private List<Ally> getPendingAllies() {
         List<Ally> res;
-        Object pendingAllies = getServletContext().getAttribute("pendingAllies");
+        Object pendingAllies = getServletContext().getAttribute("PendingAllies");
 
         if(pendingAllies == null){
-            getServletContext().setAttribute("pendingAllies", new LinkedList<Competition>());
-            res = (LinkedList<Ally>)getServletContext().getAttribute("pendingAllies");
+            getServletContext().setAttribute("PendingAllies", new LinkedList<Competition>());
+            res = (LinkedList<Ally>)getServletContext().getAttribute("PendingAllies");
         }
         else
             res = (LinkedList<Ally>)pendingAllies;

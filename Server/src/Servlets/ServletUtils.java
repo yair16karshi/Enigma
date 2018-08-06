@@ -6,6 +6,7 @@ import DataTypes.Util.UBoat;
 import com.sun.prism.image.CompoundTexture;
 
 import javax.servlet.ServletContext;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServletUtils {
@@ -36,7 +37,7 @@ public class ServletUtils {
         List<Competition> competitionList = GetCompetitionListFromContext();
         for(Competition competition : competitionList){
             for(Ally ally : competition.getAlies()){
-                if(ally.getName() == userName)
+                if(ally.getName().equals(userName))
                     return competition;
             }
         }
@@ -80,5 +81,23 @@ public class ServletUtils {
     public Ally CreateNewAlly(String userName){
         List<Ally> allyList = (List<Ally> )m_servletContext.getAttribute(PENDINGALLIES);
         return new Ally(userName);
+    }
+    public List<Ally> GetPendingAllies (){
+        return (List<Ally> )m_servletContext.getAttribute(PENDINGALLIES);
+    }
+
+    public List<Ally> GetAlliesCopyInCompetitionByAllyUserName(String userName) {
+        Competition competition = GetCompetitionByAllyUserName(userName);
+        List<Ally> res = new ArrayList<>();
+
+        if(competition != null){
+            for(Ally ally: competition.getAlies()){
+                res.add(ally);
+            }
+            return res;
+        }
+        else{
+            return  null;
+        }
     }
 }

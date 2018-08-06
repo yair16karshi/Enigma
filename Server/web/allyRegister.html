@@ -12,7 +12,7 @@
             $.ajax({
                 data: "",
                 url: "GetCompetitions",
-                timeout: 2000,
+                //timeout: 2000,
                 error: function() {
                     console.error("Failed to submit");
                     $("#errorMsg").text("Unable to get competitions");
@@ -20,9 +20,6 @@
                 success: function(r) {
                     $('#viewCompetition').children().remove();
                     $.each(r || [], createCompetition);
-                    if(r.empty()){
-                        $("#errorMsg").text("There are no competitions available");
-                    }
                 }
             });
         }
@@ -35,7 +32,7 @@
             $.ajax({
                 data: "name=" + owner,
                 url: "RegisterToCompetition",
-                timeout: 2000,
+               // timeout: 2000,
                 error: function() {
                     console.error("Failed to submit");
                 },
@@ -95,7 +92,7 @@
             $.ajax({
                 data: "",
                 url: "GetPort",
-                timeout: 2000,
+                //timeout: 2000,
                 error: function() {
                     console.error("Failed to submit");
                     $("#errorMsg").text("Unable to get port");

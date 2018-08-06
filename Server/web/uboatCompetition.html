@@ -15,7 +15,7 @@
                 $.ajax({
                     data: "",
                     url: "uboatLogout",
-                    timeout: 2000,
+                    //timeout: 2000,
                     error: function() {
                         console.error("Failed to submit");
                         $("#errorMsg").text("Failed in ajax uboatLogout");
@@ -36,7 +36,7 @@
                 $.ajax({
                     data: "",
                     url: "startNewGameInUboat",
-                    timeout: 2000,
+                   // timeout: 2000,
                     error: function() {
                         console.error("Failed to submit");
                         $("#errorMsg").text("Failed in ajax startNewGameInUboat");
@@ -51,7 +51,7 @@
                 $.ajax({
                     data: "msg=" + $("#msg").val(),
                     url: "ValidateStringServlet",
-                    timeout: 2000,
+                   // timeout: 2000,
                     error: function() {
                         console.error("Failed to submit");
                         $("#errorMsg").text("Failed in ajax ValidateStringServlet");
@@ -88,7 +88,7 @@
             $.ajax({
                 data: "",
                 url: "NumOfReadyAlliesServlet",
-                timeout: 2000,
+                //timeout: 2000,
                 error: function() {
                     console.error("Failed to submit");
                     $("#errorMsgWaitToAllies").text("Failed in ajax NumOfReadyAlliesServlet");
@@ -143,7 +143,7 @@
             $.ajax({
                 data: "",
                 url: "GetOptionalResults",
-                timeout: 2000,
+                //timeout: 2000,
                 error: function() {
                     console.error("Failed to submit");
                     $("#errorMsgWaitToAllies").text("Failed in ajax GetOptionalResults");
@@ -164,7 +164,6 @@
                             $("#Status").text("Competition End!!");
                             $("#logoutButton").removeClass("hidden");
                             $("#startNewGameButton").removeClass("hidden");
-                            clearInterval(chatInterval);
                         }else {
                             $("#startNewRoundButton").removeClass("hidden");
                         }
@@ -205,7 +204,7 @@
             $.ajax({
                 data: "",
                 url: "GetSignedAllies",
-                timeout: 2000,
+                //timeout: 2000,
                 error: function() {
                     console.error("Failed to submit");
                     $("#errorMsgWaitToAllies").text("Failed in ajax GetSignedAllies");
@@ -221,7 +220,6 @@
     </script>
     <link rel="stylesheet" href="basic.css">
     <link rel="stylesheet" href="form.css">
-    <link rel="stylesheet" href="chat.css">
 
     <title>Uboat Competition</title>
 </head>
