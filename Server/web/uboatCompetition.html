@@ -35,14 +35,14 @@
             $("#startNewGameButton").click(function () {
                 $.ajax({
                     data: "",
-                    url: "startNewGameInUboat",
+                    url: "uboatStartNewGame",
                    // timeout: 2000,
                     error: function() {
                         console.error("Failed to submit");
                         $("#errorMsg").text("Failed in ajax startNewGameInUboat");
                     },
                     success: function() {
-                        window.location.href = "competitionSettings.html";
+                        window.location.href = "SecretSetting.html";
                     }
                 });
                 return false;
@@ -142,31 +142,25 @@
         function showResults() {
             $.ajax({
                 data: "",
-                url: "GetOptionalResults",
+                url: "GetCandidatesFromAllies",
                 //timeout: 2000,
                 error: function() {
                     console.error("Failed to submit");
-                    $("#errorMsgWaitToAllies").text("Failed in ajax GetOptionalResults");
+                    $("#errorMsgWaitToAllies").text("Failed in ajax GetCandidatesFromAllies");
                 },
                 //obj = {winnersName: "" ; results: "" }
                 success: function(obj) {
                     $('#results').children().remove();
                     $.each(obj.results || [], createResult);
 
-                    if(obj.roundFinished){
+                    if(obj.competitionDone){
                         clearInterval(showResultsInterval);
                         clearInterval(showAlliesInterval);
                         showWinners(obj);
-
-                        $("#Status").text("Round End !!");
-
-                        if(obj.competitionDone){
-                            $("#Status").text("Competition End!!");
-                            $("#logoutButton").removeClass("hidden");
-                            $("#startNewGameButton").removeClass("hidden");
-                        }else {
-                            $("#startNewRoundButton").removeClass("hidden");
-                        }
+                        $("#Status").text("Competition End!!");
+                        $("#logoutButton").removeClass("hidden");
+                        $("#startNewGameButton").removeClass("hidden");
+                        clearInterval(chatInterval);
                     }
                 }
             })

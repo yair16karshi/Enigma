@@ -96,4 +96,8 @@ public class UBoat {
         m_machine = new EnigmaMachineWrapper(machineBuilder.create());
         m_machine.setXMLMachine(machine.getMachine());
     }
+
+    public boolean isCandidateCurrect(String candidate) {
+        return candidate.equals(m_encryptedMsg) ? true : false;
+    }
 }

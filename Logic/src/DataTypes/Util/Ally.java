@@ -1,11 +1,13 @@
 package DataTypes.Util;
 
+import DataTypes.CandidateStringWithEncryptionInfo;
 import DataTypes.GeneratedMachineDataTypes.Decipher;
 import DataTypes.GeneratedMachineDataTypes.Machine;
 import Producer.Manager;
 import pukteam.enigma.component.machine.api.Secret;
 
 import java.lang.management.ManagementFactory;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -53,5 +55,13 @@ public class Ally {
 
     public int getNumOfAgents() {
         return dm.getNumOfAgents();
+    }
+
+    public Manager getManager() {
+        return dm;
+    }
+
+    public List<CandidateStringWithEncryptionInfo> getCandidates() {
+        return dm.getCandidateList();
     }
 }

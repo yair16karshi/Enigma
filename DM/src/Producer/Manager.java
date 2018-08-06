@@ -41,24 +41,12 @@ public class Manager implements Runnable {
     private ArrayList<Agent> m_agentListInstances;
     private boolean m_isFinished = false;
 
-    public boolean isRoundFinished() {
-        return m_roundFinished;
-    }
-
-    public void setIsRoundFinished(boolean m_roundFinished) {
-        this.m_roundFinished = m_roundFinished;
-    }
-
     private boolean m_roundFinished = false;
     private String m_totalTime;
     private boolean m_stayConnected = true;
     private List<Socket> m_agentSockets;
     private List<ObjectOutputStream> m_agentsOutputStreams;
     private List<ObjectInputStream> m_agentsInputStreams;
-
-    public List<CandidateStringWithEncryptionInfo> getCandidateList() {
-        return m_candidateStrings;
-    }
 
     private List<CandidateStringWithEncryptionInfo> m_candidateStrings = new ArrayList<>();
     private Integer[] count = new Integer[1];
@@ -76,6 +64,7 @@ public class Manager implements Runnable {
     private ServerSocket serverSocket;
 
     Instant m_agentsStartedTime;
+    private int m_doneCount = 0;
 
     public Manager(){
         m_agentSockets = new LinkedList<>();
@@ -107,6 +96,10 @@ public class Manager implements Runnable {
 
     public void setDecipher(Decipher m_decipher) {
         this.m_decipher = m_decipher;
+    }
+
+    public List<CandidateStringWithEncryptionInfo> getCandidateList() {
+        return m_candidateStrings;
     }
 
     public void run() {
@@ -166,19 +159,20 @@ public class Manager implements Runnable {
     }
 
     private void receiveResponseFromAgents() throws IOException, ClassNotFoundException {
-        while(!m_isFinished && !m_roundFinished){
+        while(!m_isFinished){
             for(ObjectInputStream inputStream : m_agentsInputStreams){
                 CandidateStringWithEncryptionInfo candidate = (CandidateStringWithEncryptionInfo)inputStream.readObject();
                 if(!candidate.getString().equals("DONE")){
                     m_responeQueue.add(candidate);
                     m_candidateStrings.add(candidate);
                 }
+                else{
+                    m_doneCount++;
+                    if(m_doneCount == m_agentSockets.size()){
+                        m_isFinished = true;
+                    }
+                }
             }
-        }
-        if(m_roundFinished){
-            m_roundFinished = false;
-            sendMassageToAgents("END_OF_SESSION");
-            allocateMissionsAndWaitForCandidates();
         }
         if(m_isFinished){
             sendMassageToAgents("LOGOUT");
@@ -363,6 +357,14 @@ public class Manager implements Runnable {
         }
         m_agentsStartedTime = null;
         m_agentsStartedTime = Instant.now();
+    }
+
+    public boolean isRoundFinished() {
+        return m_roundFinished;
+    }
+
+    public void setIsRoundFinished(boolean m_roundFinished) {
+        this.m_roundFinished = m_roundFinished;
     }
 
     private void insertMissionsToQueue(int numOfCombinations, int[] numOfMissions) {

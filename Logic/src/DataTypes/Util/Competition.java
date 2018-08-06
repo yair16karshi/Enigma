@@ -22,6 +22,14 @@ public class Competition {
     private boolean isActive;
     private boolean competitionFinish;
     private BattlefieldWrapper battlefield;
+    private boolean isReadyToRegister;
+    private List<String> candidatesList = new ArrayList<>();
+    private List<String> winners = new ArrayList<>();
+
+    public UBoat getuBoat() {
+        return uBoat;
+    }
+
 
     public boolean isReadyToRegister() {
         return isReadyToRegister;
@@ -29,15 +37,6 @@ public class Competition {
 
     public void setReadyToRegister(boolean readyToRegister) {
         isReadyToRegister = readyToRegister;
-    }
-
-    private boolean isReadyToRegister;
-
-    private List<String> candidatesList = new ArrayList<>();
-    private String m_encryptedWord;
-
-    public UBoat getuBoat() {
-        return uBoat;
     }
 
     public void setuBoat(UBoat uBoat) {
@@ -81,10 +80,6 @@ public class Competition {
 
     public void setBattlefield(BattlefieldWrapper battlefield) {
         this.battlefield = battlefield;
-    }
-
-    public void SetEncryptedWord(String encryptedWord) {
-        m_encryptedWord = encryptedWord;
     }
 
     public ArrayList<Integer> getReflectorsIDs() {
@@ -150,5 +145,23 @@ public class Competition {
 
     public boolean isCompetitionFull() {
         return battlefield.getAllies() == alies.size() ? true :false;
+    }
+
+    public void logOut() {
+        isActive = false;
+        competitionFinish = true;
+        alies.clear();
+    }
+
+    public void startNewCompetition() {
+        uBoat.setReady(false);
+        isActive = false;
+        competitionFinish = false;
+        candidatesList.clear();
+        winners.clear();
+    }
+
+    public void addWinner(String allyName) {
+        winners.add(allyName);
     }
 }
