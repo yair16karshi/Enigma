@@ -82,10 +82,12 @@ public class FileUploadServlet extends HttpServlet {
     private void addXMLMachineToMatchCompetition(Enigma machine, String userName) {
         ServletUtils utils = new ServletUtils(getServletContext());
         Competition competition = utils.GetCompetitionByUBoatUserName(userName);
-        competition.getuBoat().createMachineWrapper(machine);
-        competition.getuBoat().setDecipher(machine.getDecipher());
-        competition.setBattlefield(new BattlefieldWrapper(machine.getBattlefield()));
-        competition.getuBoat().getMachineWrapper().setIsXMLLoaded(true);
+        synchronized (competition) {
+            competition.getuBoat().createMachineWrapper(machine);
+            competition.getuBoat().setDecipher(machine.getDecipher());
+            competition.setBattlefield(new BattlefieldWrapper(machine.getBattlefield()));
+            competition.getuBoat().getMachineWrapper().setIsXMLLoaded(true);
+        }
     }
 
     private boolean isFileExist(String battleName) {

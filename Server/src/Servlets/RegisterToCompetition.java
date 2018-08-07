@@ -29,11 +29,13 @@ public class RegisterToCompetition extends HttpServlet {
         if(pendingAllies != null){
             for(Ally pendingAlly : pendingAllies){
                 if(pendingAlly.getName().equals(userName)){
-                    pendingAlly.setMachineWrapperToDM(competition.getuBoat().getMachineWrapper());
-                    List<Ally> compAllies = competition.getAlies();
-                    compAllies.add(pendingAlly);
-                    pendingAllies.remove(pendingAlly);
-                    break;
+                    synchronized (pendingAllies){
+                        pendingAlly.setMachineWrapperToDM(competition.getuBoat().getMachineWrapper());
+                        List<Ally> compAllies = competition.getAlies();
+                        compAllies.add(pendingAlly);
+                        pendingAllies.remove(pendingAlly);
+                        break;
+                    }
                 }
             }
         }

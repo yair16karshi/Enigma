@@ -41,7 +41,9 @@ public class NumOfReadyAlliesServlet extends HttpServlet {
         res = competition.isAllAlliesReady();
 
         if(res){
-            competition.startCompetition();
+            synchronized (competition){
+                competition.startCompetition();
+            }
         }
 
         try(PrintWriter out = response.getWriter()){

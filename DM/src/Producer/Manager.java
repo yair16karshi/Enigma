@@ -45,8 +45,8 @@ public class Manager implements Runnable {
     private String m_totalTime;
     private boolean m_stayConnected = true;
     private List<Socket> m_agentSockets;
-    private List<ObjectOutputStream> m_agentsOutputStreams;
-    private List<ObjectInputStream> m_agentsInputStreams;
+    private List<ObjectOutputStream> m_agentsOutputStreams = new ArrayList<>();
+    private List<ObjectInputStream> m_agentsInputStreams = new ArrayList<>();
 
     private List<CandidateStringWithEncryptionInfo> m_candidateStrings = new ArrayList<>();
     private Integer[] count = new Integer[1];
