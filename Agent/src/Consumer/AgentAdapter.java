@@ -39,7 +39,7 @@ public class AgentAdapter {
             in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
 
-            Enigma serializeableEnigma = (Enigma) in.readObject();
+            Enigma serializeableEnigma = (Enigma)in.readObject();
             DataTypes.GeneratedMachineDataTypes.Enigma xmlEnigma = SerializableToXMLEnigmaConverter.CreateEnigmaFromSerializeable(serializeableEnigma);
 
             out.writeBytes(READY);

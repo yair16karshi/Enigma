@@ -73,6 +73,29 @@ public class Manager implements Runnable {
             e.printStackTrace();
         }
         m_port = serverSocket.getLocalPort();
+        try{
+            m_port = serverSocket.getLocalPort();
+            Thread thread = new Thread(()->{
+                Socket socket;
+                while(m_stayConnected){
+                    try{
+                        socket = serverSocket.accept();
+                        m_agentSockets.add(socket);
+                        ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+                        ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+                        m_agentsOutputStreams.add(outputStream);
+                        m_agentsInputStreams.add(inputStream);
+                        m_numOfAgents++;
+                    }catch (Exception e){
+
+                    }
+                }
+            });
+            thread.start();
+        }catch (Exception e){
+
+        }
+
     }
 
     public Manager(EnigmaMachine machine, Decipher decipher, Machine xmlMachine){
@@ -105,16 +128,9 @@ public class Manager implements Runnable {
         //yair changes
         try{
             m_port = serverSocket.getLocalPort();
-            Thread thread = new Thread(()->{
                 Socket socket;
-                while(m_stayConnected){
+                for(ObjectOutputStream outputStream : m_agentsOutputStreams){
                     try{
-                        socket = serverSocket.accept();
-                        m_agentSockets.add(socket);
-                        ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-                        ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-                        m_agentsOutputStreams.add(outputStream);
-                        m_agentsInputStreams.add(inputStream);
                         Enigma beforeConversion = new Enigma();
                         beforeConversion.setMachine(m_xmlMachine);
                         beforeConversion.setDecipher(m_decipher);
@@ -122,17 +138,14 @@ public class Manager implements Runnable {
                         outputStream.writeObject(serializeableEnigma);
                         //outputStream.writeObject(m_decipher);
                         outputStream.flush();
-                        m_numOfAgents++;
                     }catch (Exception e){
 
                     }
                 }
-            });
-            thread.start();
-        }catch (Exception e){
+            }
+        catch (Exception e){
 
         }
-
         allocateMissionsAndWaitForCandidates();
     }
 

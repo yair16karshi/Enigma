@@ -71,6 +71,11 @@ public class ServletUtils {
                     return ally;
             }
         }
+        for(Ally ally : GetPendingAllies()){
+            if(ally.getName().equals(userName)){
+                return ally;
+            }
+        }
         return null;
     }
 

@@ -16,10 +16,11 @@ public class Main{
     }
 
     private static AgentAdapter initAgentAdapter(String[] args) {
-        String[] input = args[0].split(":");
-        String host = input[0];
-        int port = Integer.parseInt(input[1]);
+//        String[] input = args[0].split(":");
+//        String host = input[0];
+//        int port = Integer.parseInt(input[1]);
+//        return new AgentAdapter(host, port);
 
-        return new AgentAdapter(host, port);
+        return new AgentAdapter("localhost", 61813);
     }
 }
