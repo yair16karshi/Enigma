@@ -93,11 +93,14 @@ public class AgentAdapter {
                             break;
                         }
                         else{
+                            candidate.setId(agent.getId());
+                            candidate.setLeftMissions(agent.getNumOfLeftMissions());
+                            candidate.setCandidates(agent.getOldCandidates());
                             out.writeObject(candidate);
                         }
                     }
                 }
-                else if(in.available() > 0){
+                if(in.available() > 0){
                     String msgFromDm = in.readUTF();
                     //some alie win the round
                     if(msgFromDm.equals(END_OF_SESSION)){

@@ -221,7 +221,6 @@
 
             for(var i = 1; i <= r.allyStatistics[0].winsStatus.length; i++){
                 var td = document.createElement("td");
-                td.innerText = "Round No."+i;
                 firstRow.append(td);
             }
 
@@ -267,32 +266,26 @@
                 success: function(r) {
                     showResultsInAlly(r.results);
 
-                    if(r.roundFinished){
-                        clearInterval(showCompetitionInAllyInterval);
-                        clearInterval(showRivalsInterval);
-                        clearInterval(showAgentsInterval);
-
                         if(r.competitionFinished){
+                            clearInterval(showCompetitionInAllyInterval);
+                            clearInterval(showRivalsInterval);
+                            clearInterval(showAgentsInterval);
                             var newStatus = document.createElement("h1");
                             newStatus.innerText = "Competition End!!";
                             $("#status").children().remove();
                             $("#status").append(newStatus);
-                            showCompetitionStatusInAlly();
+                            //showCompetitionStatusInAlly();
                             $("#EndCompetitionDiv").removeClass("hidden");
                         }
                         else {
                             var newStatus = document.createElement("h1");
-                            newStatus.innerText = "Round End!!";
                             $("#status").children().remove();
                             $("#status").append(newStatus);
                             showWinnersInAlly(r);
                             $("#status").children().remove();
                             $("#status").append(newStatus).append(winnersH1);
                             $.each(r.winners || [], createNewWinner);
-
-                            $("#newRoundButton").removeClass("hidden");
                         }
-                    }
                 }
             })
         }
@@ -409,8 +402,6 @@
         <table id = "EndStatus"></table>
         <button id = "backButton">Back to Competitions</button>
     </div>
-
-    <button id = "newRoundButton" class="hidden">Start New Round</button>
 </div>
 
 </body>

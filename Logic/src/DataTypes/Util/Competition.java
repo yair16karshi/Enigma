@@ -174,4 +174,12 @@ public class Competition {
 
         return false;
     }
+
+    public List<String> getWinners() {
+        return winners;
+    }
+
+    public boolean isCompetitionFinish() {
+        return competitionFinish;
+    }
 }

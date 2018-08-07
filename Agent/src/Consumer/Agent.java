@@ -1,5 +1,7 @@
 package Consumer;
 
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 
 import DataTypes.GeneratedMachineDataTypes.Decipher;
@@ -19,6 +21,7 @@ import pukteam.enigma.factory.EnigmaComponentFactory;
 public class Agent extends Thread{
     private BlockingQueue<SecretWithMissionSize> m_missionsQueue;
     private BlockingQueue<CandidateStringWithEncryptionInfo> m_decipheredQueue;
+    private int m_OldCandidates = 0;
     private String m_stringToProcess;
     private EnigmaMachineWrapper m_machineWrapper;
     private Dictionary m_dictionry;
@@ -27,6 +30,8 @@ public class Agent extends Thread{
     private volatile Secret m_currentSecret;
     private volatile int m_jobsLeft;
     private int m_possibleDeciphered = 0;
+
+    private long m_id;
     /*FOR STATUS UPDATES*/
 
     public Agent(int count, BlockingQueue<SecretWithMissionSize> missionsQueue,
@@ -36,11 +41,15 @@ public class Agent extends Thread{
                  Decipher decipher){
 
         //xmlMachine.getABC().charAt(xmlMachine.getABC().length());//TODO:: check if length or length-1
+        Random rand = new Random();
+        m_id = rand.nextInt(100) + 1;
+
         m_missionsQueue = missionsQueue;
         m_decipheredQueue = decipheredQueue;
         m_stringToProcess = stringToProcess;
         m_dictionry = decipher.getDictionary();
         m_count = count;
+        m_jobsLeft = missionsQueue.size();
 
         EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(xmlMachine.getRotorsCount(),xmlMachine.getABC());
         EnigmaMachineApplication.DefineRotors(machineBuilder,xmlMachine);
@@ -56,6 +65,7 @@ public class Agent extends Thread{
             if(!Thread.currentThread().isInterrupted() ){//TODO:: verify that interrupted works
                 if (!m_missionsQueue.isEmpty()){
                     secretWithMissionSize = m_missionsQueue.poll();
+                    m_jobsLeft--;
                     if(secretWithMissionSize != null)
                         RunMission(secretWithMissionSize);
                 }
@@ -96,6 +106,7 @@ public class Agent extends Thread{
         decypered = Util.checkIfAllProcessedStringInDictionry(processedString, m_dictionry.getWords());
         if(decypered) {
             m_decipheredQueue.add(new CandidateStringWithEncryptionInfo(processedString,Thread.currentThread().getId(),secret));
+            m_OldCandidates++;
             m_possibleDeciphered++;
         }
         synchronized (m_decipheredQueue){
@@ -119,5 +130,17 @@ public class Agent extends Thread{
 
     public int numOfOptionalResults() {
         return m_possibleDeciphered;
+    }
+
+    public int getOldCandidates() {
+        return m_OldCandidates;
+    }
+
+    public long getId() {
+        return m_id;
+    }
+
+    public void setId(long m_id) {
+        this.m_id = m_id;
     }
 }

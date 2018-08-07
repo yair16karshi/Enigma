@@ -2,6 +2,7 @@ package Servlets;
 
 import Consumer.Agent;
 import DataTypes.Util.Ally;
+import Producer.AgentResults;
 import com.google.gson.Gson;
 
 
@@ -32,13 +33,13 @@ public class GetAgentsServlet extends HttpServlet {
         Ally ally = utils.GetAllyByUserName(userName);
         List<DisplayAgent> agentsToDisplay = new ArrayList();
 
-        List<Agent> agentsOfAlly = ally.getAgents();
+        List<AgentResults> agentsOfAlly = ally.getAgentsResults();
         if(agentsOfAlly != null) {
-            for (Agent agent : agentsOfAlly) {
+            for (AgentResults agent : agentsOfAlly) {
                 agentsToDisplay.add(new DisplayAgent(
                         agent.getId(),
-                        agent.getNumOfLeftMissions(),
-                        agent.numOfOptionalResults()
+                        agent.getLeftMissions(),
+                        agent.getCandidates()
                 ));
             }
         }
