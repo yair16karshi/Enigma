@@ -440,13 +440,13 @@ public class Manager implements Runnable {
         m_numOfAgentsSelection = i_numOfAgentsSelection;
     }
 
-//    private void createMachineFromXML(){
-//        m_xmlMachine.setABC(m_xmlMachine.getABC().toUpperCase());
-//        EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(m_xmlMachine.getRotorsCount(),m_xmlMachine.getABC());
-//        DefineRotors(machineBuilder,m_xmlMachine);
-//        DefineReflectors(machineBuilder,m_xmlMachine);
-//        m_machine = machineBuilder.create();
-//    }
+    private void createMachineFromXML(){
+        m_xmlMachine.setABC(m_xmlMachine.getABC().toUpperCase());
+        EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(m_xmlMachine.getRotorsCount(),m_xmlMachine.getABC());
+        DefineRotors(machineBuilder,m_xmlMachine);
+        DefineReflectors(machineBuilder,m_xmlMachine);
+        m_machineWrapper = new EnigmaMachineWrapper(machineBuilder.create());
+    }
 
     public void stopDMandAgents() {
         for(Thread agent: m_agentListInstances){
@@ -542,7 +542,8 @@ public class Manager implements Runnable {
     }
 
     public void setMachineWrapper(EnigmaMachineWrapper machineWrapper) {
-        m_machineWrapper = machineWrapper;
+        m_xmlMachine = machineWrapper.getXMLMachine();
+        createMachineFromXML();
     }
 
     public List<AgentResults> getAgentsResults() {
