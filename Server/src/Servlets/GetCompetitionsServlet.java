@@ -31,7 +31,6 @@ public class GetCompetitionsServlet extends HttpServlet {
                         competition.isActive()));
             }
         }
-        System.out.println(res.get(0));
 
         try (PrintWriter out = resp.getWriter()) {
             Gson gson = new Gson();

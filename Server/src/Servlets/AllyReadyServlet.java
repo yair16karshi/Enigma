@@ -32,11 +32,7 @@ public class AllyReadyServlet extends HttpServlet {
         }
 
         Competition competition = servletUtils.GetCompetitionByAllyUserName(userName);
-        boolean everyoneReady = true;
-        for(Ally allyfromList : competition.getAlies()){
-            if(!allyfromList.isReady())
-                everyoneReady = false;
-        }
+        boolean everyoneReady = competition.isAllAlliesReady();
 
         synchronized (competition){
             competition.setActive(everyoneReady);

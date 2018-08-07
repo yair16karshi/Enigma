@@ -26,9 +26,12 @@ public class DefineAutoSecretServlet extends HttpServlet {
                 userName = c.getValue();
         }
         Competition competition = utils.GetCompetitionByUBoatUserName(userName);
-        synchronized (competition){
-            competition.getuBoat().getMachineWrapper().setInitialSecretAutomatically();
+
+        if(competition != null){
+            synchronized (competition){
+                competition.getuBoat().getMachineWrapper().setInitialSecretAutomatically();
+            }
+            competition.setReadyToRegister(true);
         }
-        competition.setReadyToRegister(true);
     }
 }

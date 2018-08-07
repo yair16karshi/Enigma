@@ -29,6 +29,7 @@ public class RegisterToCompetition extends HttpServlet {
         if(pendingAllies != null){
             for(Ally pendingAlly : pendingAllies){
                 if(pendingAlly.getName().equals(userName)){
+                    pendingAlly.setMachineWrapperToDM(competition.getuBoat().getMachineWrapper());
                     List<Ally> compAllies = competition.getAlies();
                     compAllies.add(pendingAlly);
                     pendingAllies.remove(pendingAlly);
@@ -36,6 +37,7 @@ public class RegisterToCompetition extends HttpServlet {
                 }
             }
         }
+
 
     }
 }

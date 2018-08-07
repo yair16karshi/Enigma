@@ -54,7 +54,7 @@ public class SigninServlet extends HttpServlet {
         }
         else {
             if(userType.equals("Uboat")){
-                Cookie cookie = new Cookie("userName",userName);
+                    Cookie cookie = new Cookie("userName",userName);
                 response.addCookie(cookie);
                 Competition competition = createCompetition(userName);
                 competitions.add(competition);

@@ -515,4 +515,8 @@ public class Manager implements Runnable {
     public int getMissionSize(){
         return m_missionSizeSelection;
     }
+
+    public void setMachineWrapper(EnigmaMachineWrapper machineWrapper) {
+        m_machineWrapper = machineWrapper;
+    }
 }

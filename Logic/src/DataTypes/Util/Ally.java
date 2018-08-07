@@ -4,6 +4,7 @@ import DataTypes.CandidateStringWithEncryptionInfo;
 import DataTypes.GeneratedMachineDataTypes.Decipher;
 import DataTypes.GeneratedMachineDataTypes.Machine;
 import Producer.Manager;
+import machine.EnigmaMachineWrapper;
 import pukteam.enigma.component.machine.api.Secret;
 import Consumer.Agent;
 
@@ -72,5 +73,9 @@ public class Ally {
 
     public List<Agent> getAgents() {
         return dm.getAgents();
+    }
+
+    public void setMachineWrapperToDM(EnigmaMachineWrapper machineWrapper) {
+        dm.setMachineWrapper(machineWrapper);
     }
 }

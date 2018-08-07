@@ -41,7 +41,7 @@ public class ValidateStringServlet extends HttpServlet {
             String encString = competition.getuBoat().getMachineWrapper().process(msg);
             synchronized (competition){
                 competition.getuBoat().setMsgBeforeEnc(msg);
-                competition.getuBoat().setMsgBeforeEnc(encString);
+                competition.getuBoat().setEncryptedMsg(encString);
             }
         }
 
