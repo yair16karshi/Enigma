@@ -31,6 +31,7 @@ import static machine.EnigmaMachineApplication.DefineRotors;
 public class Manager implements Runnable {
     private static final String READY = "READY";
 
+    private List<AgentResults> results = new LinkedList<>();
     private EnigmaMachineWrapper m_machineWrapper;
     private Decipher m_decipher;
     private Machine m_xmlMachine;
@@ -168,6 +169,7 @@ public class Manager implements Runnable {
                 if(!candidate.getString().equals("DONE")){
                     m_responeQueue.add(candidate);
                     m_candidateStrings.add(candidate);
+                    insertToResultList(candidate);
                 }
                 else{
                     m_doneCount++;
@@ -179,6 +181,16 @@ public class Manager implements Runnable {
         }
         if(m_isFinished){
             sendMassageToAgents("LOGOUT");
+        }
+    }
+
+    private void insertToResultList(CandidateStringWithEncryptionInfo candidate) {
+        for(AgentResults agentResults: results){
+            if(agentResults.getId() == candidate.getId()){
+                agentResults.setCandidates(candidate.getCandidates());
+                agentResults.setLeftMissions(candidate.getLeftMissions());
+                break;
+            }
         }
     }
 
@@ -518,5 +530,9 @@ public class Manager implements Runnable {
 
     public void setMachineWrapper(EnigmaMachineWrapper machineWrapper) {
         m_machineWrapper = machineWrapper;
+    }
+
+    public List<AgentResults> getAgentsResults() {
+        return results;
     }
 }

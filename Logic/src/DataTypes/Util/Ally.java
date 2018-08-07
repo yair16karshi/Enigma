@@ -3,6 +3,7 @@ package DataTypes.Util;
 import DataTypes.CandidateStringWithEncryptionInfo;
 import DataTypes.GeneratedMachineDataTypes.Decipher;
 import DataTypes.GeneratedMachineDataTypes.Machine;
+import Producer.AgentResults;
 import Producer.Manager;
 import machine.EnigmaMachineWrapper;
 import pukteam.enigma.component.machine.api.Secret;
@@ -77,5 +78,9 @@ public class Ally {
 
     public void setMachineWrapperToDM(EnigmaMachineWrapper machineWrapper) {
         dm.setMachineWrapper(machineWrapper);
+    }
+
+    public List<AgentResults> getAgentsResults() {
+        return dm.getAgentsResults();
     }
 }
