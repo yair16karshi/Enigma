@@ -14,6 +14,7 @@ public class CandidateStringWithEncryptionInfo {
     private int m_leftMissions;
     private int m_candidates;
 
+    public  CandidateStringWithEncryptionInfo(){}
     public CandidateStringWithEncryptionInfo(String string, long threadID, Secret secret){
         m_string = string;
         m_threadId = threadID;
@@ -31,12 +32,25 @@ public class CandidateStringWithEncryptionInfo {
         return m_threadId;
     }
 
+    public void setM_threadId(long m_threadId) {
+        this.m_threadId = m_threadId;
+    }
+
     public String getString() {
         return m_string;
     }
 
+    public void setString(String m_string) {
+        this.m_string = m_string;
+    }
+
     public Secret getSecret() {
         return m_secret;
+    }
+
+
+    public void setSecret(Secret m_secret) {
+        this.m_secret = m_secret;
     }
 
 

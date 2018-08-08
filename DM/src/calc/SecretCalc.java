@@ -1,5 +1,6 @@
 package calc;
 
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import pukteam.enigma.component.machine.api.Secret;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ public class SecretCalc {
     public static Secret addPositions(Secret m_secret, Integer i_missionSizeSelection, Integer rotorsCount, String i_abc) {
         List<Integer> positions = m_secret.getSelectedRotorsPositions();
         Integer pos;
-
+        try{
         for(int i=0; i<i_missionSizeSelection; i++){
             pos = positions.get(positions.size()-1);
             pos++;
@@ -32,6 +33,9 @@ public class SecretCalc {
                         break;
                 }
             }
+        }
+        } catch (Exception ex){
+            System.out.println(ex.getMessage());
         }
         m_secret = m_secret.setInitialPosition(positions);
 

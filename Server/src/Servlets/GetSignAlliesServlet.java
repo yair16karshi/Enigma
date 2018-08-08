@@ -39,14 +39,18 @@ public class GetSignAlliesServlet extends HttpServlet {
         ArrayList<AllyDetails> allyDetails;
         GetAlliesResponse res;
 
-        ArrayList<Ally> signedAllies = new ArrayList<>(competition.getAlies());
+        ArrayList<Ally> signedAllies = new ArrayList<>();
+        if(competition != null){
+            signedAllies = new ArrayList<>(competition.getAlies());
+        }
         allyDetails = new ArrayList<>();
 
         for (Ally signedAlly : signedAllies) {
             allyDetails.add(new AllyDetails(signedAlly.getName(), signedAlly.getNumOfAgents()));
         }
 
-        res = new GetAlliesResponse(competition.isCompetitionFull() , allyDetails);
+
+        res = new GetAlliesResponse(competition != null ? competition.isCompetitionFull() : false , allyDetails);
 
         try(PrintWriter out = response.getWriter()){
             Gson gson = new Gson();

@@ -3,6 +3,8 @@ package Producer;
 import Consumer.Agent;
 import DataTypes.*;
 import DataTypes.GeneratedMachineDataTypes.*;
+import DataTypes.GeneratedMachineDataTypes.SerializeableMachine.CandidtaeStringWithEncInfo;
+import DataTypes.Util.CandidateWithEncInfoConverter;
 import DataTypes.Util.SecretWithMissionSizeConverter;
 import DataTypes.Util.XMLToSerializableEnigmaConverter;
 import InputValidation.Util;
@@ -25,7 +27,6 @@ import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static DataTypes.Util.XMLToSerializableEnigmaConverter.CreateEnigmaFromXML;
 import static machine.EnigmaMachineApplication.DefineReflectors;
 import static machine.EnigmaMachineApplication.DefineRotors;
 
@@ -180,9 +181,9 @@ public class Manager implements Runnable {
     private void receiveResponseFromAgents() throws IOException, ClassNotFoundException {
         while(!m_isFinished){
             for(ObjectInputStream inputStream : m_agentsInputStreams){
-                CandidateStringWithEncryptionInfo candidate = (CandidateStringWithEncryptionInfo)inputStream.readObject();
-                if(!candidate.getString().equals("DONE")){
-                    m_responeQueue.add(candidate);
+                CandidtaeStringWithEncInfo serielizableCandidate = (CandidtaeStringWithEncInfo)inputStream.readObject();
+                if(!serielizableCandidate.getM_string().equals("DONE")){
+                    CandidateStringWithEncryptionInfo candidate = CandidateWithEncInfoConverter.SerielizableToAviad(serielizableCandidate, m_machineWrapper.createSecret());
                     m_candidateStrings.add(candidate);
                     insertToResultList(candidate);
                 }
@@ -237,45 +238,48 @@ public class Manager implements Runnable {
                     agentMissions.add(SecretWithMissionSizeConverter.AviadToSerializable(m_missionsQueue.poll()));
                     if (m_missionsQueue.isEmpty()) {
                         break;
+                    }
                 }
                 outputStream.writeObject(agentMissions);
-              }
+                outputStream.flush();
+                outputStream.writeObject(m_processedString);
+                outputStream.flush();
             }
         }
     }
 
-    private void difficultyImpossible(){
-        List<Rotor> rotors = m_xmlMachine.getRotors().getRotor();
-        int[] numOfMissions = new int[1];
-        numOfMissions[0] = 0;
-        int numOfCombinations = DifficultyCalc.easy(m_xmlMachine.getRotorsCount(), m_xmlMachine.getABC());
-
-        List<Integer> rotorsIDs = new ArrayList<>();
-        for(int i=0; i<rotors.size(); i++){
-            rotorsIDs.add(i);
-        }
-        List<Set<Integer>> combinationsSet = new ArrayList<>();
-        combinationsSet = DifficultyCalc.getSubsets(rotorsIDs, m_xmlMachine.getRotorsCount());
-
-        for(Set<Integer> combination: combinationsSet){
-            Set<Integer[]> rotorsCombinations = new HashSet<>();
-            DifficultyCalc.getAllCombinationsOfList(combination, new Stack<Integer>(), combination.size(), rotorsCombinations);
-            for(Integer[] combination2: rotorsCombinations){
-                for (Reflector refl : m_xmlMachine.getReflectors().getReflector()) {
-                    SecretBuilder secretBuilder = m_machineWrapper.getMachine().createSecret();
-                    secretBuilder.selectReflector(Util.romanToInt(refl.getId()));
-                    for (Integer rotorID : combination2) {
-                        secretBuilder.selectRotor(rotorID, 1);
-                    }
-                    m_secret = secretBuilder.create();
-                    insertMissionsToQueue(numOfCombinations, numOfMissions);
-                }
-            }
-        }
-
-        startAllAgents();
-        takeResponsesFromAgents(numOfMissions);
-    }
+//    private void difficultyImpossible(){
+//        List<Rotor> rotors = m_xmlMachine.getRotors().getRotor();
+//        int[] numOfMissions = new int[1];
+//        numOfMissions[0] = 0;
+//        int numOfCombinations = DifficultyCalc.easy(m_xmlMachine.getRotorsCount(), m_xmlMachine.getABC());
+//
+//        List<Integer> rotorsIDs = new ArrayList<>();
+//        for(int i=0; i<rotors.size(); i++){
+//            rotorsIDs.add(i);
+//        }
+//        List<Set<Integer>> combinationsSet = new ArrayList<>();
+//        combinationsSet = DifficultyCalc.getSubsets(rotorsIDs, m_xmlMachine.getRotorsCount());
+//
+//        for(Set<Integer> combination: combinationsSet){
+//            Set<Integer[]> rotorsCombinations = new HashSet<>();
+//            DifficultyCalc.getAllCombinationsOfList(combination, new Stack<Integer>(), combination.size(), rotorsCombinations);
+//            for(Integer[] combination2: rotorsCombinations){
+//                for (Reflector refl : m_xmlMachine.getReflectors().getReflector()) {
+//                    SecretBuilder secretBuilder = m_machineWrapper.getMachine().createSecret();
+//                    secretBuilder.selectReflector(Util.romanToInt(refl.getId()));
+//                    for (Integer rotorID : combination2) {
+//                        secretBuilder.selectRotor(rotorID, 1);
+//                    }
+//                    m_secret = secretBuilder.create();
+//                    insertMissionsToQueue(numOfCombinations, numOfMissions);
+//                }
+//            }
+//        }
+//
+//        startAllAgents();
+//        takeResponsesFromAgents(numOfMissions);
+//    }
 
     private void difficultyHard() {
         int[] numOfMissions = new int[1];
@@ -286,7 +290,7 @@ public class Manager implements Runnable {
         int numOfCombinations = DifficultyCalc.easy(m_xmlMachine.getRotorsCount(), m_xmlMachine.getABC());
         m_currNumOfCombinations = m_xmlMachine.getReflectors().getReflector().size()* numOfCombinations*(DifficultyCalc.factorial(m_xmlMachine.getRotorsCount()));
 
-        startAllAgents();
+        //startAllAgents();
 
         for(Integer[] combination: rotorsCombinations){
             for (Reflector refl : m_xmlMachine.getReflectors().getReflector()) {
@@ -320,7 +324,7 @@ public class Manager implements Runnable {
             insertMissionsToQueue(numOfCombinations, numOfMissions);
         }
 
-        startAllAgents();
+        //startAllAgents();
 
         takeResponsesFromAgents(numOfMissions);
     }
@@ -336,7 +340,7 @@ public class Manager implements Runnable {
 
         //put all missions in queue
         insertMissionsToQueue(m_currNumOfCombinations, numOfMissions);
-        startAllAgents();
+        //startAllAgents();
         //take response from queue
         takeResponsesFromAgents(numOfMissions);
 
@@ -372,22 +376,22 @@ public class Manager implements Runnable {
         }
     }
 
-    private void startAllAgents() {
-        //m_agentList = new ArrayList<>(m_numOfAgentsSelection);
-        m_agentListInstances = new ArrayList<>(m_numOfAgentsSelection);
-        for (int i = 0; i < m_numOfAgentsSelection; i++) {
-            Agent agentInstance = new Consumer.Agent(count[0], m_missionsQueue, m_responeQueue, m_processedString, m_xmlMachine, m_decipher);
-            //Thread agentThread = new Thread(agentInstance);
-            agentInstance.setName("Agent-"+i);
-           // m_agentList.add(agentThread);
-            m_agentListInstances.add(agentInstance);
-        }
-        for(Thread agent: m_agentListInstances){
-            agent.start();
-        }
-        m_agentsStartedTime = null;
-        m_agentsStartedTime = Instant.now();
-    }
+//    private void startAllAgents() {
+//        //m_agentList = new ArrayList<>(m_numOfAgentsSelection);
+//        m_agentListInstances = new ArrayList<>(m_numOfAgentsSelection);
+//        for (int i = 0; i < m_numOfAgentsSelection; i++) {
+//            //Agent agentInstance = new Consumer.Agent(machineWrapper, count[0], m_missionsQueue, m_responeQueue, m_processedString, m_xmlMachine, m_decipher);
+//            //Thread agentThread = new Thread(agentInstance);
+//            agentInstance.setName("Agent-"+i);
+//           // m_agentList.add(agentThread);
+//            m_agentListInstances.add(agentInstance);
+//        }
+//        for(Thread agent: m_agentListInstances){
+//            agent.start();
+//        }
+//        m_agentsStartedTime = null;
+//        m_agentsStartedTime = Instant.now();
+//    }
 
     public boolean isRoundFinished() {
         return m_roundFinished;

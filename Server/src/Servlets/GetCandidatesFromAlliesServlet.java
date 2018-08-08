@@ -44,7 +44,7 @@ public class GetCandidatesFromAlliesServlet extends HttpServlet {
 
         Competition competition = utils.GetCompetitionByUBoatUserName(userName);
 
-        List<Ally> alies = competition.getAlies();
+        List<Ally> alies = (competition != null ? competition.getAlies() : null);
         boolean gameFinished = false;
         int countAllyFinished = 0;
 

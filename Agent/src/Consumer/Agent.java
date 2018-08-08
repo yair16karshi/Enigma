@@ -1,6 +1,5 @@
 package Consumer;
 
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 
@@ -12,12 +11,9 @@ import DataTypes.SecretWithMissionSize;
 import DataTypes.CandidateStringWithEncryptionInfo;
 import InputValidation.Util;
 import calc.SecretCalc;
-import machine.EnigmaMachineApplication;
 import machine.EnigmaMachineWrapper;
 import pukteam.enigma.component.machine.api.Secret;
-import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
 import pukteam.enigma.component.machine.secret.SecretBuilder;
-import pukteam.enigma.factory.EnigmaComponentFactory;
 
 public class Agent extends Thread{
     private BlockingQueue<SecretWithMissionSize> m_missionsQueue;
@@ -35,7 +31,7 @@ public class Agent extends Thread{
     private long m_id;
     /*FOR STATUS UPDATES*/
 
-    public Agent(int count, BlockingQueue<SecretWithMissionSize> missionsQueue,
+    public Agent(EnigmaMachineWrapper machineWrapper, int count, BlockingQueue<SecretWithMissionSize> missionsQueue,
                  BlockingQueue<CandidateStringWithEncryptionInfo> decipheredQueue,
                  String stringToProcess,
                  Machine xmlMachine,
@@ -52,26 +48,34 @@ public class Agent extends Thread{
         m_count = count;
         m_jobsLeft = missionsQueue.size();
 
-        EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(xmlMachine.getRotorsCount(),xmlMachine.getABC());
-        EnigmaMachineApplication.DefineRotors(machineBuilder,xmlMachine);
-        EnigmaMachineApplication.DefineReflectors(machineBuilder,xmlMachine);
-        m_machineWrapper = new EnigmaMachineWrapper(machineBuilder.create());
+//        EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(xmlMachine.getRotorsCount(),xmlMachine.getABC());
+//        EnigmaMachineApplication.DefineRotors(machineBuilder,xmlMachine);
+//        EnigmaMachineApplication.DefineReflectors(machineBuilder,xmlMachine);
+//        m_machineWrapper = new EnigmaMachineWrapper(machineBuilder.create());
+        m_machineWrapper = machineWrapper;
         m_machineWrapper.setXMLMachine(xmlMachine);
     }
 
     @Override
     public void run(){
         SecretWithMissionSize secretWithMissionSize = null;
+        int tmpCount = 0;
         while(true){
             if(!Thread.currentThread().isInterrupted() ){//TODO:: verify that interrupted works
-                if (!m_missionsQueue.isEmpty()){
-                    secretWithMissionSize = m_missionsQueue.poll();
-                    m_jobsLeft--;
-                    if(secretWithMissionSize != null)
-                        RunMission(secretWithMissionSize);
-                }
-                else{
-                    m_decipheredQueue.add(new CandidateStringWithEncryptionInfo("DONE",0,null));
+                try{
+                    if (!m_missionsQueue.isEmpty()){
+                        secretWithMissionSize = m_missionsQueue.poll();
+                        tmpCount++;
+                        m_jobsLeft--;
+                        if(secretWithMissionSize != null)
+                            RunMission(secretWithMissionSize);
+                    }
+                    else{
+                        m_decipheredQueue.add(new CandidateStringWithEncryptionInfo("DONE",0,null));
+                        break;
+                    }
+                } catch (Exception ex){
+                    System.out.println(ex.getMessage());
                 }
             } else if(Thread.currentThread().isInterrupted() && m_decipheredQueue.isEmpty()){
                 return;
@@ -86,7 +90,7 @@ public class Agent extends Thread{
  //          System.out.println(m_count[0]);
             /*FOR STATUS UPDATES*/
             m_currentSecret = localSecret;
-            m_jobsLeft = mission.getMissionSize()-i;
+            //m_jobsLeft = mission.getMissionSize()-i;
             /*FOR STATUS UPDATES*/
 
             PerformSingleString(localSecret);
@@ -109,9 +113,6 @@ public class Agent extends Thread{
             m_decipheredQueue.add(new CandidateStringWithEncryptionInfo(processedString,Thread.currentThread().getId(),secret));
             m_OldCandidates++;
             m_possibleDeciphered++;
-        }
-        synchronized (m_decipheredQueue){
-            m_count--;
         }
     }
 

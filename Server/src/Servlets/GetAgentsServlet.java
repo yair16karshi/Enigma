@@ -33,7 +33,7 @@ public class GetAgentsServlet extends HttpServlet {
         Ally ally = utils.GetAllyByUserName(userName);
         List<DisplayAgent> agentsToDisplay = new ArrayList();
 
-        List<AgentResults> agentsOfAlly = ally.getAgentsResults();
+        List<AgentResults> agentsOfAlly = (ally != null ? ally.getAgentsResults() : null);
         if(agentsOfAlly != null) {
             for (AgentResults agent : agentsOfAlly) {
                 agentsToDisplay.add(new DisplayAgent(

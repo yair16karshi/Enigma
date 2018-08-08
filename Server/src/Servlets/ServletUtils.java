@@ -7,6 +7,7 @@ import com.sun.prism.image.CompoundTexture;
 
 import javax.servlet.ServletContext;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ServletUtils {
@@ -26,21 +27,27 @@ public class ServletUtils {
     public Competition GetCompetitionByUBoatUserName(String userName){
         List<Competition> competitionList = GetCompetitionListFromContext();
 
-        for(Competition competition : competitionList){
-            if(competition.getuBoat().getUserName().equals(userName)){
-                return competition;
+        if(competitionList != null){
+            for(Competition competition : competitionList){
+                if(competition.getuBoat().getUserName().equals(userName)){
+                    return competition;
+                }
             }
         }
+
         return null;
     }
     public Competition GetCompetitionByAllyUserName(String userName) {
         List<Competition> competitionList = GetCompetitionListFromContext();
-        for(Competition competition : competitionList){
-            for(Ally ally : competition.getAlies()){
-                if(ally.getName().equals(userName))
-                    return competition;
+        if(competitionList != null){
+            for(Competition competition : competitionList){
+                for(Ally ally : competition.getAlies()){
+                     if(ally.getName().equals(userName))
+                          return competition;
+             }
             }
         }
+
         return null;
     }
 
@@ -65,10 +72,12 @@ public class ServletUtils {
 
     public Ally GetAllyByUserName(String userName) {
         List<Competition> competitionList = GetCompetitionListFromContext();
-        for(Competition competition : competitionList){
-            for(Ally ally : competition.getAlies()){
-                if(ally.getName().equals(userName))
-                    return ally;
+        if(competitionList != null){
+            for(Competition competition : competitionList){
+                 for(Ally ally : competition.getAlies()){
+                     if(ally.getName().equals(userName))
+                         return ally;
+             }
             }
         }
         for(Ally ally : GetPendingAllies()){
@@ -88,7 +97,12 @@ public class ServletUtils {
         return new Ally(userName);
     }
     public List<Ally> GetPendingAllies (){
-        return (List<Ally> )m_servletContext.getAttribute(PENDINGALLIES);
+        List<Ally> res = (List<Ally> )m_servletContext.getAttribute(PENDINGALLIES);
+        if(res != null){
+            return res;
+        }
+
+        return Collections.emptyList();
     }
 
     public List<Ally> GetAlliesCopyInCompetitionByAllyUserName(String userName) {

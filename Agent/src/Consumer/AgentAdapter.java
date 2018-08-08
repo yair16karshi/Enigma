@@ -3,8 +3,13 @@ package Consumer;
 import DataTypes.CandidateStringWithEncryptionInfo;
 import DataTypes.GeneratedMachineDataTypes.SerializeableMachine.Enigma;
 import DataTypes.SecretWithMissionSize;
+import DataTypes.Util.CandidateWithEncInfoConverter;
 import DataTypes.Util.SecretWithMissionSizeConverter;
 import DataTypes.Util.SerializableToXMLEnigmaConverter;
+import machine.EnigmaMachineApplication;
+import machine.EnigmaMachineWrapper;
+import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
+import pukteam.enigma.factory.EnigmaComponentFactory;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -50,22 +55,22 @@ public class AgentAdapter {
                 // The queue arrive full from the DM
                 List<DataTypes.GeneratedMachineDataTypes.SerializeableMachine.SecretWithMissionSize> missionQueue =
                         (List<DataTypes.GeneratedMachineDataTypes.SerializeableMachine.SecretWithMissionSize>) in.readObject();
-                String encryptedString = in.readUTF(); // Or readObject
-
+                String encryptedString = (String)in.readObject(); // Or readObject
+                EnigmaMachineWrapper machineWrapper = creatMachineWrapper(xmlEnigma);
+                BlockingQueue<SecretWithMissionSize> queueToAgent =  fromListToBlockingQueue(missionQueue, machineWrapper);
                 agent =
-                        new Agent(
+                        new Agent(machineWrapper,
                                 missionQueue.size(),
-                                fromListToBlockingQueue(missionQueue),
+                                queueToAgent,
                                 responseQueue,
                                 encryptedString,
                                 xmlEnigma.getMachine(),
                                 xmlEnigma.getDecipher());
                 Thread thread = new Thread(agent);
+                thread.setName("agent");
+                thread.setPriority(Thread.MAX_PRIORITY);
                 thread.start();
                 sendResponsesToSocket();
-                if(thread.isAlive()){
-                    thread.stop();
-                }
             }
 
             //in.close();
@@ -73,6 +78,13 @@ public class AgentAdapter {
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
+    }
+
+    private EnigmaMachineWrapper creatMachineWrapper(DataTypes.GeneratedMachineDataTypes.Enigma xmlEnigma) {
+        EnigmaMachineBuilder machineBuilder = EnigmaComponentFactory.INSTANCE.buildMachine(xmlEnigma.getMachine().getRotorsCount(),xmlEnigma.getMachine().getABC());
+        EnigmaMachineApplication.DefineRotors(machineBuilder,xmlEnigma.getMachine());
+        EnigmaMachineApplication.DefineReflectors(machineBuilder,xmlEnigma.getMachine());
+        return new EnigmaMachineWrapper(machineBuilder.create());
     }
 
     private void sendResponsesToSocket() {
@@ -89,7 +101,7 @@ public class AgentAdapter {
                             candidate.setId(agent.getId());
                             candidate.setLeftMissions(agent.getNumOfLeftMissions());
                             candidate.setCandidates(agent.getOldCandidates());
-                            out.writeObject(candidate);
+                            out.writeObject(CandidateWithEncInfoConverter.AviadToSerielizable(candidate, agent.getSecretBuilder()));
                         }
                     }
                 }
@@ -107,14 +119,14 @@ public class AgentAdapter {
                 }
             }
         } catch(Exception ex){
-
+            System.out.println(ex.getMessage());
         }
     }
 
-    private BlockingQueue<SecretWithMissionSize> fromListToBlockingQueue(List<DataTypes.GeneratedMachineDataTypes.SerializeableMachine.SecretWithMissionSize> missionQueue) {
+    private BlockingQueue<SecretWithMissionSize> fromListToBlockingQueue(List<DataTypes.GeneratedMachineDataTypes.SerializeableMachine.SecretWithMissionSize> missionQueue, EnigmaMachineWrapper machineWrapper) {
         BlockingQueue<SecretWithMissionSize> res = new LinkedBlockingQueue<>();
         for(DataTypes.GeneratedMachineDataTypes.SerializeableMachine.SecretWithMissionSize swms: missionQueue){
-            res.add(SecretWithMissionSizeConverter.SerializableToAviad(swms,agent.getSecretBuilder()));
+            res.add(SecretWithMissionSizeConverter.SerializableToAviad(swms,machineWrapper.createSecret()));
         }
 
         return res;

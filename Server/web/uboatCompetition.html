@@ -99,8 +99,7 @@
                     if(obj){
                         console.log("waitingForAlliesToRegister going to clear interval");
                         clearInterval(waitingForAlliesToRegisterInterval);
-                        $("#Status").children().remove();
-
+                        $("#Status").children.remove();
                         var newH2 = document.createElement("h1");
                         newH2.innerText = "Competition Start";
 

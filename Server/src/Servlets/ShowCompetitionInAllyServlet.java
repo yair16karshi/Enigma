@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,7 +33,7 @@ public class ShowCompetitionInAllyServlet extends HttpServlet{
         response.setContentType("application/json;charset=UTF-8");
 
         List<String> winners = null;
-        ArrayList<String> results = new ArrayList<>();
+        Set<String> results = new HashSet<>();
         boolean competitionFinished = false;
 
         ServletUtils utils = new ServletUtils(getServletContext());
@@ -46,8 +47,10 @@ public class ShowCompetitionInAllyServlet extends HttpServlet{
 
         Ally ally = utils.GetAllyByUserName(userName);
 
-        for(CandidateStringWithEncryptionInfo candidate: ally.getCandidates())
-            results.add(candidate.getString());
+        if(ally != null){
+            for(CandidateStringWithEncryptionInfo candidate: ally.getCandidates())
+                results.add(candidate.getString());
+        }
 
         Competition competition = utils.GetCompetitionByAllyUserName(userName);
 
@@ -68,9 +71,9 @@ public class ShowCompetitionInAllyServlet extends HttpServlet{
     private class CompetitionDetailsForAlly{
         boolean competitionFinished;
         List<String> winners;
-        ArrayList<String> results;
+        Set<String> results;
 
-        public CompetitionDetailsForAlly(boolean competitionFinished, List<String> winners, ArrayList<String> results) {
+        public CompetitionDetailsForAlly(boolean competitionFinished, List<String> winners, Set<String> results) {
             this.competitionFinished = competitionFinished;
             this.winners = winners;
             this.results = results;

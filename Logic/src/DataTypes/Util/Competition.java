@@ -147,7 +147,11 @@ public class Competition {
     }
 
     public boolean isCompetitionFull() {
-        return battlefield.getAllies() == alies.size() ? true :false;
+        if(alies != null && battlefield != null){
+            return battlefield.getAllies() == alies.size() ? true :false;
+        }
+
+        return false;
     }
 
     public void logOut() {
