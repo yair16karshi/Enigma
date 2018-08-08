@@ -38,11 +38,12 @@ public class AgentAdapter {
             socket = new Socket(host, port);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
+            out.flush();
 
             Enigma serializeableEnigma = (Enigma)in.readObject();
             DataTypes.GeneratedMachineDataTypes.Enigma xmlEnigma = SerializableToXMLEnigmaConverter.CreateEnigmaFromSerializeable(serializeableEnigma);
 
-            out.writeBytes(READY);
+            //out.writeBytes(READY);
 
             while (!logOut) {
                 // The queue arrive full from the DM

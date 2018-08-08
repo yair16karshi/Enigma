@@ -19,7 +19,7 @@ import java.util.List;
 public class Competition {
     private UBoat uBoat;
     private List<Ally> alies = new ArrayList<>();
-    private boolean isActive;
+    private boolean isActive = false;
     private boolean competitionFinish = false;
     private BattlefieldWrapper battlefield;
     private boolean isReadyToRegister;
@@ -128,6 +128,9 @@ public class Competition {
     }
 
     public boolean checkInDictionary(String stringToProcess) {
+        if(stringToProcess.isEmpty()){
+            return false;
+        }
         String[] splitMsg = stringToProcess.split(" ");
 
         return Arrays.stream(splitMsg).allMatch(word -> uBoat.getDecipher().getDictionary().getWords().contains(word));
@@ -139,7 +142,7 @@ public class Competition {
     }
 
     public void startCompetition() {
-        uBoat.EncryptWord();
+        this.isActive = true;
         alies.forEach(Ally::startCompetition);
     }
 

@@ -34,9 +34,6 @@ public class AllyReadyServlet extends HttpServlet {
         Competition competition = servletUtils.GetCompetitionByAllyUserName(userName);
         boolean everyoneReady = competition.isAllAlliesReady();
 
-        synchronized (competition){
-            competition.setActive(everyoneReady);
-        }
         int difficulty = parseToDifficulty(competition.getBattlefield().getLevel());
         synchronized (ally){
             ally.setDM(competition.getuBoat().getEncryptedMsg(),competition.getuBoat().getMachineWrapper().getSecret(),difficulty, ally.getManager().getMissionSize(),0);
