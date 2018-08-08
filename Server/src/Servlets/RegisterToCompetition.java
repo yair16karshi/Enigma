@@ -31,6 +31,7 @@ public class RegisterToCompetition extends HttpServlet {
                 if(pendingAlly.getName().equals(userName)){
                     synchronized (pendingAllies){
                         pendingAlly.setMachineWrapperToDM(competition.getuBoat().getMachineWrapper());
+                        pendingAlly.setDechiper(competition.getuBoat().getDecipher());
                         List<Ally> compAllies = competition.getAlies();
                         compAllies.add(pendingAlly);
                         pendingAllies.remove(pendingAlly);

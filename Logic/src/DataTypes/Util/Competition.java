@@ -20,7 +20,7 @@ public class Competition {
     private UBoat uBoat;
     private List<Ally> alies = new ArrayList<>();
     private boolean isActive;
-    private boolean competitionFinish;
+    private boolean competitionFinish = false;
     private BattlefieldWrapper battlefield;
     private boolean isReadyToRegister;
     private List<String> candidatesList = new ArrayList<>();

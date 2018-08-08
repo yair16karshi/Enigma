@@ -42,7 +42,8 @@ public class NumOfReadyAlliesServlet extends HttpServlet {
 
         if(res){
             synchronized (competition){
-                competition.startCompetition();
+                if(!competition.isActive())
+                    competition.startCompetition();
             }
         }
 

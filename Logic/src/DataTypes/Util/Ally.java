@@ -83,4 +83,8 @@ public class Ally {
     public List<AgentResults> getAgentsResults() {
         return dm.getAgentsResults();
     }
+
+    public void setDechiper(Decipher decipher) {
+        dm.setDecipher(decipher);
+    }
 }

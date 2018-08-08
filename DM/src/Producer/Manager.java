@@ -82,8 +82,8 @@ public class Manager implements Runnable {
                     try{
                         socket = serverSocket.accept();
                         m_agentSockets.add(socket);
-                        ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-                        ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+                        ObjectOutputStream outputStream = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+                        ObjectInputStream inputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
                         m_agentsOutputStreams.add(outputStream);
                         m_agentsInputStreams.add(inputStream);
                         m_numOfAgents++;
