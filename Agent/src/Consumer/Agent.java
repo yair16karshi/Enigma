@@ -16,6 +16,7 @@ import machine.EnigmaMachineApplication;
 import machine.EnigmaMachineWrapper;
 import pukteam.enigma.component.machine.api.Secret;
 import pukteam.enigma.component.machine.builder.EnigmaMachineBuilder;
+import pukteam.enigma.component.machine.secret.SecretBuilder;
 import pukteam.enigma.factory.EnigmaComponentFactory;
 
 public class Agent extends Thread{
@@ -142,5 +143,9 @@ public class Agent extends Thread{
 
     public void setId(long m_id) {
         this.m_id = m_id;
+    }
+
+    public SecretBuilder getSecretBuilder() {
+        return m_machineWrapper.createSecret();
     }
 }

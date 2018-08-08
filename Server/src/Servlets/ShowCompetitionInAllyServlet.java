@@ -31,7 +31,7 @@ public class ShowCompetitionInAllyServlet extends HttpServlet{
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
 
-        List<String> winners = null;
+            List<String> winners = null;
         ArrayList<String> results = new ArrayList<>();
         boolean competitionFinished = false;
 

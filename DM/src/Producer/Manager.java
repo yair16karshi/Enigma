@@ -3,6 +3,7 @@ package Producer;
 import Consumer.Agent;
 import DataTypes.*;
 import DataTypes.GeneratedMachineDataTypes.*;
+import DataTypes.Util.SecretWithMissionSizeConverter;
 import DataTypes.Util.XMLToSerializableEnigmaConverter;
 import InputValidation.Util;
 import calc.DifficultyCalc;
@@ -228,12 +229,12 @@ public class Manager implements Runnable {
         //put missions in queues
         insertMissionsToQueue(m_currNumOfCombinations, numOfMissions);
         int numMissionsToEachAgent = m_missionsQueue.size() / m_numOfAgents;
-        List<SecretWithMissionSize> agentMissions;
+        List<DataTypes.GeneratedMachineDataTypes.SerializeableMachine.SecretWithMissionSize> agentMissions;
         while(!m_missionsQueue.isEmpty()){
             for (ObjectOutputStream outputStream : m_agentsOutputStreams) {
                 agentMissions = new LinkedList<>();
                 for (int i = 0; i < numMissionsToEachAgent; i++) {
-                    agentMissions.add(m_missionsQueue.poll());
+                    agentMissions.add(SecretWithMissionSizeConverter.AviadToSerializable(m_missionsQueue.poll()));
                     if (m_missionsQueue.isEmpty()) {
                         break;
                 }

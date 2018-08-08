@@ -3,6 +3,7 @@ package Consumer;
 import DataTypes.CandidateStringWithEncryptionInfo;
 import DataTypes.GeneratedMachineDataTypes.SerializeableMachine.Enigma;
 import DataTypes.SecretWithMissionSize;
+import DataTypes.Util.SecretWithMissionSizeConverter;
 import DataTypes.Util.SerializableToXMLEnigmaConverter;
 
 import java.io.ObjectInputStream;
@@ -47,7 +48,8 @@ public class AgentAdapter {
 
             while (!logOut) {
                 // The queue arrive full from the DM
-                List<SecretWithMissionSize> missionQueue = (List<SecretWithMissionSize>) in.readObject();
+                List<DataTypes.GeneratedMachineDataTypes.SerializeableMachine.SecretWithMissionSize> missionQueue =
+                        (List<DataTypes.GeneratedMachineDataTypes.SerializeableMachine.SecretWithMissionSize>) in.readObject();
                 String encryptedString = in.readUTF(); // Or readObject
 
                 agent =
@@ -72,16 +74,6 @@ public class AgentAdapter {
             System.err.println("Error: " + e.getMessage());
         }
     }
-
-
-
-
-
-
-
-
-
-
 
     private void sendResponsesToSocket() {
         try{
@@ -119,10 +111,10 @@ public class AgentAdapter {
         }
     }
 
-    private BlockingQueue<SecretWithMissionSize> fromListToBlockingQueue(List<SecretWithMissionSize> missionQueue) {
+    private BlockingQueue<SecretWithMissionSize> fromListToBlockingQueue(List<DataTypes.GeneratedMachineDataTypes.SerializeableMachine.SecretWithMissionSize> missionQueue) {
         BlockingQueue<SecretWithMissionSize> res = new LinkedBlockingQueue<>();
-        for(SecretWithMissionSize swms: missionQueue){
-            res.add(swms);
+        for(DataTypes.GeneratedMachineDataTypes.SerializeableMachine.SecretWithMissionSize swms: missionQueue){
+            res.add(SecretWithMissionSizeConverter.SerializableToAviad(swms,agent.getSecretBuilder()));
         }
 
         return res;
