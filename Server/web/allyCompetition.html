@@ -270,21 +270,13 @@
                             clearInterval(showCompetitionInAllyInterval);
                             clearInterval(showRivalsInterval);
                             clearInterval(showAgentsInterval);
+                            showWinnersInAlly(r);
                             var newStatus = document.createElement("h1");
                             newStatus.innerText = "Competition End!!";
                             $("#status").children().remove();
                             $("#status").append(newStatus);
                             //showCompetitionStatusInAlly();
                             $("#EndCompetitionDiv").removeClass("hidden");
-                        }
-                        else {
-                            var newStatus = document.createElement("h1");
-                            $("#status").children().remove();
-                            $("#status").append(newStatus);
-                            showWinnersInAlly(r);
-                            $("#status").children().remove();
-                            $("#status").append(newStatus).append(winnersH1);
-                            $.each(r.winners || [], createNewWinner);
                         }
                 }
             })

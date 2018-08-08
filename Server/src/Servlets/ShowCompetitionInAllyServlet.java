@@ -31,7 +31,7 @@ public class ShowCompetitionInAllyServlet extends HttpServlet{
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
 
-            List<String> winners = null;
+        List<String> winners = null;
         ArrayList<String> results = new ArrayList<>();
         boolean competitionFinished = false;
 
@@ -51,8 +51,10 @@ public class ShowCompetitionInAllyServlet extends HttpServlet{
 
         Competition competition = utils.GetCompetitionByAllyUserName(userName);
 
-        winners = competition.getWinners();
-        competitionFinished = competition.isCompetitionFinish();
+        if(competition != null){
+            winners = competition.getWinners();
+            competitionFinished = competition.isCompetitionFinish();
+        }
         CompetitionDetailsForAlly res = new CompetitionDetailsForAlly(competitionFinished, winners, results);
 
         try(PrintWriter out = response.getWriter()){
