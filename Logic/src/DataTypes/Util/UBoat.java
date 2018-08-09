@@ -98,6 +98,6 @@ public class UBoat {
     }
 
     public boolean isCandidateCurrect(String candidate) {
-        return candidate.equals(m_encryptedMsg) ? true : false;
+        return candidate.equals(m_msgBeforeEnc.toUpperCase()) ? true : false;
     }
 }

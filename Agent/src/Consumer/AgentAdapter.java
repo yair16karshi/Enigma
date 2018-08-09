@@ -1,6 +1,7 @@
 package Consumer;
 
 import DataTypes.CandidateStringWithEncryptionInfo;
+import DataTypes.GeneratedMachineDataTypes.SerializeableMachine.CandidtaeStringWithEncInfo;
 import DataTypes.GeneratedMachineDataTypes.SerializeableMachine.Enigma;
 import DataTypes.SecretWithMissionSize;
 import DataTypes.Util.CandidateWithEncInfoConverter;
@@ -95,6 +96,9 @@ public class AgentAdapter {
                     if (candidate != null){
                         if(candidate.getString().equals(DONE)){
                             //the agent finish to process all the queue
+                            CandidtaeStringWithEncInfo doneCandidate = new CandidtaeStringWithEncInfo();
+                            doneCandidate.setM_string(candidate.getString());
+                            out.writeObject(doneCandidate);
                             break;
                         }
                         else{

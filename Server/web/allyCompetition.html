@@ -266,18 +266,18 @@
                 success: function(r) {
                     showResultsInAlly(r.results);
 
-                        if(r.competitionFinished){
-                            clearInterval(showCompetitionInAllyInterval);
-                            clearInterval(showRivalsInterval);
-                            clearInterval(showAgentsInterval);
-                            showWinnersInAlly(r);
-                            var newStatus = document.createElement("h1");
-                            newStatus.innerText = "Competition End!!";
-                            $("#status").children().remove();
-                            $("#status").append(newStatus);
-                            //showCompetitionStatusInAlly();
-                            $("#EndCompetitionDiv").removeClass("hidden");
-                        }
+                    if(r.competitionFinished){
+                        clearInterval(showCompetitionInAllyInterval);
+                        clearInterval(showRivalsInterval);
+                        clearInterval(showAgentsInterval);
+                        showWinnersInAlly(r);
+                        var newStatus = document.createElement("h1");
+                        newStatus.innerText = "Competition End!!";
+                        //$("#status").children().remove();
+                        $("#status").append(newStatus);
+                        //showCompetitionStatusInAlly();
+                        $("#EndCompetitionDiv").removeClass("hidden");
+                    }
                 }
             })
         }

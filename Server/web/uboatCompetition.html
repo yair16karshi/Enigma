@@ -99,13 +99,11 @@
                     if(obj){
                         console.log("waitingForAlliesToRegister going to clear interval");
                         clearInterval(waitingForAlliesToRegisterInterval);
-                        $("#Status").children.remove();
+                        showResultsInterval = setInterval(showResults,2000);
                         var newH2 = document.createElement("h1");
                         newH2.innerText = "Competition Start";
-
                         $("#Status").append(newH2).append(msgH1);
                         $("#competitionView").removeClass("hidden");
-                        showResultsInterval = setInterval(showResults,2000);
                     }
                 }
             })
@@ -149,7 +147,7 @@
                 },
                 //obj = {winnersName: "" ; results: "" }
                 success: function(obj) {
-                    $('#results').children().remove();
+                    //$('#results').children().remove();
                     $.each(obj.results || [], createResult);
 
                     if(obj.competitionDone){
@@ -159,7 +157,6 @@
                         $("#Status").text("Competition End!!");
                         $("#logoutButton").removeClass("hidden");
                         $("#startNewGameButton").removeClass("hidden");
-                        clearInterval(chatInterval);
                     }
                 }
             })
