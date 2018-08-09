@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="EnigmaMachine">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Agent/src/Resources/EnigmaMachine.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

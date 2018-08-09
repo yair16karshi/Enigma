@@ -71,7 +71,7 @@ public class Agent extends Thread{
                             RunMission(secretWithMissionSize);
                     }
                     else{
-                        m_decipheredQueue.add(new CandidateStringWithEncryptionInfo("DONE",0,null));
+                            m_decipheredQueue.add(new CandidateStringWithEncryptionInfo("DONE",0,null));
                         break;
                     }
                 } catch (Exception ex){

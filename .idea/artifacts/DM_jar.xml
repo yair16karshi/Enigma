@@ -5,7 +5,11 @@
       <element id="module-output" name="DM" />
       <element id="module-output" name="Logic" />
       <element id="module-output" name="Agent" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/Server/Logic/src/Resources/EnigmaMachine.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/Enigma 3/EnigmaWeb/out/artifacts/EnigmaWeb_war_exploded/WEB-INF/lib/gson-2.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/Examples Tomcat/lib/jsp-api.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/Examples Tomcat/lib/servlet-api.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/gson-2.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Logic/src/Resources/EnigmaMachine.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
